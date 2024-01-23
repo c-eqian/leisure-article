@@ -19,7 +19,12 @@ module.exports = {
                 '**/error.{js,ts,vue}'
             ],
             rules: {
-                'vue/multi-word-component-names': 'off'
+                'vue/multi-word-component-names': 'off',
+                /**
+                 * 对未使用的参数使用“_”进行标识，防止某些情况下出现警告
+                 */
+                '@typescript-eslint/no-unused-vars': ['warn', {argsIgnorePattern: '_', varsIgnorePattern: '_'}],
+                'semi': ["error", "always"]
             }
         }
     ]
