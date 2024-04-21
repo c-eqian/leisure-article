@@ -4,9 +4,11 @@
 
 <template>
   <div>
-    <AppHeader>
-      <slot />
-    </AppHeader>
+    <v-app>
+      <AppHeader>
+        <slot />
+      </AppHeader>
+    </v-app>
   </div>
 </template>
 

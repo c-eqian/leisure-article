@@ -1,11 +1,25 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@element-plus/nuxt'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    '@element-plus/nuxt',
+    (_options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) => {
+        // @ts-expect-error
+        config.plugins.push(vuetify({ autoImport: true }))
+      })
+    }
+  ],
   devtools: { enabled: true },
   devServer: {
     host: '0.0.0.0'
+  },
+  build: {
+    transpile: ['vuetify']
   },
   typescript: {
     typeCheck: true,
@@ -25,7 +39,10 @@ export default defineNuxtConfig({
   },
   vite: {
     vue: {
-      customElement: true
+      customElement: true,
+      template: {
+        transformAssetUrls
+      }
     },
     vueJsx: {
       mergeProps: true
