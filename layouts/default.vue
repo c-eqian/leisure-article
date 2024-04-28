@@ -3,13 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <v-app>
-      <AppHeader>
-        <slot />
-      </AppHeader>
-    </v-app>
-  </div>
+  <AppHeader>
+    <slot />
+  </AppHeader>
 </template>
 
 <style scoped>
