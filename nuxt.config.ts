@@ -29,10 +29,26 @@ export default defineNuxtConfig({
     // SEO一些配置
     head: {
       charset: 'utf-8',
-      title: '秋瑾',
+      title: 'Eqian',
+      htmlAttrs: {
+        lang: 'zh-CN'
+      },
       meta: [
-        // <meta name="description" content="My amazing site">
-        { name: '秋瑾', content: '可以用来记录你的往事！' }
+        {charset: 'utf-8'},
+        {name: 'apple-mobile-web-app-title', content: 'Eqian博客'}, // 添加到主屏后的标题
+        {name: 'og:type', content: 'Blog'},
+        {name: 'og:title', content: 'Eqian'},
+        {name: 'og:description', content: 'Eqian博客'},
+        {name: 'og:site_name', content: 'Eqian'},
+        {
+          name: 'viewport',
+          content: 'initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width,viewport-fit=cover'
+        }
+      ],
+      link: [
+        {
+          rel: 'icon', href: '/logo.svg', type: 'image/svg+xml'
+        }
       ]
     },
     pageTransition: { name: 'page', mode: 'out-in' }

@@ -7,6 +7,27 @@ const handleChange = () => {
   userStore.setUserInfo(Math.random());
 };
 const user = computed(() => userStore.userInfo);
+/**
+ * SEO
+ */
+const useHeadOption = computed(() => {
+  return {
+    title: 'Eqian主页',
+    meta: [
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Eqian主页'
+      },
+      {
+        hid: 'keywords',
+        name: 'keywords',
+        content: 'Eqian主页'
+      }
+    ]
+  };
+});
+useHead(useHeadOption);
 </script>
 
 <template>
