@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useGlobalStore } from '~/store';
+import CzBanner from '~/components/CzBanner.vue';
 
 const userStore = useGlobalStore();
 const handleChange = () => {
@@ -10,10 +11,13 @@ const user = computed(() => userStore.userInfo);
 
 <template>
   <div>
-    <h1>首页 {{ user }}</h1>
-    <el-button @click="handleChange">
-      修改用户
-    </el-button>
+    <cz-banner />
+    <div v-for="i in 20" :key="i">
+      <h1>首页 {{ user }}</h1>
+      <el-button @click="handleChange">
+        修改用户
+      </el-button>
+    </div>
   </div>
 </template>
 
