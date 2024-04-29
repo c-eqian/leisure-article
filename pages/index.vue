@@ -31,13 +31,19 @@ useHead(useHeadOption);
 </script>
 
 <template>
-  <div>
+  <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
     <cz-banner />
-    <div v-for="i in 20" :key="i">
-      <h1>首页 {{ user }}</h1>
-      <el-button @click="handleChange">
-        修改用户
-      </el-button>
+    <div class="cz-max-w-7xl cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
+      <div class="cz-bg-amber-200 cz-h-full max-md:cz-w-full cz-w-2/3">
+        <div v-for="item in 50" :key="item">
+          <div class="cz-h-52 cz-p-2">
+            {{ item }}
+          </div>
+        </div>
+      </div>
+      <div class=" cz-sticky cz-top-0  cz-bg-blue-400  cz-h-96 max-md:cz-hidden cz-w-1/3  ">
+        <div class=" cz-h-full  " />
+      </div>
     </div>
   </div>
 </template>

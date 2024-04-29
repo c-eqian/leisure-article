@@ -59,10 +59,8 @@ const menuList = ref([
         <v-app-bar-nav-icon />
       </v-btn>
     </v-app-bar>
-    <v-main class="cz-h-screen !cz-pt-0">
-      <div>
+    <v-main class="cz-h-screen cz-w-full !cz-pt-0">
         <slot />
-      </div>
     </v-main>
   </v-app>
 </template>
