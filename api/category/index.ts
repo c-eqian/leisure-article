@@ -1,4 +1,4 @@
-import type { ICategoryData } from '@/api/category/type'
+import type { ICategoryData } from './type'
 import { http } from '~/api/http'
 
 export const getCategoryList = (params?: {

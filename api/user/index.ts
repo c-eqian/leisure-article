@@ -1,4 +1,4 @@
-import type { User } from '~/api/user/type'
+import type { User } from './type'
 import { http } from '~/api/http'
 
 export const userLogin = (data: User.ILoginRequest) => {

@@ -13,7 +13,6 @@ const baseConfig = {
  */
 export function tansParams (params: { [x: string]: any; }) {
   let result = ''
-
   for (const propName of Object.keys(params)) {
     const value = params[propName]
     const part = `${encodeURIComponent(propName)}=`
@@ -51,7 +50,9 @@ class Http {
       url = `${this.BASEURL}${config.url.replace(/^\//, '')}`
     }
     if (config.method === 'GET' || config.method === 'DELETE') {
-      url = `${url}?${tansParams(config.params)}`.slice(0, -1)
+      if (config.params) {
+        url = `${url}?${tansParams(config.params)}`.slice(0, -1)
+      }
     }
     return url
   }
@@ -65,22 +66,21 @@ class Http {
       return useFetch(this.getUrl(config), {
         method: config.method || 'GET',
         lazy: !!config.lazy,
-        server: config.server || false,
+        server: false,
         query: config.params,
-        body: config.params,
         onRequest ({ request, options }): Promise<void> | void {
           if (config.method === 'GET' || config.method === 'DELETE') {
             options.query = {}
-            options.body = {}
           }
           console.log(' 请求处理', request, options)
         },
         onRequestError ({ request, options, error }) {
-          console.log(' 请求错误', request, options)
+          console.log(' 请求错误', request, options, error)
           reject(request)
         },
         onResponse ({ request, response, options }) {
-          resolve(response._data || {})
+          console.log(response._data)
+          resolve(response._data.data || {})
         },
         onResponseError ({ request, response }) {
           console.log(' 响应错误', request, response)

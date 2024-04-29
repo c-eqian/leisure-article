@@ -1,4 +1,4 @@
-import type { IArticleItem, IArticleRes } from '~/api/article/type'
+import type { IArticleItem, IArticleRes } from './type'
 import { http } from '~/api/http'
 
 /**

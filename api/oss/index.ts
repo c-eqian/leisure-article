@@ -1,4 +1,4 @@
-import type { IOssData } from '@/api/oss/type'
+import type { IOssData } from './type'
 import { http } from '~/api/http'
 
 /**

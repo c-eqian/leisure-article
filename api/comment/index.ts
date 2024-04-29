@@ -1,4 +1,4 @@
-import type { IArticleComment, ICommentList } from '~/api/comment/type'
+import type { IArticleComment, ICommentList } from './type'
 import { http } from '~/api/http'
 
 /**

@@ -1,4 +1,4 @@
-import type { ICatalogueData } from '@/api/catalogue/type'
+import type { ICatalogueData } from './type'
 import { http } from '~/api/http'
 
 export const getCatalogueList = () => {

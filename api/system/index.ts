@@ -4,7 +4,7 @@
 /**
  * 获取验证码
  */
-import type { ISystemCaptcha, ISystemSentence, ISystemVisitor, IWebsite } from '@/api/system/type'
+import type { ISystemCaptcha, ISystemSentence, ISystemVisitor, IWebsite } from './type'
 import { http } from '~/api/http'
 
 export const getSystemCaptcha = () => {
