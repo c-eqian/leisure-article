@@ -46,7 +46,7 @@ const menuList = ref([
         />
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar theme="dark" scroll-threshold="110" scroll-behavior="hide" class="!cz-bg-transparent cz-px-2 cz-fixed cz-top-0" flat>
+    <v-app-bar theme="dark" scroll-behavior="hide" class="!cz-bg-transparent cz-px-2 cz-fixed cz-top-0" flat>
       <v-app-bar-title>logo</v-app-bar-title>
       <v-spacer />
       <ul class="cz-flex cz-px-8 max-md:cz-hidden">

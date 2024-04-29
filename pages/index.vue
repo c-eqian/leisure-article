@@ -41,7 +41,7 @@ useHead(useHeadOption);
           </div>
         </div>
       </div>
-      <div class=" cz-sticky cz-top-0  cz-bg-blue-400  cz-h-96 max-md:cz-hidden cz-w-1/3  ">
+      <div class=" cz-sticky cz-top-8  cz-bg-blue-400  cz-h-96 max-md:cz-hidden cz-w-1/3  ">
         <div class=" cz-h-full  " />
       </div>
     </div>
