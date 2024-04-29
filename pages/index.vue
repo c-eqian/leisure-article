@@ -118,9 +118,9 @@ useHead(useHeadOption);
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
     <cz-banner />
     <div class="cz-max-w-7xl cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
-      <div class="cz-h-full max-md:cz-w-full cz-w-2/3 cz-bg-[#fff]">
+      <div class="cz-h-full max-md:cz-w-full cz-w-2/3">
         <div
-          class="cz-left-list dark:cz-bg-[--bs-body-bg]
+          class="cz-left-list cz-bg-[#fff]
       cz-min-h-[500px] cz-items-start cz-py-0
       md:cz-px-5"
         >

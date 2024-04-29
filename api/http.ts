@@ -79,7 +79,6 @@ class Http {
           reject(request)
         },
         onResponse ({ request, response, options }) {
-          console.log(response._data)
           resolve(response._data.data || {})
         },
         onResponseError ({ request, response }) {
