@@ -126,7 +126,7 @@ useHead(useHeadOption);
         >
           <div
             v-show="loadingStatus==='success'"
-            class="cz-w-full cz-h-full"
+            class="cz-w-full cz-h-full cz-py-1"
           >
             <template
               v-for="(item, index) in articleList.list"
