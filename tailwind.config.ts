@@ -9,7 +9,11 @@ export default {
     './app.{js,ts,vue}'
   ],
   theme: {
-    extend: {}
+    extend: {
+      boxShadow: {
+        base: '2px 2px 5px 1px rgba(229,231,235,1)'
+      }
+    }
   },
   plugins: []
 } satisfies Config

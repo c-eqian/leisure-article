@@ -19,7 +19,12 @@ defineProps({
 </script>
 
 <template>
-  <div class="list-item cz-rounded-lg cz-relative">
+  <div
+    class="
+    cz-rounded-lg
+    cz-relative cz-shadow-[2px_2px_5px_1px_rgba(229,231,235,1)]
+   "
+  >
     <div class="-cz-top-1 -cz-left-1.5 cz-absolute">
       <img
         v-if="row.is_top==1"
@@ -107,7 +112,7 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-//.list-item {
-//  box-shadow: 2px 2px 5px 1px var(--bs-border-color);
-//}
+.list-item-card{
+
+}
 </style>

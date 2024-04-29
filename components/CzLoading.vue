@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed, PropType, ref } from 'vue';
+import { computed, ref } from 'vue'
+import type { PropType } from 'vue'
 
 defineOptions({
   name: 'CzLetterLoading'
-});
+})
 const props = defineProps({
   size: {
     type: Number,
@@ -18,25 +19,25 @@ const props = defineProps({
     type: String,
     default: '#41b883'
   }
-});
+})
 const _innerStyles = ref({
   transform: `scale(${(props.size / 2) / 75})`,
   '--cz-letter-bg-color': props.bgColor
-});
-const innerStyles = computed(() => _innerStyles.value);
+})
+const innerStyles = computed(() => _innerStyles.value)
 const styles = computed(() => {
   return {
     width: `${props.size}px`,
     height: `${props.size}px`
-  };
-});
+  }
+})
 const faces = computed(() => {
-  const _faces = ['front', 'back', 'left', 'right', 'bottom', 'top'];
+  const _faces = ['front', 'back', 'left', 'right', 'bottom', 'top']
   return _faces.map((face, index) => ({
     side: face,
     letter: props.letters[index]
-  }));
-});
+  }))
+})
 </script>
 
 <template>
