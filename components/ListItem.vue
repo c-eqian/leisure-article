@@ -51,11 +51,13 @@ defineProps({
         <div class="cz-p-2">
           <div class="article-content md:cz-mb-6 max-md: cz-mb-1">
             <div class="article-title cz-text-lg cz-ellipsis">
-              <a
-                :href="`${ROUTER_PREFIX}/article/${row.uid}`"
+              <NuxtLink
+                :to="`${ROUTER_PREFIX}/article/${row.uid}`"
                 class="cz-p-1"
                 target="_blank"
-              >{{ row.title }}</a>
+              >
+                {{ row.title }}
+              </NuxtLink>
             </div>
             <hr class="cz-divider">
             <div class="article-des cz-p-0.5 max-md:cz-text-xs cz-ellipsis-2 cz-text-[#a0a0a0]">
