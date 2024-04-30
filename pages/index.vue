@@ -11,6 +11,7 @@ import { getSystemSentence, getSystemVisitor } from '~/api/system';
 import type { ISystemSentence, ISystemVisitor, IWebsite } from '~/api/system/type';
 import { useRandomColor } from '~/composables';
 import { useGlobalStore } from '~/store';
+import CzIcp from '~/components/CzIcp.vue';
 
 const articleList = ref<IArticleRes>({} as IArticleRes);
 const typed = ref<Typed>();
@@ -292,6 +293,7 @@ useHead(useHeadOption);
         </div>
       </div>
     </div>
+    <CzIcp />
   </div>
 </template>
 
