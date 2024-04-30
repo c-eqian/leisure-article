@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Typed from 'typed.js';
+import { usePriceToThousand } from 'co-utils-vue';
 import CzBanner from '~/components/CzBanner.vue';
 
 import { getArticleList } from '~/api/article';
@@ -7,10 +8,14 @@ import type { IArticleRes } from '~/api/article/type';
 import { getCatalogueList } from '@/api/catalogue';
 import type { CatalogueList } from '~/api/catalogue/type';
 import { getSystemSentence, getSystemVisitor } from '~/api/system';
-import type { ISystemSentence, ISystemVisitor } from '~/api/system/type';
+import type { ISystemSentence, ISystemVisitor, IWebsite } from '~/api/system/type';
+import { useRandomColor } from '~/composables';
+import { useGlobalStore } from '~/store';
 
 const articleList = ref<IArticleRes>({} as IArticleRes);
 const typed = ref<Typed>();
+const website = ref<IWebsite.Data>({} as IWebsite.Data);
+const systemStore = useGlobalStore();
 const catalogueList = ref<CatalogueList[]>([]);
 const typedRef = ref<HTMLDivElement>();
 const sentenceList = ref<ISystemSentence.Datum[]>([]);
@@ -83,12 +88,19 @@ const changeCategory = (category_id = '') => {
 const getVisitorInfo = () => {
   getSystemVisitor().then((res) => {
     visitorInfo.value = res;
+    console.log(visitorInfo.value);
+  });
+};
+const websiteInfo = () => {
+  systemStore.getWebsite().then((res) => {
+    website.value = res;
   });
 };
 getList();
 getSentence();
 catalogueData();
 getVisitorInfo();
+websiteInfo();
 /**
  * SEO
  */
@@ -115,7 +127,7 @@ useHead(useHeadOption);
 <template>
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
     <cz-banner>
-      <h1 class="cz-text-gray-200 max-md:cz-text-xs">
+      <h1 class="cz-text-gray-200 cz-text-4xl max-md:cz-text-xs">
         秋谨
       </h1>
       <p class="description max-md:cz-hidden max-md:cz-text-sm">
@@ -155,7 +167,7 @@ useHead(useHeadOption);
               <div
                 v-if="articleList.is_more===1"
                 class="cz-text-[var(--cz-primary)] cz-cursor-pointer"
-                @click="handleLoadingMore"
+                @click.stop="handleLoadingMore"
               >
                 <div v-show="!isLoading">
                   加载更多
@@ -189,8 +201,95 @@ useHead(useHeadOption);
           />
         </div>
       </div>
-      <div class=" cz-sticky cz-top-8  cz-bg-blue-400  cz-h-96 max-md:cz-hidden cz-w-1/3  ">
-        <div class=" cz-h-full  " />
+      <div class="cz-sticky cz-top-8 cz-mt-8 cz-h-96 max-md:cz-hidden cz-w-1/3  ">
+        <div class="right-card cz-relative  cz-bottom-1.5 cz-py-2 cz-px-8">
+          <div
+            class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50"
+          >
+            <div class="cz-absolute -cz-top-5 cz-left-1/2 -cz-translate-x-1/2">
+              <img
+                src="@/assets/default-avatar.jpg"
+                alt=""
+                class="cz-w-20 cz-h-20 cz-rounded-full cz-transition-all hover:cz-scale-125"
+              >
+            </div>
+            <div class="cz-pt-10 cz-border-b cz-border-dashed">
+              <p class="cz-text-center">
+                <cz-typing
+                  class="cz-text-xs cz-py-4 cz-text-[#a0a0a0]"
+                  text="大丈夫生于天地之间,怎能郁郁久居人下"
+                />
+              </p>
+              <hr class="cz-divider">
+              <div v-if="!!visitorInfo">
+                <cz-typing
+                  v-if="false"
+                  class="cz-text-lg"
+                  :text="`欢迎来自 ${[visitorInfo?.province, visitorInfo?.request_city || visitorInfo?.city].join('·')}
+                的朋友
+                `"
+                />
+                <div class="cz-flex cz-justify-between cz-py-2">
+                  <div>
+                    <i class="bi bi-geo-alt cz-pr-1 cz-animate-bounce" />
+                    <sapn>{{ [visitorInfo.province, visitorInfo.request_city || visitorInfo?.city].join('·') }}</sapn>
+                  </div>
+                  <div>
+                    <i class="bi bi-cloud cz-px-1" />
+                    <span>{{ visitorInfo.temperature }} ℃ · {{ visitorInfo.weather }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cz-py-2">
+              本站稳定运行：{{ website.website_run_days || '-' }} 天
+            </div>
+            <div class="cz-py-2">
+              本站访问量：{{ usePriceToThousand(website.website_request_count, 0) || '-' }} 次
+            </div>
+            <div class="cz-py-2">
+              本站文章数量：{{ website.article_count || '-' }} 篇
+            </div>
+          </div>
+          <div class="item-card cz-px-4 cz-bg-gray-50 cz-overflow-y-auto cz-min-h-[300px] cz-max-h-[600px] cz-mt-5 article">
+            <div
+              class="cz-flex  cz-py-1 cz-justify-center cz-items-center cz-cursor-pointer"
+              @click.stop="changeCategory('')"
+            >
+              <i class="bi bi-bookmark cz-pr-0.5" />
+              <span>目录类别</span>
+            </div>
+            <div class="cz-border cz-border-dashed cz-my-2" />
+            <ul class="cz-leading-8">
+              <li
+                v-for="catalogue in catalogueList"
+                :key="catalogue.category_id"
+                class="cz-flex cz-justify-between
+            cz-items-center cz-mb-2 cz-p-1
+              cz-rounded cz-transition-all
+              cz-cursor-pointer
+             cz-shadow-md hover:cz-shadow-[0_0_60px_0_#eee]
+              hover:cz-bg-cyan-200 dark:hover:cz-bg-cyan-800 "
+                @click.stop="changeCategory(catalogue.category_id + '')"
+              >
+                <div class="cz-font-bold">
+                  {{ catalogue.category_name }}
+                </div>
+                <div
+                  class=" cz-rounded
+                cz-text-white
+              cz-px-2
+              cz-shadow-lg"
+                  :style="{
+                    background: useRandomColor()
+                  }"
+                >
+                  <span>{{ catalogue.article_count }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

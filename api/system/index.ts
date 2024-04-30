@@ -22,6 +22,9 @@ export const getSystemWebsite = () => {
   return http.request<IWebsite.Data>({
     url: 'system/website',
     method: 'GET',
+    params: {
+      _t: new Date().getTime()
+    },
     isLoading: false
   })
 }

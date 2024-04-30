@@ -20,6 +20,7 @@ module.exports = {
             ],
             rules: {
                 'vue/multi-word-component-names': 'off',
+                "camelcase": 0,//不检查属性驼峰风格
                 /**
                  * 对未使用的参数使用“_”进行标识，防止某些情况下出现警告
                  */
