@@ -23,3 +23,32 @@ i {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+@media (min-width: 769px) {
+  .cz-ellipsis {
+    -webkit-line-clamp: 1;
+    @include ellipsis;
+  }
+  .cz-ellipsis-2 {
+    -webkit-line-clamp: 2;
+    @include ellipsis;
+  }
+  .cz-ellipsis-3 {
+    -webkit-line-clamp: 3;
+    @include ellipsis;
+  }
+}
+
+@media (max-width: 768px) {
+  .cz-ellipsis {
+    -webkit-line-clamp: 1;
+    @include ellipsis;
+  }
+  .cz-ellipsis-2 {
+    -webkit-line-clamp: 1;
+    @include ellipsis;
+  }
+  .cz-ellipsis-3 {
+    -webkit-line-clamp: 1;
+    @include ellipsis;
+  }
+}
