@@ -1,0 +1,21 @@
+
+:root {
+  --profile-bg: #f5f5f5;
+  --profile-bg-rgb: rgb(245,245,245);
+  --card-bg: #1d1e1f;
+  --card-bg: #fff;
+  --cz-body-bg: rgb(249 250 251);
+  // 修改md默认主题色
+  --md-bk-color: var(--cz-body-bg) !important;
+}
+.md-editor{
+  --md-bk-color: var(--cz-body-bg) !important;
+}
+.md-editor-dark {
+  // 修改md默认主题色
+  --md-bk-color: rgba(0,0,0,1) !important;
+}
+:root[class="dark"]{
+  --card-bg: #1d1e1f;
+  --cz-body-bg: rgb(0 0 0);
+}
