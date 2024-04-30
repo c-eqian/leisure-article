@@ -24,7 +24,7 @@ const bannerUrlComputed = computed(() => props.bannerUrl)
     <div
       :style="{'--banner-cover': `url(${bannerUrlComputed ||
         'https://s3.bmp.ovh/imgs/2022/11/27/44ecddb9454b34ae.jpg'})`}"
-      class="repo"
+      class="repo md:cz-h-[450px] cz-h-52"
     >
       <div style="margin: 0 auto;max-width: 620px; z-index: 10">
         <slot />
@@ -39,7 +39,7 @@ const bannerUrlComputed = computed(() => props.bannerUrl)
   overflow: hidden;
   background-color: #49b1f5 !important;
   background: var(--banner-cover) center/cover no-repeat;
-  height: v-bind("scrollY < 100 && isFull ? '100vh': '450px'");
+  //height: v-bind("scrollY < 100 && isFull ? '100vh': '450px'");
   position: relative;
   box-sizing: border-box;
   transition: height 1s ease;

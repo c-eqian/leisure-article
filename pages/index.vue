@@ -7,7 +7,7 @@ import type { IArticleRes } from '~/api/article/type';
 import { getCatalogueList } from '@/api/catalogue';
 import type { CatalogueList } from '~/api/catalogue/type';
 import { getSystemSentence, getSystemVisitor } from '~/api/system';
-import type { ISystemSentence, ISystemVisitor, IWebsite } from '~/api/system/type';
+import type { ISystemSentence, ISystemVisitor } from '~/api/system/type';
 
 const articleList = ref<IArticleRes>({} as IArticleRes);
 const typed = ref<Typed>();
@@ -86,11 +86,9 @@ const getVisitorInfo = () => {
   });
 };
 getList();
-onMounted(() => {
-  getSentence();
-  catalogueData();
-  getVisitorInfo();
-});
+getSentence();
+catalogueData();
+getVisitorInfo();
 /**
  * SEO
  */
@@ -116,7 +114,18 @@ useHead(useHeadOption);
 
 <template>
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
-    <cz-banner />
+    <cz-banner>
+      <h1 class="cz-text-gray-200 max-md:cz-text-xs">
+        秋谨
+      </h1>
+      <p class="description max-md:cz-hidden max-md:cz-text-sm">
+        在黑暗中看到了微光，朝着光明去前行
+      </p>
+      <span
+        ref="typedRef"
+        class="max-md:cz-text-xs vertical-text word description"
+      />
+    </cz-banner>
     <div class="cz-max-w-7xl cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
       <div class="cz-h-full max-md:cz-w-full cz-w-2/3">
         <div
@@ -189,6 +198,50 @@ useHead(useHeadOption);
 
 <style scoped lang="scss">
 h1 {
-  color: $secondary;
+  font-weight: 500;
+  display: block !important;
+  margin: 0 auto 1.8rem !important;
+  transition: transform 0.25s ease-in-out 0.04s,
+  opacity 0.25s ease-in-out 0.04s;
+  transform: translateY(0px);
+  opacity: 1;
+}
+.word {
+  font-family: "ff-tisa-web-pro-1", "ff-tisa-web-pro-2", "Lucida Grande",
+  "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  font-weight: lighter;
+  letter-spacing: 3px;
+  color: #ccc;
+  -webkit-font-smoothing: antialiased;
+}
+.description {
+  animation: change 10s infinite;
+  font-weight: 800;
+  margin: 1.8rem auto;
+  transition: transform 0.25s ease-in-out 0.08s,
+  opacity 0.25s ease-in-out 0.08s;
+  transform: translateY(0px);
+  opacity: 1;
+  @keyframes change {
+    0% {
+      color: #5cb85c;
+    }
+
+    25% {
+      color: #556bd8;
+    }
+    50% {
+      color: #e40707;
+    }
+    75% {
+      color: #66e616;
+    }
+    100% {
+      color: #67bd31;
+    }
+  }
+}
+.typed-cursor {
+  color: inherit;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CzIcon from "~/components/CzIcon.vue";
+import CzIcon from '~/components/CzIcon.vue'
 
 const drawer = ref(false)
 const menuList = ref([
@@ -60,7 +60,7 @@ const menuList = ref([
       </v-btn>
     </v-app-bar>
     <v-main class="cz-h-screen cz-w-full !cz-pt-0">
-        <slot />
+      <slot />
     </v-main>
   </v-app>
 </template>
