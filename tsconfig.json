@@ -2,7 +2,7 @@
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["vite-plugin-svg-icons/client"],
+//    "types": ["vite-plugin-svg-icons/client"],
     "noImplicitAny": false
   }
 }

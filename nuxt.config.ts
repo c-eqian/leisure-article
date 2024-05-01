@@ -1,18 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@element-plus/nuxt',
-    (_options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error
-        config.plugins.push(vuetify({ autoImport: true }))
-      })
-    }
+    '@element-plus/nuxt'
   ],
   devtools: { enabled: false },
   devServer: {
@@ -20,10 +13,6 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ['vuetify']
-  },
-  typescript: {
-    typeCheck: true,
-    shim: true
   },
   app: {
     // SEO一些配置
@@ -54,12 +43,6 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' }
   },
   vite: {
-    vue: {
-      customElement: true,
-      template: {
-        transformAssetUrls
-      }
-    },
     vueJsx: {
       mergeProps: true
     },

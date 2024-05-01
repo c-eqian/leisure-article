@@ -215,12 +215,12 @@ useHead(useHeadOption);
               >
             </div>
             <div class="cz-pt-10 cz-border-b cz-border-dashed">
-              <p class="cz-text-center">
+              <div class="cz-text-center">
                 <cz-typing
                   class="cz-text-xs cz-py-4 cz-text-[#a0a0a0]"
                   text="大丈夫生于天地之间,怎能郁郁久居人下"
                 />
-              </p>
+              </div>
               <hr class="cz-divider">
               <div v-if="!!visitorInfo">
                 <cz-typing
@@ -233,7 +233,7 @@ useHead(useHeadOption);
                 <div class="cz-flex cz-justify-between cz-py-2">
                   <div>
                     <i class="bi bi-geo-alt cz-pr-1 cz-animate-bounce" />
-                    <sapn>{{ [visitorInfo.province, visitorInfo.request_city || visitorInfo?.city].join('·') }}</sapn>
+                    <span>{{ [visitorInfo.province, visitorInfo.request_city || visitorInfo?.city].join('·') }}</span>
                   </div>
                   <div>
                     <i class="bi bi-cloud cz-px-1" />
