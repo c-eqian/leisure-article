@@ -40,3 +40,19 @@ export const useIsEmptyObject = (obj: Object | undefined) => {
   }
   return Object.keys(obj).length === 0
 }
+/**
+ *
+ * @param count
+ */
+export const useCountTransform = (count: number) => {
+  const _count = +count
+  if (_count >= 1000 && _count < 10000) {
+    const kCount = Math.ceil((_count / 1000)).toFixed(2)
+    return `${kCount}k`
+  }
+  if (_count >= 10000) {
+    const tCount = Math.ceil((_count / 10000)).toFixed(3)
+    return `${tCount}w`
+  }
+  return _count
+}
