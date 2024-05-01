@@ -5,6 +5,7 @@
 <template>
   <div>
     <slot />
+    <cz-back-top />
   </div>
 </template>
 

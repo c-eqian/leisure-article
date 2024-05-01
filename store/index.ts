@@ -7,9 +7,13 @@ export const useGlobalStore = defineStore({
   state: () => ({
     // 用户信息
     userInfo: '',
+    theme: 'light',
     website: {} as IWebsite.Data
   }),
   actions: {
+    settingTheme(theme: string) {
+      this.theme = theme;
+    },
     setUserInfo (userInfo: any) {
       this.userInfo = userInfo
     },
