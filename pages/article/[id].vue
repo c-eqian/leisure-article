@@ -13,6 +13,7 @@ definePageMeta({
 const isCategory = ref(true);
 const { id } = useRoute().params;
 const article = ref<IArticleItem>({} as IArticleItem);
+const scrollElement = process.browser ? document.documentElement : 'body';
 const commentFieldRef = ref<HTMLDivElement | null>(null);
 /**
  * 作者近期文章
@@ -86,7 +87,7 @@ getArticle();
         <md-preview id="md-preview-id" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
-          <time>{{ useFormatDate(article.update_date, 'yyyy-MM-dd HH:mm') }}</time>
+          <time>{{ useFormatDate(article.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
         </div>
         <hr class="cz-divider cz-clear-right">
         <div
@@ -128,11 +129,11 @@ getArticle();
             </div>
           </CzComment>
         </div>
-
       </article>
       <div
-        class="cz-sticky cz-top-8 cz-mt-8 cz-h-1/2 max-md:cz-hidden cz-px-4 cz-w-1/5"
+        class="cz-sticky cz-top-8  cz-h-1/2 max-md:cz-hidden cz-px-4 cz-w-1/5"
       >
+        <q-toggle v-model="isCategory" label="目录" />
         <div
           class="cz-bg-gray-50 cz-min-h-72"
           :style="{
@@ -149,7 +150,7 @@ getArticle();
                 目录
               </div>
               <md-catalog
-                scroll-element="body"
+                :scroll-element="scrollElement"
                 editor-id="md-preview-id"
               />
             </div>
@@ -188,6 +189,20 @@ getArticle();
     white-space: nowrap;
     background-color: #c2c8d1;
     color: #fff;
+  }
+}
+:deep(.md-editor-catalog-active) {
+   > span {
+     padding: 0 5px;
+    position: relative;
+     &::before{
+       position: absolute;
+       content: '';
+       height: 90%;
+       left: 2px;
+       background: #23a6d5;
+       width: 2px;
+     }
   }
 }
 </style>
