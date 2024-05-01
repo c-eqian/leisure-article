@@ -82,7 +82,7 @@ getArticle();
           <CzIcon name="eye" />
         </div>
       </aside>
-      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50">
+      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50  cz-pb-10 cz-rounded-2xl">
         <md-preview id="md-preview-id" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
@@ -102,7 +102,7 @@ getArticle();
             <NuxtLink
               :to="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
               target="_blank"
-              style="color: inherit"
+              class="cz-text-blue-600"
             >
               {{ article?.previous_article?.title }}
             </NuxtLink>
@@ -115,7 +115,7 @@ getArticle();
             <NuxtLink
               :to="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
               target="_blank"
-              style="color: inherit"
+              class="cz-text-blue-600"
             >
               {{ article?.next_article?.title }}
             </NuxtLink>
@@ -131,7 +131,7 @@ getArticle();
 
       </article>
       <div
-        class=" max-md:cz-hidden cz-sticky cz-top-8 cz-px-4 cz-w-1/5"
+        class="cz-sticky cz-top-8 cz-mt-8 cz-h-1/2 max-md:cz-hidden cz-px-4 cz-w-1/5"
       >
         <div
           class="cz-bg-gray-50 cz-min-h-72"
