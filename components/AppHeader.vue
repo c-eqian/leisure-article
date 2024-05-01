@@ -23,17 +23,43 @@ const menuList = ref([
 
 <template>
   <section>
-    <nav>
-      <ul class="cz-flex cz-px-8 max-md:cz-hidden">
-        <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-          <CzIcon :name="item.icon" />
-          <span class="cz-px-2">{{ item.name }}</span>
-        </li>
-      </ul>
-    </nav>
-    <main class="cz-h-screen cz-w-full !cz-pt-0">
-      <slot />
-    </main>
+    <q-layout view="hHh lpR fFf">
+      <q-drawer v-model="drawer" behavior="mobile" overlay side="right">
+        <ul class="cz-flex cz-px-8">
+          <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
+            <CzIcon :name="item.icon" />
+            <span class="cz-px-2">{{ item.name }}</span>
+          </li>
+        </ul>
+      </q-drawer>
+      <q-header reveal class="cz-fixed cz-bg-transparent cz-top-0 cz-text-white">
+        <q-toolbar class="cz-text-inherit">
+          <q-toolbar-title>
+            <q-avatar>
+              <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+            </q-avatar>
+            Eqian
+          </q-toolbar-title>
+          <ul class="cz-flex cz-px-8 max-md:cz-hidden">
+            <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
+              <CzIcon :name="item.icon" />
+              <span class="cz-px-2">{{ item.name }}</span>
+            </li>
+          </ul>
+          <q-btn
+            class="md:cz-hidden"
+            dense
+            flat
+            round
+            icon="menu"
+            @click="drawer=!drawer"
+          />
+        </q-toolbar>
+      </q-header>
+      <main class="cz-h-screen cz-w-full !cz-pt-0">
+        <slot />
+      </main>
+    </q-layout>
   </section>
 </template>
 

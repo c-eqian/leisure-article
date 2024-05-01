@@ -27,3 +27,4 @@ vite.config.ts
 *.gif
 *.svg
 *vue.d.ts
+nuxt.config.ts

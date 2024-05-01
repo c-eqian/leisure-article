@@ -19,21 +19,21 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "sass": "^1.70.0",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vite-plugin-vuetify": "^2.0.3",
     "vue": "^3.4.14",
     "vue-router": "^4.2.5",
-    "vue-tsc": "^1.8.27",
-    "vuetify": "^3.5.13"
+    "vue-tsc": "^1.8.27"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
-    "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.5.1",
+    "@quasar/extras": "^1.16.11",
     "bootstrap-icons": "^1.11.3",
     "co-utils-vue": "^2.2.1",
     "element-plus": "^2.5.3",
     "md-editor-v3": "^4.13.5",
+    "nuxt-quasar-ui": "^2.1.0",
     "pinia": "^2.1.7",
+    "quasar": "^2.15.4",
     "typed.js": "^2.1.0"
   }
 }
