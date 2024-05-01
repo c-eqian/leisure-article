@@ -58,7 +58,34 @@ getArticle();
 
 <template>
   <div>
-    <cz-banner />
+    <cz-banner :banner-url="article.cover!">
+      <div>
+        <cz-typing
+          :text="article.title"
+          class="description cz-text-lg"
+        />
+      </div>
+      <div class="cz-text-white">
+        <div class="md:cz-w-[672px]">
+          <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
+            <div class="cz-pr-[10px] cz-pl-[10px]">
+              <CzIcon name="box" />
+              字数：{{ countInfo.wordCount }}
+            </div>
+            <div class="cz-pr-[10px] cz-pl-[10px]">
+              <CzIcon name="hourglass-bottom" />
+              预计阅读时长：{{ countInfo.readingTime }}
+            </div>
+          </div>
+          <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">
+            <div class="cz-pr-[10px] cz-pl-[10px]">
+              <CzIcon name="calendar2-check" />
+              发布时间：{{ useFormatDate(article.create_date|| '-', 'yyyy-MM-dd HH:mm') }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </cz-banner>
     <div class="cz-max-w-7xl cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <aside
         class="article-panel cz-h-[500px] cz-fixed cz-top-[460px] cz-ml-[-7rem] cz-z-[2] cz-w-[100px]"

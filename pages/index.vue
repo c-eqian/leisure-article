@@ -315,33 +315,6 @@ h1 {
   color: #ccc;
   -webkit-font-smoothing: antialiased;
 }
-.description {
-  animation: change 10s infinite;
-  font-weight: 800;
-  margin: 1.8rem auto;
-  transition: transform 0.25s ease-in-out 0.08s,
-  opacity 0.25s ease-in-out 0.08s;
-  transform: translateY(0px);
-  opacity: 1;
-  @keyframes change {
-    0% {
-      color: #5cb85c;
-    }
-
-    25% {
-      color: #556bd8;
-    }
-    50% {
-      color: #e40707;
-    }
-    75% {
-      color: #66e616;
-    }
-    100% {
-      color: #67bd31;
-    }
-  }
-}
 .typed-cursor {
   color: inherit;
 }
