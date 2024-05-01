@@ -3,9 +3,11 @@
 </script>
 
 <template>
-  <AppHeader>
-    <slot />
-  </AppHeader>
+  <div>
+    <AppHeader>
+      <slot />
+    </AppHeader>
+  </div>
 </template>
 
 <style scoped>

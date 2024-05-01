@@ -24,13 +24,7 @@ const getArticle = () => {
   if (!id) { return; }
   getArticleItemDetailById(id as string).then((res) => {
     article.value = res;
-    if (article.value.previousArticle){
-      article.value.previous_article = article.value.previousArticle
-    }
-    if (article.value.nextArticle){
-      article.value.next_article = article.value.nextArticle
-    }
-    document.title = res.title;
+    console.log(article.value?.next_article?.title);
     countInfo.value = useCalculateReadability(res.content || '');
   });
   getArticleRecentByUid(id as string).then((res) => {
@@ -58,7 +52,7 @@ getArticle();
     <cz-banner />
     <div class="cz-max-w-7xl cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <div class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50">
-        <MdPreview id="preview-only" :model-value="article.content" />
+        <MdPreview :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
           <time>{{ useFormatDate(new Date(), 'yyyy-MM-dd HH:mm') }}</time>

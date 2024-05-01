@@ -63,15 +63,12 @@ class Http {
 
   request <T=any> (config: IRequestParamsConfig): Promise<T> {
     return new Promise(async (resolve, reject) => {
-      return useFetch(this.getUrl(config), {
+      await useFetch(this.BASEURL + config.url.replace(/^\//, ''), {
         method: config.method || 'GET',
-        lazy: !!config.lazy,
+        lazy: true,
         server: false,
         query: config.params,
         onRequest ({ request, options }): Promise<void> | void {
-          if (config.method === 'GET' || config.method === 'DELETE') {
-            options.query = {}
-          }
           console.log(' 请求处理', request, options)
         },
         onRequestError ({ request, options, error }) {
