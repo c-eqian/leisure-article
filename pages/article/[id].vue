@@ -24,7 +24,7 @@ const getArticle = () => {
   if (!id) { return; }
   getArticleItemDetailById(id as string).then((res) => {
     article.value = res;
-    console.log(article.value?.next_article?.title);
+    console.log(article.value);
     countInfo.value = useCalculateReadability(res.content || '');
   });
   getArticleRecentByUid(id as string).then((res) => {
@@ -52,10 +52,10 @@ getArticle();
     <cz-banner />
     <div class="cz-max-w-7xl cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <div class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50">
-        <MdPreview :model-value="article.content" />
+        <md-preview id="md-preview-id" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
-          <time>{{ useFormatDate(new Date(), 'yyyy-MM-dd HH:mm') }}</time>
+          <time>{{ useFormatDate(article.update_date, 'yyyy-MM-dd HH:mm') }}</time>
         </div>
         <hr class="cz-divider cz-clear-right">
         <div
@@ -64,12 +64,12 @@ getArticle();
           class="cz-flex"
         >
           <div
-            v-show="!useIsEmptyObject(article?.previous_article)"
+            v-if="!useIsEmptyObject(article?.previous_article)"
             class="cz-p-5"
           >
             <span>上一篇：</span>
             <NuxtLink
-              :href="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
+              :to="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
               target="_blank"
               style="color: inherit"
             >
@@ -77,12 +77,12 @@ getArticle();
             </NuxtLink>
           </div>
           <div
-            v-show="!useIsEmptyObject(article?.next_article)"
+            v-if="!useIsEmptyObject(article?.next_article)"
             class="cz-p-5"
           >
             <span>下一篇：</span>
             <NuxtLink
-              :href="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
+              :to="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
               target="_blank"
               style="color: inherit"
             >
@@ -94,7 +94,6 @@ getArticle();
       <div
         class=" max-md:cz-hidden cz-sticky cz-top-8 cz-px-4 cz-w-1/5"
       >
-        <v-switch v-model="isCategory" hide-details density="compact" label="目录" />
         <div
           class="cz-bg-gray-50 cz-min-h-72"
           :style="{
