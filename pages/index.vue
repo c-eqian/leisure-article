@@ -127,7 +127,7 @@ useHead(useHeadOption);
 
 <template>
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
-    <cz-banner>
+    <cz-banner :banner-url="website.website_cover">
       <h1 class="cz-text-gray-200 cz-text-4xl max-md:cz-text-xs">
         秋谨
       </h1>

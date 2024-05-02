@@ -15,10 +15,13 @@ export const userRegistry = (data: User.IRegistryRequest) => {
     params: data
   })
 }
-export const userInfo = () => {
+export const userInfo = (token:string) => {
   return http.request<User.IUserInfoResponse>({
     url: 'user/info',
     method: 'GET',
+    params: {
+      token: token
+    },
     isLoading: false
   })
 }

@@ -29,7 +29,8 @@ export default defineNuxtConfig({
     //     }
     // },
     plugins: [
-        'Notify'
+        'Notify',
+        'Dialog'
     ],
     extras: {
       font: 'roboto-font',

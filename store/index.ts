@@ -30,10 +30,11 @@ export const useGlobalStore = defineStore({
     login (params: User.ILoginRequest) {
       const cookies = useCookie('USER_TOKEN')
       return new Promise((resolve, reject) => {
+        console.log(params)
         userLogin(params).then(async (res) => {
           cookies.value = res.token
           this.userInfo.isLogin = true
-          await this.getUserInfo()
+          await this.getUserInfo(res.token)
           resolve(res)
         }).catch((error) => {
           reject(error)
@@ -53,9 +54,9 @@ export const useGlobalStore = defineStore({
         })
       })
     },
-    getUserInfo () {
+    getUserInfo (token:string) {
       return new Promise((resolve) => {
-        userInfo().then((res) => {
+        userInfo(token).then((res) => {
           Object.assign(this.userInfo, res)
           resolve(res)
         })
@@ -66,16 +67,12 @@ export const useGlobalStore = defineStore({
      */
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve, reject) => {
-        if (Object.keys(this.website).length > 0) {
-          resolve(this.website)
-        } else {
-          getSystemWebsite().then((res) => {
-            this.setWebsite(res)
-            resolve(res)
-          }).catch((error) => {
-            reject(error)
-          })
-        }
+        getSystemWebsite().then((res) => {
+          this.setWebsite(res)
+          resolve(res)
+        }).catch((error) => {
+          reject(error)
+        })
       })
     },
     setWebsite (v: IWebsite.Data) {

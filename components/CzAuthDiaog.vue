@@ -77,6 +77,7 @@ if (process.browser) {
             <q-input
               v-model="formModel.password"
               lazy-rules
+              type="password"
               :rules="[
                 (val)=> !!val || '请输入密码',
                 (val:string)=> val.length >= 6 && val.length <= 16 || '密码长度为6-16位',

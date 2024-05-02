@@ -10,9 +10,7 @@ const websiteInfo = () => {
     website.value = res
   })
 }
-onMounted(() => {
-  websiteInfo()
-})
+websiteInfo()
 </script>
 
 <template>

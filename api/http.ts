@@ -71,8 +71,8 @@ class Http {
         onRequest ({ request, options }): Promise<void> | void {
           console.log(' 请求处理', request, options)
           const cookies = useCookie('USER_TOKEN')
-          if (cookies.value) {
-            options.headers = { ...options.headers, Authorization: cookies.value }
+          if (config.params?.token || cookies.value) {
+            options.headers = { ...options.headers, Authorization: config.params?.token || cookies.value }
           }
         },
         onRequestError ({ request, options, error }) {
