@@ -2,8 +2,8 @@ export namespace User {
     export interface ILoginRequest {
         account: string;
         password: string;
-        code: string;
-        code_key: number;
+        code?: string;
+        code_key?: number;
     }
 
     export interface ILoginResponse {

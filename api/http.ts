@@ -1,5 +1,4 @@
 import type { IRequestParamsConfig } from '~/api/type'
-
 const baseConfig = {
   // 默认地址
   // baseURL: 'http://43.138.188.22:13209/api/v3',
@@ -67,20 +66,30 @@ class Http {
         method: config.method || 'GET',
         lazy: true,
         server: false,
-        query: config.params,
+        query: (config.method === 'GET' || config.method === 'DELETE') ? config.params : undefined,
+        body: (config.method === 'POST' || config.method === 'PUT') ? config.params : undefined,
         onRequest ({ request, options }): Promise<void> | void {
           console.log(' 请求处理', request, options)
+          const cookies = useCookie('USER_TOKEN')
+          if (cookies.value) {
+            options.headers = { ...options.headers, Authorization: cookies.value }
+          }
         },
         onRequestError ({ request, options, error }) {
           console.log(' 请求错误', request, options, error)
           reject(request)
         },
         onResponse ({ request, response, options }) {
-          resolve(response._data.data || {})
+          const { code } = response._data
+          if (code !== 200) {
+            reject(response._data)
+          } else {
+            resolve(response._data.data || {})
+          }
         },
         onResponseError ({ request, response }) {
           console.log(' 响应错误', request, response)
-          reject(response)
+          reject(response._data)
         }
       })
     })
