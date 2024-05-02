@@ -2,6 +2,7 @@
 import { useQuasar } from 'quasar'
 import { useEmptyObject, usePick } from 'co-utils-vue'
 import { useGlobalStore } from '~/store'
+import { userRegistry } from '~/api/user'
 const dialogVisible = defineModel('value', {
   type: Boolean,
   default: false
@@ -12,6 +13,12 @@ const formModel = ref({
   acc_password: '',
   username: '',
   remember: false
+})
+const registryFormModel = ref({
+  account: '',
+  password: '',
+  acc_password: '',
+  username: ''
 })
 const systemStore = useGlobalStore()
 const $q = useQuasar()
@@ -43,6 +50,17 @@ const handleConfirm = async () => {
         message: e.msg || '请求错误'
       })
     })
+  } else {
+    await registryFormRef.value?.validate()
+    await userRegistry(registryFormModel.value)
+    $q.notify({
+      type: 'positive',
+      position: 'top',
+      timeout: 3000,
+      message: '注册成功'
+    })
+    registryFormModel.value = useEmptyObject(registryFormModel.value)
+    isRegistry.value = false
   }
 }
 if (process.browser) {
@@ -56,18 +74,18 @@ if (process.browser) {
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">
-            {{ isRegistry ? '用户注册' : '用户登录' }}
+            {{ isRegistry ? '用户注册' : '欢迎使用' }}
           </div>
         </q-card-section>
 
         <q-card-section v-if="!isRegistry">
-          <q-form ref="loginFormRef">
+          <q-form ref="loginFormRef" no-error-focus>
             <q-input
               v-model="formModel.account"
               lazy-rules
               :rules="[
                 (val)=> !!val || '请输入账号',
-                (val:string)=> val.length >= 5 && val.length <= 16 || '账号长度为6-16位',
+                (val:string)=> val.length >= 5 && val.length <= 16 || '账号长度为5-16位',
               ]"
               dense
               autofocus
@@ -96,22 +114,67 @@ if (process.browser) {
           </q-form>
         </q-card-section>
         <q-card-section v-else>
-          <q-form ref="registryFormRef">
-            <q-input v-model="formModel.account" dense autofocus label="账号" @keyup.enter="dialogVisible = false" />
-            <q-input v-model="formModel.username" dense autofocus label="昵称" />
-            <q-input v-model="formModel.password" dense autofocus label="密码" />
-            <q-input v-model="formModel.acc_password" dense autofocus label="确认密码" />
-            <div class="cz-flex cz-justify-between cz-items-center">
-              <div class="cz-py-2">
-                <span class="cz-text-gray-500 cz-select-none">已账号？</span>
-                <q-btn color="primary" flat label="登录" @click.stop="isRegistry=false" />
-              </div>
-            </div>
+          <q-banner v-if="systemStore.website.is_registry===1" rounded class="cz-bg-orange-400">
+            管理员已禁止注册！
+          </q-banner>
+          <q-form v-else ref="registryFormRef" no-error-focus>
+            <q-input
+              v-model="formModel.account"
+              lazy-rules
+              :rules="[
+                (val)=> !!val || '请输入账号',
+                (val:string)=> val.length >= 5 && val.length <= 16 || '账号长度为5-16位',
+              ]"
+              dense
+              autofocus
+              label="账号"
+              @keyup.enter="dialogVisible = false"
+            />
+            <q-input
+              v-model="formModel.username"
+              lazy-rules
+              :rules="[
+                (val:string)=> !!val.trim() || '请输入昵称'
+              ]"
+              dense
+              autofocus
+              label="昵称"
+            />
+            <q-input
+              v-model="formModel.password"
+              lazy-rules
+              :rules="[
+                (val:string)=> !!val.trim() || '请输入密码',
+                (val:string)=> val.length >= 6 && val.length <= 16 || '密码长度为6-16位',
+              ]"
+              type="password"
+              dense
+              autofocus
+              label="密码"
+            />
+            <q-input
+              v-model="registryFormModel.acc_password"
+              lazy-rules
+              :rules="[
+                (val:string)=> !!val.trim() || '请输入确认密码',
+                (val:string)=> val ===registryFormModel.password || '两次密码不一致'
+              ]"
+              type="password"
+              dense
+              autofocus
+              label="确认密码"
+            />
           </q-form>
+          <div class="cz-flex cz-justify-between cz-items-center">
+            <div class="cz-py-2">
+              <span class="cz-text-gray-500 cz-select-none">已账号？</span>
+              <q-btn color="primary" flat label="登录" @click.stop="isRegistry=false" />
+            </div>
+          </div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup color="secondary" flat label="取消" />
-          <q-btn flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
+          <q-btn v-if="systemStore.website.is_registry!==1 && isRegistry" flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
         </q-card-actions>
       </q-card>
     </q-dialog>
