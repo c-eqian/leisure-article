@@ -4,18 +4,18 @@ import CzIcon from '~/components/CzIcon.vue'
 const drawer = ref(false)
 const menuList = ref([
   {
-    name: '测试1',
-    path: 'test1',
+    name: '首页',
+    path: '/',
     icon: 'house'
   },
   {
-    name: '测试2',
-    path: 'test2',
+    name: '壁纸',
+    path: '/wallpaper/list',
     icon: 'image'
   },
   {
-    name: '测试3',
-    path: 'test3',
+    name: '登录',
+    path: '/login',
     icon: 'person-circle'
   }
 ])
@@ -27,8 +27,10 @@ const menuList = ref([
       <q-drawer v-model="drawer" behavior="mobile" overlay side="right">
         <ul class="cz-flex cz-px-8">
           <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-            <CzIcon :name="item.icon" />
-            <span class="cz-px-2">{{ item.name }}</span>
+            <NuxtLink :to="item.path" target="_blank" class="cz-px-2">
+              <CzIcon :name="item.icon" />
+              {{ item.name }}
+            </NuxtLink>
           </li>
         </ul>
       </q-drawer>
@@ -42,8 +44,10 @@ const menuList = ref([
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-              <CzIcon :name="item.icon" />
-              <span class="cz-px-2">{{ item.name }}</span>
+              <NuxtLink :to="item.path" target="_blank" class="cz-px-2">
+                <CzIcon :name="item.icon" />
+                {{ item.name }}
+              </NuxtLink>
             </li>
           </ul>
           <q-btn

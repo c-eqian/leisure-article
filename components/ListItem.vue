@@ -25,7 +25,7 @@ defineProps({
     cz-relative cz-shadow-[2px_2px_5px_1px_rgba(229,231,235,1)]
    "
   >
-    <div class="-cz-top-1 -cz-left-1.5 cz-absolute">
+    <div class="-cz-top-1 cz-z-50 -cz-left-1.5 cz-absolute">
       <img
         v-if="row.is_top==1"
         alt=""
@@ -38,14 +38,12 @@ defineProps({
         v-if="position % 2 === 0"
         class="item-left-image"
       >
-        <img
+        <CzImageCover
           v-if="row.cover"
-          :src="row.cover || ''"
-          alt="..."
+          :url="row.cover || ''"
           class="img-fluid max-md:cz-w-[80px] md:cz-max-w-[150px] cz-max-h-[150px]
           max-md:cz-h-[80px] cz-w-full cz-h-full"
-          style="object-fit: cover"
-        >
+        />
       </div>
       <div class="item-right-wrapper cz-flex-1 max-md:cz-h-[100px]">
         <div class="cz-p-2">
@@ -100,14 +98,13 @@ defineProps({
         v-if="position % 2 === 1"
         class="item-left-image"
       >
-        <img
+        <CzImageCover
           v-if="row.cover"
-          :src="row.cover"
-          alt="..."
+          :url="row.cover"
           class="img-fluid max-md:cz-w-[80px] md:cz-max-w-[150px] cz-max-h-[150px]
           max-md:cz-h-[80px] cz-w-full cz-h-full"
           style="object-fit: cover"
-        >
+        />
       </div>
     </div>
   </div>

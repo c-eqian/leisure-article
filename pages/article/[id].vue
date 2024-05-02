@@ -65,7 +65,7 @@ getArticle();
       <div>
         <cz-typing
           :text="article.title"
-          class="description cz-text-lg"
+          class="description cz-text-2xl"
         />
       </div>
       <div class="cz-text-white">

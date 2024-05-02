@@ -40,3 +40,26 @@ export const IS_TOP_LIST = [
   { value: IS_TOP_ENUM.YES, label: '已置顶' },
   { value: IS_TOP_ENUM.NO, label: '未置顶' }
 ]
+export enum WALLPAPER_ENUM {
+  // 必应
+  BING = 1,
+  // 网络
+  NETWORK = 2,
+  // 上传
+  UPLOAD = 3
+}
+
+export const wallpaperLabelList = [
+  {
+    label: '必应壁纸',
+    value: WALLPAPER_ENUM.BING
+  },
+  {
+    label: '网络',
+    value: WALLPAPER_ENUM.NETWORK
+  },
+  {
+    label: '用户上传',
+    value: WALLPAPER_ENUM.UPLOAD
+  }
+];
