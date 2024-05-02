@@ -139,10 +139,10 @@ useHead(useHeadOption);
         class="max-md:cz-text-xs vertical-text word description"
       />
     </cz-banner>
-    <div class="cz-max-w-7xl cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
+    <div class="cz-max-w-7xl dark:cz-text-white cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
       <div class="cz-h-full max-md:cz-w-full cz-w-2/3">
         <div
-          class="cz-left-list cz-bg-[#fff]
+          class="cz-left-list cz-bg-gray-50 dark:cz-bg-slate-800
       cz-min-h-[500px] cz-items-start cz-py-0
       md:cz-px-5"
         >
@@ -205,7 +205,7 @@ useHead(useHeadOption);
       <div class="cz-sticky cz-top-8 cz-mt-8 cz-h-96 max-md:cz-hidden cz-w-1/3  ">
         <div class="right-card cz-relative  cz-bottom-1.5 cz-py-2 cz-px-8">
           <div
-            class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50"
+            class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50 dark:cz-bg-slate-800"
           >
             <div class="cz-absolute -cz-top-5 cz-left-1/2 -cz-translate-x-1/2">
               <img
@@ -252,7 +252,11 @@ useHead(useHeadOption);
               本站文章数量：{{ website.article_count || '-' }} 篇
             </div>
           </div>
-          <div class="item-card cz-px-4 cz-bg-gray-50 cz-overflow-y-auto cz-min-h-[300px] cz-max-h-[600px] cz-mt-5 article">
+          <div
+            class="item-card cz-px-4 cz-bg-gray-50
+          dark:cz-bg-slate-800 cz-overflow-y-auto
+          cz-min-h-[300px] cz-max-h-[600px] cz-mt-5 article"
+          >
             <div
               class="cz-flex  cz-py-1 cz-justify-center cz-items-center cz-cursor-pointer"
               @click.stop="changeCategory('')"

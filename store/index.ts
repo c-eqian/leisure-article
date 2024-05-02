@@ -11,8 +11,8 @@ export const useGlobalStore = defineStore({
     website: {} as IWebsite.Data
   }),
   actions: {
-    settingTheme(theme: string) {
-      this.theme = theme;
+    settingTheme (theme: string) {
+      this.theme = theme
     },
     setUserInfo (userInfo: any) {
       this.userInfo = userInfo
@@ -38,5 +38,5 @@ export const useGlobalStore = defineStore({
       this.website = { ...v }
     }
   },
-  persist: piniaPersistConfig('GlobalStore')
+  persist: piniaPersistConfig('GlobalStore', ['theme'])
 })

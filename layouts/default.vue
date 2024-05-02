@@ -7,6 +7,7 @@
     <AppHeader>
       <slot />
     </AppHeader>
+    <cz-back-top />
   </div>
 </template>
 

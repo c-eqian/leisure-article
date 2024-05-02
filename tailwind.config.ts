@@ -8,6 +8,8 @@ export default {
     './pages/**/*.vue',
     './app.{js,ts,vue}'
   ],
+  // 3.4
+  darkMode: ['class', '[class="dark"]'],
   theme: {
     extend: {
       boxShadow: {

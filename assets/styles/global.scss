@@ -1,5 +1,5 @@
 body {
-  background: #edf1f5;
+  background: var(--cz-body-bg);
 }
 html {
   //scrollbar-width: none; /* Firefox需要这个属性来隐藏默认滚动条 */

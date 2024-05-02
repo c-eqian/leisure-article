@@ -7,9 +7,12 @@ import { getArticleItemDetailById, getArticleRecentByUid } from '~/api/article';
 import { useCalculateReadability, useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
+import { useGlobalStore } from '~/store';
 definePageMeta({
   layout: 'detail'
 });
+const systemStorage = useGlobalStore();
+const themeMode = computed(() => systemStorage.theme);
 const isCategory = ref(true);
 const { id } = useRoute().params;
 const article = ref<IArticleItem>({} as IArticleItem);
@@ -88,11 +91,11 @@ getArticle();
     </cz-banner>
     <div class="cz-max-w-7xl cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <aside
-        class="article-panel cz-h-[500px] cz-fixed cz-top-[460px] cz-ml-[-7rem] cz-z-[2] cz-w-[100px]"
+        class="article-panel dark:cz-text-white cz-h-[500px] cz-fixed cz-top-[460px] cz-ml-[-7rem] cz-z-[2] cz-w-[100px]"
       >
         <div
           :badge="useCountTransform(article?.comment_count || 0)"
-          class="cz-relative cz-panel-btn cz-mb-1.5 cz-w-12 cz-h-12 cz-flex cz-items-center cz-justify-center"
+          class="cz-relative   cz-panel-btn cz-mb-1.5 cz-w-12 cz-h-12 cz-flex cz-items-center cz-justify-center"
           @click="handleToComment"
         >
           <CzIcon name="chat-left-dots" />
@@ -110,8 +113,8 @@ getArticle();
           <CzIcon name="eye" />
         </div>
       </aside>
-      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50  cz-pb-10 cz-rounded-2xl">
-        <md-preview id="md-preview-id" editor-id="md-preview-id" :model-value="article.content" />
+      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50 dark:cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
+        <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
           <time>{{ useFormatDate(article.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
@@ -162,7 +165,7 @@ getArticle();
       >
         <q-toggle v-model="isCategory" label="目录" />
         <div
-          class="cz-bg-gray-50 cz-min-h-72"
+          class="cz-bg-gray-50 dark:cz-bg-slate-800 dark:cz-text-gray-50 cz-min-h-72"
           :style="{
             display: isCategory? 'block': 'none'
           }"
@@ -177,6 +180,7 @@ getArticle();
                 目录
               </div>
               <md-catalog
+                :theme="themeMode"
                 :scroll-element="scrollElement"
                 editor-id="md-preview-id"
               />
@@ -190,11 +194,11 @@ getArticle();
 
 <style scoped>
 :deep(.md-editor){
-  background: var(--md-bk-color);
+  background: var(--card-bg);
 }
 .cz-panel-btn {
   background-position: 50%;
-  background-color: var(--cz-body-bg);
+  background-color: var(--card-bg);
   background-repeat: no-repeat;
   border-radius: 50%;
   box-shadow: 0 2px 4px 0 rgba(50, 50, 50, .04);

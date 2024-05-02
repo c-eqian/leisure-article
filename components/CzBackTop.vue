@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { useDark, useToggle, useWindowScroll } from '@vueuse/core'
+import { useQuasar } from 'quasar'
 import { useGlobalStore } from '~/store'
+let isDarkEl: any
+let toggleDark:any
+if (process.browser) {
+  isDarkEl = useDark()
+  toggleDark = useToggle(isDarkEl)
+}
 
-const isDark = useDark({
-  attribute: 'data-bs-theme'
-})
-const isDarkEl = useDark()
-const toggleDarkEl = useToggle(isDarkEl)
-const toggleDark = useToggle(isDark)
+const $q = useQuasar()
 const systemStorage = useGlobalStore()
 const settingTheme = () => {
-  toggleDark()
-  toggleDarkEl()
-  systemStorage.settingTheme(isDark.value ? 'dark' : 'light')
+  toggleDark && toggleDark()
+  $q.dark.set(isDarkEl.value)
+  systemStorage.settingTheme(isDarkEl.value ? 'dark' : 'light')
 }
 const { y } = useWindowScroll()
 const toScrollTop = () => {
