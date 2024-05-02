@@ -1,24 +1,34 @@
 <script setup lang="ts">
+import { useRouter } from '#app'
 import CzIcon from '~/components/CzIcon.vue'
 
 const drawer = ref(false)
+const dialogVisible = ref(false)
 const menuList = ref([
   {
     name: '首页',
     path: '/',
+    isReplace: false,
     icon: 'house'
   },
   {
     name: '壁纸',
+    isReplace: false,
     path: '/wallpaper/list',
     icon: 'image'
   },
   {
     name: '登录',
     path: '/login',
+    isReplace: true,
     icon: 'person-circle'
   }
 ])
+// const router = useRouter()
+const handleToRouter = () => {
+  // router.replace('/login')
+  dialogVisible.value = true
+}
 </script>
 
 <template>
@@ -27,10 +37,14 @@ const menuList = ref([
       <q-drawer v-model="drawer" behavior="mobile" overlay side="right">
         <ul class="cz-flex cz-px-8">
           <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-            <NuxtLink :to="item.path" target="_blank" class="cz-px-2">
+            <NuxtLink v-if="!item.isReplace" :to="item.path" target="_blank" class="cz-px-2">
               <CzIcon :name="item.icon" />
               {{ item.name }}
             </NuxtLink>
+            <div v-else class="cz-px-2 cz-cursor-pointer" @click="handleToRouter">
+              <CzIcon :name="item.icon" />
+              {{ item.name }}
+            </div>
           </li>
         </ul>
       </q-drawer>
@@ -44,10 +58,14 @@ const menuList = ref([
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-              <NuxtLink :to="item.path" target="_blank" class="cz-px-2">
+              <NuxtLink v-if="!item.isReplace" :to="item.path" target="_blank" class="cz-px-2">
                 <CzIcon :name="item.icon" />
                 {{ item.name }}
               </NuxtLink>
+              <div v-else class="cz-px-2 cz-cursor-pointer" @click="handleToRouter">
+                <CzIcon :name="item.icon" />
+                {{ item.name }}
+              </div>
             </li>
           </ul>
           <q-btn
@@ -64,6 +82,7 @@ const menuList = ref([
         <slot />
       </main>
     </q-layout>
+    <cz-auth-diaog v-model:value="dialogVisible" />
   </section>
 </template>
 

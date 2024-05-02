@@ -11,6 +11,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  fixed: {
+    type: Boolean,
+    default: true
+  },
   bannerUrl: {
     type: String,
     default: ''
@@ -24,7 +28,7 @@ const bannerUrlComputed = computed(() => props.bannerUrl)
     <div
       :style="{'--banner-cover': `url(${bannerUrlComputed ||
         'https://s3.bmp.ovh/imgs/2022/11/27/44ecddb9454b34ae.jpg'})`}"
-      class="repo md:cz-h-[450px] cz-h-52"
+      class="repo md:cz-h-[450px] cz-h-52 cz-bg-fixed"
     >
       <div style="margin: 0 auto;max-width: 620px; z-index: 10">
         <slot />
@@ -38,11 +42,17 @@ const bannerUrlComputed = computed(() => props.bannerUrl)
   text-align: center;
   overflow: hidden;
   background-color: #49b1f5 !important;
-  background: var(--banner-cover) center/cover no-repeat;
+  background: var(--banner-cover);
   //height: v-bind("scrollY < 100 && isFull ? '100vh': '450px'");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: all .3s linear;
+  background-attachment: fixed;
+  transform-style: preserve-3d;
   position: relative;
   box-sizing: border-box;
-  transition: height 1s ease;
+  //transition: height 1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
