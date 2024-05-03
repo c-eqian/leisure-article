@@ -30,7 +30,6 @@ export const useGlobalStore = defineStore({
     login (params: User.ILoginRequest) {
       const cookies = useCookie('USER_TOKEN')
       return new Promise((resolve, reject) => {
-        console.log(params)
         userLogin(params).then(async (res) => {
           cookies.value = res.token
           this.userInfo.isLogin = true

@@ -173,8 +173,8 @@ useHead(useHeadOption);
                 @click.stop="handleLoadingMore"
               >
                 <div v-show="!isLoading">
+                  <CzIcon name="arrow-down-short" />
                   加载更多
-                  <CzSvg name="loading-more" />
                 </div>
                 <cz-loading
                   v-show="isLoading"

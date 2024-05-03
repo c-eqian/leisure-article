@@ -65,7 +65,7 @@ const handleLogoutItemClick = () => {
       <q-header reveal class="cz-fixed cz-bg-transparent cz-top-0 cz-text-white">
         <q-toolbar class="cz-text-inherit">
           <q-toolbar-title>
-            <span class="cz-select-none">Eqian</span>
+            <span class="cz-select-none">{{ systemStore.website.website_title || 'Eqian' }}</span>
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
