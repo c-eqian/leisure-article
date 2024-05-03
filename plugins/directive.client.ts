@@ -20,7 +20,7 @@ export const imgLazy = {
         if (typeof value === 'string') {
           // el.src = new URL('../assets/svg/img-error.svg', import.meta.url).href;
         } else {
-          el.src = value[1]
+          el.src = value.length > 1 ? value[1] : 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg'
         }
         console.log('加载出错')
       }

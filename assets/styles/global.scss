@@ -61,6 +61,12 @@ i {
   border-top-width: thin;
   transition: inherit;
 }
+hr {
+  height: 1px;
+  border: none;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #f54325, rgba(0, 0, 0, 0));
+  margin: .8rem 0;
+}
 .description {
   animation: change 10s infinite;
   font-weight: 800;
