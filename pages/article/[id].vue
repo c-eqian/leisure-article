@@ -162,7 +162,7 @@ getArticle();
       <CzSkeleton v-if="useIsEmptyObject(article)" class="cz-h-screen" />
       <article v-else class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
         <div class="cz-w-full cz-px-10 cz-text-gray-500">
-          <div class="cz-py-4 cz-flex cz-items-center cz-space-x-5">
+          <div class="cz-py-4 cz-flex cz-items-center cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="person" />
               <span>{{ article.user_info?.username }}</span>
@@ -185,7 +185,7 @@ getArticle();
             </div>
           </div>
         </div>
-        <hr>
+        <hr class="max-md: cz-hidden">
         <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
