@@ -78,6 +78,30 @@ const handleSubMit = async (v: string) => {
     message: '评论成功'
   });
 };
+/**
+ * SEO
+ */
+const metaDescription = computed(() => article.value?.describe?.substring(0, 200)
+  .replace(/\r?\n/g, '').replace(/#/g, '') + '...');
+const metaKeywords = computed(() => article.value?.title?.length > 0 ? article.value.title : '');
+const useHeadOption = computed(() => {
+  return {
+    title: `${article.value?.title || '文章详情'}`,
+    meta: [
+      {
+        hid: 'description',
+        name: 'description',
+        content: `${article.value?.title || ''} - ${metaDescription.value}`
+      },
+      {
+        hid: 'keywords',
+        name: 'keywords',
+        content: metaKeywords.value
+      }
+    ]
+  };
+});
+useHead(useHeadOption);
 getArticle();
 </script>
 

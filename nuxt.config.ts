@@ -35,6 +35,7 @@ export default defineNuxtConfig({
     extras: {
       font: 'roboto-font',
     },
+
     components: {
       defaults: {
         QBtn: {
@@ -45,6 +46,16 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ['vuetify']
+  },
+  imports: {
+    dirs: ['./store'] // 导入所有store
+  },
+  nitro: {
+    esbuild: {
+      options: {
+        ...({drop: ['console']})
+      }
+    }
   },
   app: {
     // SEO一些配置
