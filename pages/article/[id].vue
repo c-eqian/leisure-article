@@ -8,6 +8,7 @@ import { useCalculateReadability, useCountTransform, useIsEmptyObject } from '~/
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
+import CzArticleCommnent from "~/components/CzArticleCommnent.vue";
 definePageMeta({
   layout: 'detail'
 });
@@ -158,6 +159,7 @@ getArticle();
               评论（{{ article.comment_count || 0 }}）
             </div>
           </CzComment>
+          <CzArticleCommnent :article-id="article.id"></CzArticleCommnent>
         </div>
       </article>
       <div
