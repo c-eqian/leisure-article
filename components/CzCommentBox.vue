@@ -38,7 +38,7 @@ const datetime = defineModel('datetime', {
         </div>
       </div>
       <!--          二级评论-->
-      <div v-if="$slots.sub" class="cz-p-4 cz-rounded dark:cz-bg-slate-800 cz-bg-gray-100">
+      <div v-if="$slots.sub" class="cz-p-4 cz-rounded dark:cz-bg-zinc-800 cz-bg-[#f8f9fa]">
         <slot name="sub" />
       </div>
     </div>

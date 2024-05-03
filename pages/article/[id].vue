@@ -90,7 +90,7 @@ getArticle();
         </div>
       </div>
     </cz-banner>
-    <div class="cz-max-w-7xl cz-p-2 cz-flex cz-mx-auto cz-my-0">
+    <div class="cz-max-w-7xl  cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <aside
         class="article-panel dark:cz-text-white cz-h-[500px] cz-fixed cz-top-[460px] cz-ml-[-7rem] cz-z-[2] cz-w-[100px]"
       >
@@ -114,7 +114,7 @@ getArticle();
           <CzIcon name="eye" />
         </div>
       </aside>
-      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-gray-50 dark:cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
+      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
         <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
@@ -167,7 +167,7 @@ getArticle();
       >
         <q-toggle v-model="isCategory" label="目录" />
         <div
-          class="cz-bg-gray-50 dark:cz-bg-slate-800 dark:cz-text-gray-50 cz-min-h-72"
+          class="cz-bg-gray-50 cz-bg-[--card-bg] dark:cz-text-gray-50 cz-min-h-72"
           :style="{
             display: isCategory? 'block': 'none'
           }"
