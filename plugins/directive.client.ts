@@ -1,5 +1,6 @@
+import VueDOMPurifyHTML from 'vue-dompurify-html'
 interface IDirective {
-	value: string | string[]
+  value: string | string[]
 }
 
 export const imgLazy = {
@@ -33,4 +34,5 @@ export const imgLazy = {
 export default defineNuxtPlugin((nuxtApp) => {
   // 通过循环注册所有指令
   nuxtApp.vueApp.directive('img-lazy', imgLazy)
+  nuxtApp.vueApp.use(VueDOMPurifyHTML)
 })

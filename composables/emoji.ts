@@ -27,7 +27,7 @@ export const emojiList = [
   { title: '[抱抱]', name: 'baobao.gif', url: 'https://s3.bmp.ovh/imgs/2024/05/01/ec4042167fed0e4b.gif' },
   { title: '[怒]', name: 'nu.gif' },
   { title: '[疑问]', name: 'yiwen.gif' },
-  { title: '[馋嘴]', name: 'chanzui.gif', url: 'https://s3.bmp.ovh/imgs/2024/05/01/63448a5067f0e27a.gif'},
+  { title: '[馋嘴]', name: 'chanzui.gif', url: 'https://s3.bmp.ovh/imgs/2024/05/01/63448a5067f0e27a.gif' },
   { title: '[拜拜]', name: 'baibai.gif' },
   { title: '[思考]', name: 'sikao.gif' },
   { title: '[汗]', name: 'han.gif' },
@@ -96,11 +96,10 @@ export const initEmoji = () => {
  */
 export const useEmojiTransform = (text: string) => {
   const regex = /\[([^\]]+)\]/g
-  return text.replace(regex, (match, emojiTitle) => {
-    console.log({ emojiTitle })
+  return text.replace(regex, (match, _emojiTitle) => {
     const emoji = emojiList.find(e => e.title === match)
     if (emoji) {
-      const url = new URL(`/assets/${emoji.name}`, import.meta.url).href
+      const url = emoji.url ? emoji.url : `https://oss.cz-leisure.com/face/${emoji.name}`
       return `<span 
             class="emoji-img" 
             style="background-image: url(${url});width: 14px;

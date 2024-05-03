@@ -3,6 +3,7 @@ import { useBeforeDate } from 'co-utils-vue'
 import type { ICommentList } from '~/api/comment/type'
 import { getCommentList } from '~/api/comment'
 import CzCommentBox from '~/components/CzCommentBox.vue'
+import { useEmojiTransform } from '~/composables/emoji'
 
 const articleId = defineModel('articleId', {
   type: String,
@@ -51,9 +52,7 @@ handleGetCommentList()
       </template>
       <template #content>
         <div class="cz-py-2">
-          <p>
-            {{ comment.content }}
-          </p>
+          <div v-dompurify-html="useEmojiTransform(comment.content)" />
         </div>
       </template>
       <template #action>
@@ -101,9 +100,7 @@ handleGetCommentList()
             </template>
             <template #content>
               <div class="cz-py-2">
-                <p>
-                  {{ subComment.content }}
-                </p>
+                <div v-dompurify-html="useEmojiTransform(subComment.content)" />
               </div>
               <div
                 v-if="subComment.reply_id && subComment.reply_info"
