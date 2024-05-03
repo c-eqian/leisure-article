@@ -174,7 +174,7 @@ if (process.browser) {
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup color="secondary" flat label="取消" />
-          <q-btn v-if="systemStore.website.is_registry!==1 && isRegistry" flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
+          <q-btn  flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
         </q-card-actions>
       </q-card>
     </q-dialog>

@@ -3,10 +3,14 @@ const datetime = defineModel('datetime', {
   type: String,
   default: ''
 })
+const className = defineModel('className', {
+  type: String,
+  default: ''
+})
 </script>
 
 <template>
-  <div class="cz-flex cz-h-full cz-w-full ">
+  <div class="cz-flex cz-h-full cz-w-full cz-py-2">
     <div>
       <slot name="avatar" />
     </div>
@@ -22,7 +26,7 @@ const datetime = defineModel('datetime', {
           </div>
         </div>
       </div>
-      <div class="cz-px-2 cz-py-4">
+      <div class="cz-px-2 cz-py-4" :class="className">
         <div class="cz-w-full">
           <slot v-if="$slots.content" name="content" />
         </div>

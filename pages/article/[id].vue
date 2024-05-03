@@ -2,6 +2,7 @@
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from 'co-utils-vue';
+import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
 import { getArticleItemDetailById } from '~/api/article';
 import { useCalculateReadability, useCountTransform, useIsEmptyObject } from '~/composables';
@@ -9,6 +10,7 @@ import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
 import CzArticleComment from '~/components/CzArticleComment.vue';
+import { postArticleComment } from '~/api/comment';
 definePageMeta({
   layout: 'detail'
 });
@@ -16,9 +18,11 @@ const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);
 const isCategory = ref(true);
 const { id } = useRoute().params;
+const $q = useQuasar();
 const article = ref<IArticleItem>({} as IArticleItem);
 const scrollElement = process.browser ? document.documentElement : 'body';
 const commentFieldRef = ref<HTMLDivElement | null>(null);
+const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
  * 作者近期文章
  */
@@ -55,6 +59,23 @@ const handleToComment = () => {
     behavior: 'smooth',
     block: 'center',
     inline: 'center'
+  });
+};
+const handleSubMit = async (v: string) => {
+  if (!v) {
+    return;
+  }
+  await postArticleComment({
+    article_id: article.value.id,
+    content: v
+  });
+  czArticleCommentRef.value?.handleGetCommentList();
+  article.value.comment_count += 1;
+  $q.notify({
+    type: 'positive',
+    position: 'top',
+    timeout: 3000,
+    message: '评论成功'
   });
 };
 getArticle();
@@ -154,12 +175,12 @@ getArticle();
           </div>
         </div>
         <div class="cz-px-2">
-          <CzComment>
+          <CzComment @on-sub-mit="handleSubMit">
             <div ref="commentFieldRef">
               评论（{{ article.comment_count || 0 }}）
             </div>
           </CzComment>
-          <CzArticleComment :article-id="article.id" />
+          <CzArticleComment ref="czArticleCommentRef" :article-id="article.id" />
         </div>
       </article>
       <div
