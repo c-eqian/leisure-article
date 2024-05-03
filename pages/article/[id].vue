@@ -92,7 +92,7 @@ getArticle();
     </cz-banner>
     <div class="cz-max-w-7xl  cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <aside
-        class="article-panel dark:cz-text-white cz-h-[500px] cz-fixed cz-top-[460px] cz-ml-[-7rem] cz-z-[2] cz-w-[100px]"
+        class="article-panel dark:cz-text-white cz-h-[500px] cz-fixed cz-top-[460px] -cz-ml-24 cz-z-[2] cz-w-[100px]"
       >
         <div
           :badge="useCountTransform(article?.comment_count || 0)"
@@ -167,7 +167,7 @@ getArticle();
       >
         <q-toggle v-model="isCategory" label="目录" />
         <div
-          class="cz-bg-gray-50 cz-bg-[--card-bg] dark:cz-text-gray-50 cz-min-h-72"
+          class="cz-bg-gray-50 cz-bg-[--card-bg] cz-overflow-auto dark:cz-text-gray-50 cz-min-h-72 cz-h-[580px]"
           :style="{
             display: isCategory? 'block': 'none'
           }"
