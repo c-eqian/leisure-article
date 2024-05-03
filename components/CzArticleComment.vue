@@ -10,6 +10,10 @@ const articleId = defineModel('articleId', {
   type: [String, Number],
   default: ''
 })
+const authorId = defineModel('authorId', {
+  type: [String, Number],
+  default: ''
+})
 const emits = defineEmits<{
   (event: 'update-comment-count', v: number):void
 }>()
@@ -111,6 +115,9 @@ const handleSubMit = async (v:string, item: any, type: 1 | 2) => {
   handleResetBox()
   handleGetCommentList()
 }
+const checkIfItSTheAuthor = (userId: any) => {
+  return userId && +authorId.value === +userId
+}
 defineExpose({
   handleGetCommentList
 })
@@ -137,7 +144,14 @@ defineExpose({
         </div>
       </template>
       <template #left>
-        <div>{{ comment.user_info.username }}</div>
+        <div>
+          <div class="cz-relative cz-w-fit">
+            <span class="cz-pr-1">{{ comment.user_info.username }}</span>
+            <div v-if="checkIfItSTheAuthor(comment.user_info?.id)" class="cz-absolute -cz-right-5 cz-top-0" title="作者">
+              <CzIcon name="patch-check-fill" class="cz-text-lime-500" />
+            </div>
+          </div>
+        </div>
       </template>
       <template #content>
         <div class="cz-py-2">
@@ -191,9 +205,14 @@ defineExpose({
             </template>
             <template #left>
               <div class="cz-flex">
-                <div>
-                  {{ subComment.user_info.username }}
-                  <span v-if="subComment.reply_id && subComment.reply_info">
+                <div class="cz-flex cz-space-x-5">
+                  <div class="cz-relative cz-w-fit">
+                    <span class="cz-pr-1">{{ subComment.user_info.username }}</span>
+                    <div v-if="checkIfItSTheAuthor(subComment.user_info?.id)" class="cz-absolute -cz-right-4 cz-top-0" title="作者">
+                      <CzIcon name="patch-check-fill" class="cz-text-lime-500" />
+                    </div>
+                  </div>
+                  <span v-if="subComment.reply_id && subComment.reply_info" class="cz-px-1">
                     <strong>回复</strong>
                     {{ subComment.reply_info.user_info.username }}
                   </span>
