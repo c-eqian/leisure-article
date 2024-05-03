@@ -28,3 +28,4 @@ vite.config.ts
 *.svg
 *vue.d.ts
 nuxt.config.ts
+ecosystem.config.js

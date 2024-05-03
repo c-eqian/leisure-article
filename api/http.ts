@@ -38,7 +38,7 @@ export function tansParams (params: { [x: string]: any; }) {
 class Http {
   BASEURL:string
   public constructor () {
-    this.BASEURL = 'http://43.138.222.187:8000/'
+    this.BASEURL = process.env.NODE_ENV === 'production' ? '/api/' : 'http://43.138.222.187:8000/'
   }
 
   getUrl (config:IRequestParamsConfig) {
