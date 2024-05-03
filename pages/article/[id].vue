@@ -3,12 +3,12 @@ import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from 'co-utils-vue';
 import type { IArticleItem } from '~/api/article/type';
-import { getArticleItemDetailById, getArticleRecentByUid } from '~/api/article';
+import { getArticleItemDetailById } from '~/api/article';
 import { useCalculateReadability, useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
-import CzArticleCommnent from "~/components/CzArticleCommnent.vue";
+import CzArticleComment from '~/components/CzArticleComment.vue';
 definePageMeta({
   layout: 'detail'
 });
@@ -22,7 +22,7 @@ const commentFieldRef = ref<HTMLDivElement | null>(null);
 /**
  * 作者近期文章
  */
-const authorSRecentArticles = ref<IArticleItem[]>([]);
+// const authorSRecentArticles = ref<IArticleItem[]>([]);
 const countInfo = ref({
   wordCount: '',
   readingTime: ''
@@ -33,9 +33,9 @@ const getArticle = () => {
     article.value = res;
     countInfo.value = useCalculateReadability(res.content || '');
   });
-  getArticleRecentByUid(id as string).then((res) => {
-    authorSRecentArticles.value = res;
-  });
+  // getArticleRecentByUid(id as string).then((res) => {
+  //   authorSRecentArticles.value = res;
+  // });
 };
 /**
  * 处理上一章-下一章的布局方式
@@ -159,7 +159,7 @@ getArticle();
               评论（{{ article.comment_count || 0 }}）
             </div>
           </CzComment>
-          <CzArticleCommnent :article-id="article.id"></CzArticleCommnent>
+          <CzArticleComment :article-id="article.id" />
         </div>
       </article>
       <div

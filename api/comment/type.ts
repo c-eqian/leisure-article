@@ -69,6 +69,8 @@ export namespace ICommentList {
         is_publisher: number;
         like_count: number;
         modifier: null;
+        // 自定义键，判断是否回复
+        is_reply?:boolean;
         status: number;
         sub_comment: SubComment;
         update_date: string;

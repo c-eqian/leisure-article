@@ -22,6 +22,7 @@ const emoji = ref<IEmoji[]>([])
 const emojiRef = ref<HTMLDivElement | null>(null)
 const isShowEmojiSelect = ref(false)
 const input = ref('')
+const isShowAction = ref(false)
 // const handleShowEmoji = (name: string) => {
 //   console.log(import.meta.url)
 //   console.log(new URL(`~/assets/${name}`, import.meta.url))
@@ -60,12 +61,14 @@ onBeforeUnmount(() => {
           <div class="cz-ml-3 cz-w-full">
             <div class="comment-input">
               <textarea
-                v-model="input"
+                v-model.trim="input"
                 :placeholder="placeholder"
                 class="comment-textarea"
+                @blur="isShowAction=!!input.trim()"
+                @focus="isShowAction=true"
               />
             </div>
-            <div class="emoji-container cz-flex cz-justify-between">
+            <div v-show="isShowAction" class="emoji-container cz-flex cz-justify-between">
               <div
                 class="cursor-pointer"
                 @click="isShowEmojiSelect=!isShowEmojiSelect"
@@ -87,6 +90,7 @@ onBeforeUnmount(() => {
                   class="upload-btn comment-btn px-5px"
                   icon="navigation"
                   color="primary"
+                  :disable="!input"
                   style="margin-left: auto;"
                   @click="()=> {emits('onSubMit', input); input=''}"
                 >

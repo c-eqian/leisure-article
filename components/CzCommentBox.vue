@@ -25,15 +25,15 @@ const datetime = defineModel('datetime', {
       <div class="cz-px-2 cz-py-4">
         <div class="cz-w-full">
           <slot v-if="$slots.content" name="content" />
-          <div v-else class="cz-py-2">
-            正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-          </div>
         </div>
         <div class="cz-pt-2 cz-w-full">
           <slot v-if="$slots.action" name="action" />
           <div v-else class="cz-flex cz-space-x-10 cz-text-sm">
             <div>点赞</div>
             <div>回复</div>
+          </div>
+          <div v-if="$slots.reply">
+            <slot name="reply" />
           </div>
         </div>
       </div>

@@ -9,6 +9,14 @@ const articleId = defineModel('articleId', {
   type: String,
   default: ''
 })
+const currentReply = ref<{
+  index: number;
+  parentIndex: number;
+}>({
+  index: -1,
+  // -1 表示一级评论
+  parentIndex: -1
+})
 const commentList = ref<ICommentList.IResponse>({} as ICommentList.IResponse)
 const handleGetCommentList = () => {
   if (!articleId.value) { return }
@@ -25,13 +33,37 @@ watch(() => articleId.value, (id) => {
     handleGetCommentList()
   }
 })
+/**
+ * 处理是否显示评论框
+ * @param index 当前回复索引
+ * @param parentIndex 父节点索引 -1 表示一级评论
+ */
+const handleReplyBox = (index: number, parentIndex: number = -1) => {
+  if (currentReply.value.parentIndex === -1 && currentReply.value.index > -1) {
+    commentList.value.list[currentReply.value.index].is_reply = false
+  } else if (currentReply.value.parentIndex > -1 && currentReply.value.index > -1) {
+    commentList.value.list[currentReply.value.parentIndex].sub_comment.list[currentReply.value.index].is_reply = false
+  }
+  if (index === currentReply.value.index && currentReply.value.parentIndex === parentIndex) {
+    currentReply.value.parentIndex = -1
+    currentReply.value.index = -1
+    return
+  }
+  currentReply.value.parentIndex = parentIndex
+  currentReply.value.index = index
+  if (parentIndex === -1 && index > -1) {
+    commentList.value.list[index].is_reply = true
+  } else if (parentIndex > -1 && index > -1) {
+    commentList.value.list[parentIndex].sub_comment.list[index].is_reply = true
+  }
+}
 handleGetCommentList()
 </script>
 
 <template>
   <div>
     <CzCommentBox
-      v-for="comment in commentList.list"
+      v-for="(comment, index) in commentList.list"
       :key="comment.comment_id"
       :datetime="useBeforeDate(comment.create_date)"
     >
@@ -57,20 +89,23 @@ handleGetCommentList()
       </template>
       <template #action>
         <div class="cz-flex cz-space-x-10 dark:cz-text-gray-400 cz-text-gray-600 cz-text-sm">
-          <div class="cz-flex cz-items-center cz-space-x-1">
+          <div class="cz-flex cz-items-center cz-cursor-pointer cz-space-x-1">
             <CzIcon name="hand-thumbs-up" />
             <span>点赞</span>
           </div>
-          <div class="cz-flex cz-items-center cz-space-x-1">
+          <div class="cz-flex cz-cursor-pointer cz-items-center cz-space-x-1" @click="handleReplyBox(index, -1 )">
             <CzIcon name="chat-dots" />
-            <span>回复</span>
+            <span>{{ comment.is_reply ? '取消回复' : '回复' }}</span>
           </div>
         </div>
+      </template>
+      <template v-if="comment.is_reply" #reply>
+        <CzComment :placeholder="`回复 ${comment.user_info.username}`" />
       </template>
       <template v-if="comment.sub_comment.total > 0" #sub>
         <div>
           <CzCommentBox
-            v-for="subComment in comment.sub_comment.list"
+            v-for="(subComment, subIndex) in comment.sub_comment.list"
             :key="subComment.comment_id"
 
             :datetime="useBeforeDate(subComment.create_date)"
@@ -113,15 +148,18 @@ handleGetCommentList()
             </template>
             <template #action>
               <div class="cz-flex cz-space-x-10 dark:cz-text-gray-400 cz-text-gray-600 cz-text-sm">
-                <div class="cz-flex cz-items-center cz-space-x-1">
+                <div class="cz-flex cz-items-center cz-cursor-pointer cz-space-x-1">
                   <CzIcon name="hand-thumbs-up" />
                   <span>点赞</span>
                 </div>
-                <div class="cz-flex cz-items-center cz-space-x-1">
+                <div class="cz-flex cz-items-center cz-cursor-pointer cz-space-x-1" @click="handleReplyBox(subIndex, index )">
                   <CzIcon name="chat-dots" />
-                  <span>回复</span>
+                  <span>{{ subComment.is_reply ? '取消回复' : '回复' }}</span>
                 </div>
               </div>
+            </template>
+            <template v-if="subComment.is_reply" #reply>
+              <CzComment :placeholder="`回复 ${subComment.user_info.username}`" />
             </template>
           </CzCommentBox>
         </div>
