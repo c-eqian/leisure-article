@@ -141,7 +141,9 @@ useHead(useHeadOption);
     </cz-banner>
     <div class="cz-max-w-7xl dark:cz-text-white cz-p-2 cz-w-full cz-relative cz-flex cz-mx-auto cz-my-0 cz-flex-1">
       <div class="cz-h-full max-md:cz-w-full cz-w-2/3">
+        <CzSkeleton v-if="loadingStatus==='loading' && !articleList.list" class="cz-h-screen" />
         <div
+          v-else
           class="cz-left-list cz-bg-gray-50 dark:cz-bg-slate-800
       cz-min-h-[500px] cz-items-start cz-py-0
       md:cz-px-5"

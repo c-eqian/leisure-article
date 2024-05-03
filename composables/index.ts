@@ -15,11 +15,12 @@ export const useCalculateReadability = (content: string) => {
   // 统计字数
   const words = content.split(/\s+/).filter(word => word.length > 0)
   const wordCount = words.length
+  const regexp = /(?:\.0*|(\.\d+?)0+)$/
   // 使用 k 单位转换字数
   let formattedWordCount = ''
   if (wordCount >= 1000) {
     const kCount = Math.ceil((wordCount / 1000)).toFixed(3)
-    formattedWordCount = `${kCount}k`
+    formattedWordCount = `${kCount.replace(regexp, '$1')}k`
   } else {
     formattedWordCount = wordCount.toString()
   }
