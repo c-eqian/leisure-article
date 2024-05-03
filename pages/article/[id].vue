@@ -180,7 +180,7 @@ getArticle();
               评论（{{ article.comment_count || 0 }}）
             </div>
           </CzComment>
-          <CzArticleComment ref="czArticleCommentRef" :article-id="article.id" />
+          <CzArticleComment ref="czArticleCommentRef" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
         </div>
       </article>
       <div

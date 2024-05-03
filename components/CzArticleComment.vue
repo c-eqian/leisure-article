@@ -10,6 +10,9 @@ const articleId = defineModel('articleId', {
   type: [String, Number],
   default: ''
 })
+const emits = defineEmits<{
+  (event: 'update-comment-count', v: number):void
+}>()
 const currentReply = ref<{
   index: number;
   parentIndex: number;
@@ -81,6 +84,9 @@ const handleDeleteComment = async (p: {
       timeout: 3000,
       message: '删除评论成功'
     })
+    if (p.comment_id) {
+      emits('update-comment-count', -1)
+    }
   })
 }
 /**
