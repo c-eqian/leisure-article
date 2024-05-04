@@ -5,7 +5,7 @@ import { useFormatDate } from 'co-utils-vue';
 import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
 import { getArticleItemDetailById } from '~/api/article';
-import { useCalculateReadability, useCountTransform, useIsEmptyObject } from '~/composables';
+import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
@@ -26,16 +26,10 @@ const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
  * 作者近期文章
  */
-// const authorSRecentArticles = ref<IArticleItem[]>([]);
-const countInfo = ref({
-  wordCount: '',
-  readingTime: ''
-});
 const getArticle = () => {
   if (!id) { return; }
   getArticleItemDetailById(id as string).then((res) => {
     article.value = res;
-    countInfo.value = useCalculateReadability(res.content || '');
   });
   // getArticleRecentByUid(id as string).then((res) => {
   //   authorSRecentArticles.value = res;
@@ -119,11 +113,11 @@ getArticle();
           <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
             <div class="cz-pr-[10px] cz-pl-[10px]">
               <CzIcon name="box" />
-              字数：{{ countInfo.wordCount }}
+              字数：{{ article.word_count || '-' }}
             </div>
             <div class="cz-pr-[10px] cz-pl-[10px]">
               <CzIcon name="hourglass-bottom" />
-              预计阅读时长：{{ countInfo.readingTime }}
+              预计阅读时长：{{ (article.expect_reading_time || '-') + '分钟' }}
             </div>
           </div>
           <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">

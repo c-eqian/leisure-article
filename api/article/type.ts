@@ -120,6 +120,10 @@ export interface IArticleItem {
      */
     view_number?: number;
     /**
+     * 预计阅读时长
+     */
+    expect_reading_time?: number;
+    /**
      * 字数，字数
      */
     word_count?: number;
