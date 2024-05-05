@@ -103,6 +103,8 @@ export default defineNuxtConfig({
     ]
   },
   css: [
-    'element-plus/dist/index.css'
+      '@/assets/styles/global.scss',
+      '@/assets/styles/vars.scss',
+      'bootstrap-icons/font/bootstrap-icons.css'
   ]
 })
