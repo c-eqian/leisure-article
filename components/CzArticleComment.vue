@@ -196,10 +196,8 @@ defineExpose({
                 <img
                   v-img-lazy="[subComment.user_info.avatar, 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg']"
                   alt=""
-                  class="cz-rounded-full cz-object-cover"
-                  width="36"
+                  class="cz-rounded-full cz-w-9  cz-h-9 cz-object-cover"
                   loading="lazy"
-                  height="36"
                 >
               </div>
             </template>
