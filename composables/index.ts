@@ -7,6 +7,7 @@ export const useRandomColor = (colors: string[] = []) => {
   const randomIndex = Math.floor(Math.random() * _colors.length)
   return _colors[randomIndex]
 }
+const regexp = /(?:\.0*|(\.\d+?)0+)$/
 /**
  * 统计字数和预计阅读时间
  * @param content
@@ -15,7 +16,6 @@ export const useCalculateReadability = (content: string) => {
   // 统计字数
   const words = content.split(/\s+/).filter(word => word.length > 0)
   const wordCount = words.length
-  const regexp = /(?:\.0*|(\.\d+?)0+)$/
   // 使用 k 单位转换字数
   let formattedWordCount = ''
   if (wordCount >= 1000) {
@@ -49,11 +49,11 @@ export const useCountTransform = (count: number) => {
   const _count = +count
   if (_count >= 1000 && _count < 10000) {
     const kCount = Math.ceil((_count / 1000)).toFixed(2)
-    return `${kCount}k`
+    return `${kCount.replace(regexp, '$1')} k`
   }
   if (_count >= 10000) {
     const tCount = Math.ceil((_count / 10000)).toFixed(3)
-    return `${tCount}w`
+    return `${tCount.replace(regexp, '$1')} w`
   }
   return _count
 }

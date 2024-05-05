@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MdPreview, MdCatalog } from 'md-editor-v3';
+import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from 'co-utils-vue';
 import { useQuasar } from 'quasar';
@@ -11,6 +11,7 @@ import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
 import CzArticleComment from '~/components/CzArticleComment.vue';
 import { postArticleComment } from '~/api/comment';
+import { useTargetBlankExtension } from '~/composables/md-it';
 definePageMeta({
   layout: 'detail'
 });
@@ -72,6 +73,11 @@ const handleSubMit = async (v: string) => {
     message: '评论成功'
   });
 };
+config({
+  markdownItConfig (md) {
+    return useTargetBlankExtension(md);
+  }
+});
 /**
  * SEO
  */
@@ -113,7 +119,7 @@ getArticle();
           <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
             <div class="cz-pr-[10px] cz-pl-[10px]">
               <CzIcon name="box" />
-              字数：{{ article.word_count || '-' }}
+              字数：{{ useCountTransform(article.word_count || 0) || '-' }}
             </div>
             <div class="cz-pr-[10px] cz-pl-[10px]">
               <CzIcon name="hourglass-bottom" />
