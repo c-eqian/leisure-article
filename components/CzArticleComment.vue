@@ -132,15 +132,8 @@ defineExpose({
       :datetime="useBeforeDate(comment.create_date)"
     >
       <template #avatar>
-        <div>
-          <img
-            v-img-lazy="[comment.user_info.avatar, 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg']"
-            alt=""
-            class="cz-rounded-full cz-object-cover"
-            width="36"
-            loading="lazy"
-            height="36"
-          >
+        <div class="cz-h-9 cz-w-9">
+          <CzImg round :img-src="comment.user_info.avatar" />
         </div>
       </template>
       <template #left>
@@ -154,9 +147,7 @@ defineExpose({
         </div>
       </template>
       <template #content>
-        <div class="cz-py-2">
-          <div v-dompurify-html="useEmojiTransform(comment.content)" />
-        </div>
+        <div v-dompurify-html="useEmojiTransform(comment.content)" />
       </template>
       <template #action>
         <div class="cz-flex cz-space-x-10 cz-py-2 dark:cz-text-gray-400 cz-text-gray-600 cz-text-xs">
@@ -192,13 +183,8 @@ defineExpose({
             :datetime="useBeforeDate(subComment.create_date)"
           >
             <template #avatar>
-              <div>
-                <img
-                  v-img-lazy="[subComment.user_info.avatar, 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg']"
-                  alt=""
-                  class="cz-rounded-full cz-w-9  cz-h-9 cz-object-cover"
-                  loading="lazy"
-                >
+              <div class="cz-h-9 cz-w-9">
+                <CzImg round :img-src="subComment.user_info.avatar" />
               </div>
             </template>
             <template #left>
@@ -218,9 +204,7 @@ defineExpose({
               </div>
             </template>
             <template #content>
-              <div class="cz-py-2">
-                <div v-dompurify-html="useEmojiTransform(subComment.content)" />
-              </div>
+              <div v-dompurify-html="useEmojiTransform(subComment.content)" />
               <div
                 v-if="subComment.reply_id && subComment.reply_info"
                 class="cz-border-[1px] cz-text-sm cz-text-gray-600"

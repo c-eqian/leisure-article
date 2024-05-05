@@ -2,6 +2,7 @@
 import { useQuasar } from 'quasar'
 import CzIcon from '~/components/CzIcon.vue'
 import { useGlobalStore } from '~/store'
+import CzAuthDialog from '~/components/CzAuthDialog.vue'
 const drawer = ref(false)
 const dialogVisible = ref(false)
 const systemStore = useGlobalStore()
@@ -30,7 +31,17 @@ const menuList = ref([
 // const router = useRouter()
 const handleToRouter = () => {
   // router.replace('/login')
-  dialogVisible.value = true
+  // dialogVisible.value = true
+  $q.dialog({
+    component: CzAuthDialog
+
+  }).onOk(() => {
+    console.log('OK')
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
 }
 const handleLogoutItemClick = () => {
   $q.dialog({
@@ -74,36 +85,38 @@ const handleLogoutItemClick = () => {
                 {{ item.name }}
               </NuxtLink>
             </li>
-            <li>
-              <div v-if="userInfoComputed.isLogin" class="cz-px-2 cz-cursor-pointer nav-item">
-                <q-btn-dropdown unelevated>
-                  <q-list>
-                    <q-item v-close-popup clickable>
-                      <q-item-section>
-                        <q-item-label>个人中心</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item v-close-popup clickable @click="handleLogoutItemClick">
-                      <q-item-section>
-                        <q-item-label>退出登录</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                  <template #label>
-                    <q-chip>
-                      <q-avatar>
-                        <img v-img-lazy="[userInfoComputed.avatar, 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg']" alt="">
-                      </q-avatar>
-                      <span> {{ userInfoComputed.username }}</span>
-                    </q-chip>
-                  </template>
-                </q-btn-dropdown>
-              </div>
-              <div v-else class="cz-px-2 nav-item cz-cursor-pointer" @click="handleToRouter">
-                <CzIcon name="person-circle" />
-                登录
-              </div>
-            </li>
+            <client-only>
+              <li>
+                <div v-if="userInfoComputed.isLogin" class="cz-px-2 cz-cursor-pointer nav-item">
+                  <q-btn-dropdown unelevated>
+                    <q-list>
+                      <q-item v-close-popup clickable>
+                        <q-item-section>
+                          <q-item-label>个人中心</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-close-popup clickable @click="handleLogoutItemClick">
+                        <q-item-section>
+                          <q-item-label>退出登录</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                    <template #label>
+                      <q-chip>
+                        <q-avatar>
+                          <CzImg :img-src="userInfoComputed.avatar" />
+                        </q-avatar>
+                        <span> {{ userInfoComputed.username }}</span>
+                      </q-chip>
+                    </template>
+                  </q-btn-dropdown>
+                </div>
+                <div v-else class="cz-px-2 nav-item cz-cursor-pointer" @click="handleToRouter">
+                  <CzIcon name="person-circle" />
+                  登录
+                </div>
+              </li>
+            </client-only>
           </ul>
           <q-btn
             class="md:cz-hidden"
@@ -119,7 +132,6 @@ const handleLogoutItemClick = () => {
         <slot />
       </main>
     </q-layout>
-    <cz-auth-diaog v-model:value="dialogVisible" />
   </section>
 </template>
 

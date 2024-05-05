@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuasar } from 'quasar'
+import { useQuasar, useDialogPluginComponent } from 'quasar'
 import { useEmptyObject, usePick } from 'co-utils-vue'
 import { useGlobalStore } from '~/store'
 import { userRegistry } from '~/api/user'
@@ -25,42 +25,52 @@ const $q = useQuasar()
 const loginFormRef = ref()
 const registryFormRef = ref()
 const isRegistry = ref(false)
-const handleConfirm = async () => {
+defineEmits([...useDialogPluginComponent.emits])
+
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
+const handleConfirm = () => {
   if (!isRegistry.value) {
-    await loginFormRef.value?.validate()
-    systemStore.login(usePick(formModel.value, ['account', 'password'])).then(() => {
-      if (formModel.value.remember) {
-        systemStore.setLoginInfo({
-          account: formModel.value.account,
-          password: formModel.value.password
-        })
-      } else {
-        systemStore.setLoginInfo({
-          account: '',
-          password: ''
+    loginFormRef.value?.validate().then((success :boolean) => {
+      if (success) {
+        systemStore.login(usePick(formModel.value, ['account', 'password'])).then(() => {
+          if (formModel.value.remember) {
+            systemStore.setLoginInfo({
+              account: formModel.value.account,
+              password: formModel.value.password
+            })
+          } else {
+            systemStore.setLoginInfo({
+              account: '',
+              password: ''
+            })
+          }
+          formModel.value = useEmptyObject(formModel.value)
+          // dialogVisible.value = false
+          onDialogOK()
+        }).catch((e) => {
+          $q.notify({
+            type: 'warning',
+            position: 'top',
+            timeout: 3000,
+            message: e.msg || '请求错误'
+          })
         })
       }
-      formModel.value = useEmptyObject(formModel.value)
-      dialogVisible.value = false
-    }).catch((e) => {
-      $q.notify({
-        type: 'warning',
-        position: 'top',
-        timeout: 3000,
-        message: e.msg || '请求错误'
-      })
     })
   } else {
-    await registryFormRef.value?.validate()
-    await userRegistry(registryFormModel.value)
-    $q.notify({
-      type: 'positive',
-      position: 'top',
-      timeout: 3000,
-      message: '注册成功'
+    registryFormRef.value?.validate().then(async (success :boolean) => {
+      if (success) {
+        await userRegistry(registryFormModel.value)
+        $q.notify({
+          type: 'positive',
+          position: 'top',
+          timeout: 3000,
+          message: '注册成功'
+        })
+        registryFormModel.value = useEmptyObject(registryFormModel.value)
+        isRegistry.value = false
+      }
     })
-    registryFormModel.value = useEmptyObject(registryFormModel.value)
-    isRegistry.value = false
   }
 }
 if (process.browser) {
@@ -70,7 +80,7 @@ if (process.browser) {
 
 <template>
   <div>
-    <q-dialog v-model="dialogVisible" persistent>
+    <q-dialog ref="dialogRef" persistent @hide="onDialogHide">
       <q-card style="min-width: 350px">
         <q-card-section>
           <div class="text-h6">
@@ -173,8 +183,8 @@ if (process.browser) {
           </div>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
-          <q-btn v-close-popup color="secondary" flat label="取消" />
-          <q-btn  flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
+          <q-btn color="secondary" flat label="取消" @click="onDialogCancel" />
+          <q-btn v-if="!(isRegistry && systemStore.website.is_registry===1)" flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
         </q-card-actions>
       </q-card>
     </q-dialog>
