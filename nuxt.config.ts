@@ -13,6 +13,11 @@ export default defineNuxtConfig({
   devServer: {
     host: '0.0.0.0'
   },
+  runtimeConfig: {
+    public: {
+      BASE_URL: process.env.NODE_ENV === 'production' ? '/api/' : 'http://43.138.222.187:8000/'
+    }
+  },
   quasar: {
     // config: {
     //     brand: {

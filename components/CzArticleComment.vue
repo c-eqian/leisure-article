@@ -14,6 +14,10 @@ const authorId = defineModel('authorId', {
   type: [String, Number],
   default: ''
 })
+const isLogin = defineModel('isLogin', {
+  type: Boolean,
+  default: false
+})
 const emits = defineEmits<{
   (event: 'update-comment-count', v: number):void
 }>()
@@ -172,7 +176,7 @@ defineExpose({
         </div>
       </template>
       <template v-if="comment.is_reply" #reply>
-        <CzComment :placeholder="`回复 ${comment.user_info.username}`" @on-sub-mit="(v)=>handleSubMit(v, comment, 1)" />
+        <CzComment :is-login="isLogin" :placeholder="`回复 ${comment.user_info.username}`" @on-sub-mit="(v)=>handleSubMit(v, comment, 1)" />
       </template>
       <template v-if="comment.sub_comment.total > 0" #sub>
         <div>
@@ -237,7 +241,7 @@ defineExpose({
               </div>
             </template>
             <template v-if="subComment.is_reply" #reply>
-              <CzComment :placeholder="`回复 ${subComment.user_info.username}`" @on-sub-mit="(v)=> handleSubMit(v, subComment, 2)" />
+              <CzComment :is-login="isLogin" :placeholder="`回复 ${subComment.user_info.username}`" @on-sub-mit="(v)=> handleSubMit(v, subComment, 2)" />
             </template>
           </CzCommentBox>
         </div>

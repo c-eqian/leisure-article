@@ -12,6 +12,7 @@ import { useGlobalStore } from '~/store';
 import CzArticleComment from '~/components/CzArticleComment.vue';
 import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
+import CzAuthDialog from '~/components/CzAuthDialog.vue';
 definePageMeta({
   layout: 'detail'
 });
@@ -65,18 +66,27 @@ const handleSubMit = async (v: string) => {
   if (!v) {
     return;
   }
-  await postArticleComment({
-    article_id: article.value.id,
-    content: v
-  });
-  czArticleCommentRef.value?.handleGetCommentList();
-  article.value.comment_count += 1;
-  $q.notify({
-    type: 'positive',
-    position: 'top',
-    timeout: 3000,
-    message: '评论成功'
-  });
+  try {
+    await postArticleComment({
+      article_id: article.value.id,
+      content: v
+    });
+    czArticleCommentRef.value?.handleGetCommentList();
+    article.value.comment_count += 1;
+    $q.notify({
+      type: 'positive',
+      position: 'top',
+      timeout: 3000,
+      message: '评论成功'
+    });
+  } catch (e) {
+    $q.notify({
+      type: 'positive',
+      position: 'top',
+      timeout: 3000,
+      message: e.msg || '操作失败'
+    });
+  }
 };
 config({
   markdownItConfig (md) {
@@ -110,6 +120,7 @@ const handleAddress = (province:string, city:string) => {
   if (province) { return [province, city].join('·'); }
   return '';
 };
+const userInfoComputed = computed(() => systemStorage.userInfo);
 useHead(useHeadOption);
 getArticle();
 </script>
@@ -191,7 +202,7 @@ getArticle();
               <span>{{ useFormatDate(article.create_date|| '', 'YYYY-MM-dd HH:mm') }}</span>
             </div>
             <client-only>
-              <div class="cz-space-x-1.5">
+              <div v-if="article.province" class="cz-space-x-1.5">
                 <CzIcon name="geo-alt" />
                 <span>发布于： {{ handleAddress(article.province, article.city) }}</span>
               </div>
@@ -218,7 +229,6 @@ getArticle();
               <span>上一篇：</span>
               <NuxtLink
                 :to="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
-                target="_blank"
                 class="cz-text-blue-600"
               >
                 {{ article?.previous_article?.title }}
@@ -231,7 +241,6 @@ getArticle();
               <span>下一篇：</span>
               <NuxtLink
                 :to="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
-                target="_blank"
                 class="cz-text-blue-600"
               >
                 {{ article?.next_article?.title }}
@@ -239,13 +248,12 @@ getArticle();
             </div>
           </div>
           <div class="cz-px-2">
-            <CzComment @on-sub-mit="handleSubMit">
+            <CzComment :is-login="userInfoComputed.isLogin" @on-sub-mit="handleSubMit">
               <div ref="commentFieldRef">
                 评论（{{ article.comment_count || 0 }}）
               </div>
             </CzComment>
-
-            <CzArticleComment ref="czArticleCommentRef" :author-id="article.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
+            <CzArticleComment ref="czArticleCommentRef" :is-login="userInfoComputed.isLogin" :author-id="article.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
           </div>
         </client-only>
       </article>

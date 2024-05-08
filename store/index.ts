@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import piniaPersistConfig from '~/utils'
 import type { IWebsite } from '~/api/system/type'
-import { getSystemWebsite } from '~/api/system'
 import { userInfo, userLogin, userLogout } from '~/api/user'
 import type { User } from '~/api/user/type'
+import { useRemoveTokenCookie, useSetTokenCookie, useGetTokenCookie } from '~/composables/use-cookies'
 export interface IUserInfo extends Partial<User.IUserInfoResponse> {
   isLogin?: boolean;
 }
@@ -11,7 +11,7 @@ export const useGlobalStore = defineStore({
   id: 'GlobalStore',
   state: () => ({
     // 用户信息
-    userInfo: {} as IUserInfo,
+    userInfo: { isLogin: !!useGetTokenCookie() } as IUserInfo,
     theme: 'light',
     loginInfo: {
       account: '',
@@ -28,23 +28,22 @@ export const useGlobalStore = defineStore({
     },
     // 用户登录
     login (params: User.ILoginRequest) {
-      const cookies = useCookie('USER_TOKEN')
       return new Promise((resolve, reject) => {
         userLogin(params).then(async (res) => {
-          cookies.value = res.token
+          useSetTokenCookie(res.token)
           this.userInfo.isLogin = true
-          await this.getUserInfo(res.token)
+          await this.getUserInfo()
           resolve(res)
         }).catch((error) => {
+          console.log(error)
           reject(error)
         })
       })
     },
     logout () {
-      const cookies = useCookie('USER_TOKEN')
       return new Promise((resolve, reject) => {
         userLogout().then(() => {
-          cookies.value = ''
+          useRemoveTokenCookie()
           this.userInfo = {}
           this.$reset()
           resolve('退出成功')
@@ -53,9 +52,9 @@ export const useGlobalStore = defineStore({
         })
       })
     },
-    getUserInfo (token:string) {
+    getUserInfo () {
       return new Promise((resolve) => {
-        userInfo(token).then((res) => {
+        userInfo().then((res) => {
           Object.assign(this.userInfo, res)
           resolve(res)
         })
@@ -66,12 +65,17 @@ export const useGlobalStore = defineStore({
      */
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve, reject) => {
-        getSystemWebsite().then((res) => {
-          this.setWebsite(res)
-          resolve(res)
-        }).catch((error) => {
-          reject(error)
-        })
+        if (Array.from(Object.keys(this.website)).length === 0) {
+          useAsyncData('website', () => $fetch('/system/website')).then((res) => {
+            this.setWebsite(res.data.value)
+            resolve(res)
+          }).catch((error) => {
+            reject(error)
+            resolve(error)
+          })
+        } else {
+          resolve(this.website)
+        }
       })
     },
     setWebsite (v: IWebsite.Data) {

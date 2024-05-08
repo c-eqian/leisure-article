@@ -52,7 +52,6 @@ defineProps({
               <NuxtLink
                 :to="`${ROUTER_PREFIX}/article/${row.uid}`"
                 class="cz-p-1"
-                target="_blank"
               >
                 {{ row.title }}
               </NuxtLink>

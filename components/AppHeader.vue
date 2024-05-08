@@ -4,7 +4,6 @@ import CzIcon from '~/components/CzIcon.vue'
 import { useGlobalStore } from '~/store'
 import CzAuthDialog from '~/components/CzAuthDialog.vue'
 const drawer = ref(false)
-const dialogVisible = ref(false)
 const systemStore = useGlobalStore()
 const $q = useQuasar()
 const userInfoComputed = computed(() => systemStore.userInfo)
@@ -54,6 +53,10 @@ const handleLogoutItemClick = () => {
     await systemStore.logout()
   })
 }
+let websiteTitle
+ systemStore.getWebsite().then(res=>{
+   websiteTitle = res.website_title
+})
 </script>
 
 <template>
@@ -76,7 +79,7 @@ const handleLogoutItemClick = () => {
       <q-header reveal class="cz-fixed cz-bg-transparent cz-top-0 cz-text-white">
         <q-toolbar class="cz-text-inherit">
           <q-toolbar-title>
-            <span class="cz-select-none">{{ systemStore.website.website_title || 'Eqian' }}</span>
+            <span class="cz-select-none">{{ websiteTitle || 'Eqian' }}</span>
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">

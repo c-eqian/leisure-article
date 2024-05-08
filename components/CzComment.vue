@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 
+import { useQuasar } from 'quasar'
+import { onClickOutside } from '@vueuse/core'
 import { initEmoji } from '~/composables/emoji'
-
+import CzAuthDialog from '~/components/CzAuthDialog.vue'
 interface IEmoji {
   title: string;
   name: string;
   url?:string;
 }
-
+const $q = useQuasar()
 const emits = defineEmits<{(event: 'onSubMit', v: string): void;
 }>()
 const valueComputed = defineModel('value', {
@@ -18,30 +20,45 @@ const placeholder = defineModel('placeholder', {
   type: String,
   default: '留下点什么吧...'
 })
+const isLogin = defineModel('isLogin', {
+  type: Boolean,
+  default: false
+})
 const emoji = ref<IEmoji[]>([])
 const emojiRef = ref<HTMLDivElement | null>(null)
 const isShowEmojiSelect = ref(false)
 const input = ref('')
 const isShowAction = ref(false)
-// const handleShowEmoji = (name: string) => {
-//   console.log(import.meta.url)
-//   console.log(new URL(`~/assets/${name}`, import.meta.url))
-//   return new URL(`../assets/${name}`, import.meta.url).href
-// }
+const handleShowEmoji = (item: any) => {
+  if (item.url) { return item.url }
+  return `https://oss.cz-leisure.com/face/${emoji.name}`
+}
 const handleClickEmoji = (item: IEmoji) => {
-  valueComputed.value += item.url
-  input.value += item.url
+  valueComputed.value += item.title
+  input.value += item.title
 }
 onMounted(() => {
   emoji.value = initEmoji()
   // 点击表情容器外，隐藏
-  // onClickOutside(emojiRef.value, () => {
-  //   isShowEmojiSelect.value = false
-  // })
+  onClickOutside(emojiRef, () => {
+    isShowEmojiSelect.value = false
+  })
 })
 onBeforeUnmount(() => {
   valueComputed.value = ''
 })
+const handleLogin = () => {
+  $q.dialog({
+    component: CzAuthDialog
+
+  }).onOk(() => {
+    console.log('OK')
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
+}
 </script>
 
 <template>
@@ -68,7 +85,7 @@ onBeforeUnmount(() => {
                 @focus="isShowAction=true"
               />
             </div>
-            <div v-show="isShowAction" class="emoji-container cz-flex cz-justify-between">
+            <div v-if="isLogin" class="emoji-container cz-flex cz-justify-between">
               <div
                 class="cursor-pointer"
                 @click="isShowEmojiSelect=!isShowEmojiSelect"
@@ -79,7 +96,7 @@ onBeforeUnmount(() => {
                   src="@/assets/svg/emoji.svg"
                 >
               </div>
-              <div>
+              <div v-show="isShowAction">
                 <QBtn
                   v-if="input"
                   @click="()=> input=''"
@@ -98,6 +115,9 @@ onBeforeUnmount(() => {
                 </QBtn>
               </div>
             </div>
+            <div v-else class="cz-flex cz-justify-end">
+              <q-btn color="primary" icon="bi-arrow-in-right" label="登录" @click="handleLogin" />
+            </div>
             <div
               v-show="isShowEmojiSelect"
               ref="emojiRef"
@@ -110,9 +130,8 @@ onBeforeUnmount(() => {
                 @click="handleClickEmoji(item)"
               >
                 <img
-                  v-if="item.url"
                   alt=""
-                  :src="item.url"
+                  :src="handleShowEmoji(item)"
                   :title="item.title"
                   class="cz-w-6 cz-h-6 emoji"
                 >
