@@ -67,9 +67,9 @@ export const useGlobalStore = defineStore({
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve, reject) => {
         if (Array.from(Object.keys(this.website)).length === 0) {
-          getSystemWebsite('/system/website').then((res) => {
-            this.setWebsite(res)
-            resolve(res)
+          useFetch('/system/website').then((res) => {
+            this.setWebsite(res.data.value)
+            resolve(res.data.value)
           }).catch((error) => {
             reject(error)
             resolve(error)

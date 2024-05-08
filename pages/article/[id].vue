@@ -126,7 +126,7 @@ getArticle();
 
 <template>
   <div>
-    <cz-banner :banner-url="article.cover!">
+    <cz-banner :banner-url="article?.cover!">
       <client-only>
         <div>
           <cz-typing
