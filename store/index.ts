@@ -4,6 +4,7 @@ import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
 import type { User } from '~/api/user/type'
 import { useRemoveTokenCookie, useSetTokenCookie, useGetTokenCookie } from '~/composables/use-cookies'
+import { getSystemWebsite } from '~/api/system'
 export interface IUserInfo extends Partial<User.IUserInfoResponse> {
   isLogin?: boolean;
 }
@@ -66,7 +67,7 @@ export const useGlobalStore = defineStore({
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve, reject) => {
         if (Array.from(Object.keys(this.website)).length === 0) {
-          useAsyncData('website', () => $fetch('/system/website')).then((res) => {
+          getSystemWebsite('/system/website').then((res) => {
             this.setWebsite(res.data.value)
             resolve(res)
           }).catch((error) => {

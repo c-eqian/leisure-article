@@ -4,7 +4,6 @@ import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from 'co-utils-vue';
 import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
-// import { getArticleItemDetailById } from '~/api/article';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
@@ -12,7 +11,7 @@ import { useGlobalStore } from '~/store';
 import CzArticleComment from '~/components/CzArticleComment.vue';
 import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
-import CzAuthDialog from '~/components/CzAuthDialog.vue';
+import { getArticleItemDetailById } from '~/api/article';
 definePageMeta({
   layout: 'detail'
 });
@@ -30,14 +29,14 @@ const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
  */
 const getArticle = () => {
   if (!id) { return; }
-  // getArticleItemDetailById(id as string).then((res) => {
-  //   article.value = res;
-  // });
-  useFetch(`/article/detail/${id}`, {
-    method: 'GET'
-  }).then((res) => {
-    article.value = res.data.value;
+  getArticleItemDetailById(id as string).then((res) => {
+    article.value = res;
   });
+  // useFetch(`/article/detail/${id}`, {
+  //   method: 'GET'
+  // }).then((res) => {
+  //   article.value = res.data.value;
+  // });
   // getArticleRecentByUid(id as string).then((res) => {
   //   authorSRecentArticles.value = res;
   // });
