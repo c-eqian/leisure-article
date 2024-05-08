@@ -39,7 +39,7 @@ export function tansParams (params: { [x: string]: any; }) {
 class Http {
   BASEURL:string
   public constructor () {
-    this.BASEURL = process.env.NODE_ENV === 'production' ? '/api/' : 'http://43.138.222.187:8000/'
+    // this.BASEURL = process.env.NODE_ENV === 'production' ? '/api/' : 'http://43.138.222.187:8000/'
   }
 
   getUrl (config:IRequestParamsConfig) {
@@ -62,6 +62,8 @@ class Http {
   }
 
   request <T=any> (config: IRequestParamsConfig): Promise<T> {
+    const { $config } = useNuxtApp();
+    this.BASEURL = $config.public.BASE_URL;
     return new Promise(async (resolve, reject) => {
       await useFetch(this.BASEURL + config.url.replace(/^\//, ''), {
         method: config.method || 'GET',
