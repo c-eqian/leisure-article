@@ -4,7 +4,7 @@ import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from 'co-utils-vue';
 import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
-import { getArticleItemDetailById } from '~/api/article';
+// import { getArticleItemDetailById } from '~/api/article';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import CzComment from '~/components/CzComment.vue';
@@ -29,8 +29,13 @@ const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
  */
 const getArticle = () => {
   if (!id) { return; }
-  getArticleItemDetailById(id as string).then((res) => {
-    article.value = res;
+  // getArticleItemDetailById(id as string).then((res) => {
+  //   article.value = res;
+  // });
+  useFetch(`/article/detail/${id}`, {
+    method: 'GET'
+  }).then((res) => {
+    article.value = res.data.value;
   });
   // getArticleRecentByUid(id as string).then((res) => {
   //   authorSRecentArticles.value = res;
@@ -101,6 +106,10 @@ const useHeadOption = computed(() => {
     ]
   };
 });
+const handleAddress = (province:string, city:string) => {
+  if (province) { return [province, city].join('·'); }
+  return '';
+};
 useHead(useHeadOption);
 getArticle();
 </script>
@@ -108,32 +117,34 @@ getArticle();
 <template>
   <div>
     <cz-banner :banner-url="article.cover!">
-      <div>
-        <cz-typing
-          :text="article.title"
-          class="description cz-text-2xl"
-        />
-      </div>
-      <div class="cz-text-white">
-        <div class="md:cz-w-[672px]">
-          <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
-            <div class="cz-pr-[10px] cz-pl-[10px]">
-              <CzIcon name="box" />
-              字数：{{ useCountTransform(article.word_count || 0) || '-' }}
+      <client-only>
+        <div>
+          <cz-typing
+            :text="article.title"
+            class="description cz-text-2xl"
+          />
+        </div>
+        <div class="cz-text-white">
+          <div class="md:cz-w-[672px]">
+            <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
+              <div class="cz-pr-[10px] cz-pl-[10px]">
+                <CzIcon name="box" />
+                字数：{{ useCountTransform(article.word_count || 0) }}
+              </div>
+              <div class="cz-pr-[10px] cz-pl-[10px]">
+                <CzIcon name="hourglass-bottom" />
+                预计阅读时长：{{ (article.expect_reading_time) + '分钟' }}
+              </div>
             </div>
-            <div class="cz-pr-[10px] cz-pl-[10px]">
-              <CzIcon name="hourglass-bottom" />
-              预计阅读时长：{{ (article.expect_reading_time || '-') + '分钟' }}
-            </div>
-          </div>
-          <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">
-            <div class="cz-pr-[10px] cz-pl-[10px]">
-              <CzIcon name="calendar2-check" />
-              发布时间：{{ useFormatDate(article.create_date || '', 'yyyy-MM-dd HH:mm') }}
+            <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">
+              <div class="cz-pr-[10px] cz-pl-[10px]">
+                <CzIcon name="calendar2-check" />
+                发布时间：{{ useFormatDate(article.create_date, 'yyyy-MM-dd HH:mm') }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </client-only>
     </cz-banner>
     <div class="cz-max-w-7xl  cz-p-2 cz-flex cz-mx-auto cz-my-0">
       <aside
@@ -159,10 +170,10 @@ getArticle();
           <CzIcon name="eye" />
         </div>
       </aside>
-      <CzSkeleton v-if="useIsEmptyObject(article)" class="cz-h-screen" />
-      <article v-else class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
+      <!--      <CzSkeleton v-if="useIsEmptyObject(article)" class="cz-h-screen" />-->
+      <article class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
         <div class="cz-w-full cz-px-10 cz-text-gray-500">
-          <div class="cz-py-4 cz-flex cz-items-center cz-space-x-5 max-md: cz-hidden">
+          <div class="cz-py-4 md:cz-flex cz-items-center cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="person" />
               <span>{{ article.user_info?.username }}</span>
@@ -179,10 +190,12 @@ getArticle();
               <CzIcon name="calendar-date" />
               <span>{{ useFormatDate(article.create_date|| '', 'YYYY-MM-dd HH:mm') }}</span>
             </div>
-            <div v-if="article.province" class="cz-space-x-1.5">
-              <CzIcon name="geo-alt" />
-              <span>发布于： {{ [article.province, article.city || ''].join('·') }}</span>
-            </div>
+            <client-only>
+              <div class="cz-space-x-1.5">
+                <CzIcon name="geo-alt" />
+                <span>发布于： {{ handleAddress(article.province, article.city) }}</span>
+              </div>
+            </client-only>
           </div>
         </div>
         <hr class="max-md: cz-hidden">
@@ -192,46 +205,49 @@ getArticle();
           <time>{{ useFormatDate(article.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
         </div>
         <hr class="cz-divider cz-clear-right">
-        <div
-          :style="{
-            'justify-content':handleLayoutMethod(article)}"
-          class="cz-flex"
-        >
+        <client-only>
           <div
-            v-if="!useIsEmptyObject(article?.previous_article)"
-            class="cz-p-5"
+            :style="{
+              'justify-content':handleLayoutMethod(article)}"
+            class="cz-flex"
           >
-            <span>上一篇：</span>
-            <NuxtLink
-              :to="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
-              target="_blank"
-              class="cz-text-blue-600"
+            <div
+              v-if="!useIsEmptyObject(article?.previous_article)"
+              class="cz-p-5"
             >
-              {{ article?.previous_article?.title }}
-            </NuxtLink>
-          </div>
-          <div
-            v-if="!useIsEmptyObject(article?.next_article)"
-            class="cz-p-5"
-          >
-            <span>下一篇：</span>
-            <NuxtLink
-              :to="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
-              target="_blank"
-              class="cz-text-blue-600"
-            >
-              {{ article?.next_article?.title }}
-            </NuxtLink>
-          </div>
-        </div>
-        <div class="cz-px-2">
-          <CzComment @on-sub-mit="handleSubMit">
-            <div ref="commentFieldRef">
-              评论（{{ article.comment_count || 0 }}）
+              <span>上一篇：</span>
+              <NuxtLink
+                :to="`${ROUTER_PREFIX}/article/${article?.previous_article?.uid}`"
+                target="_blank"
+                class="cz-text-blue-600"
+              >
+                {{ article?.previous_article?.title }}
+              </NuxtLink>
             </div>
-          </CzComment>
-          <CzArticleComment ref="czArticleCommentRef" :author-id="article.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
-        </div>
+            <div
+              v-if="!useIsEmptyObject(article?.next_article)"
+              class="cz-p-5"
+            >
+              <span>下一篇：</span>
+              <NuxtLink
+                :to="`${ROUTER_PREFIX}/article/${article?.next_article?.uid}`"
+                target="_blank"
+                class="cz-text-blue-600"
+              >
+                {{ article?.next_article?.title }}
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="cz-px-2">
+            <CzComment @on-sub-mit="handleSubMit">
+              <div ref="commentFieldRef">
+                评论（{{ article.comment_count || 0 }}）
+              </div>
+            </CzComment>
+
+            <CzArticleComment ref="czArticleCommentRef" :author-id="article.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
+          </div>
+        </client-only>
       </article>
       <div
         class="cz-sticky cz-top-8  cz-h-1/2 max-md:cz-hidden cz-px-4 cz-w-1/5"

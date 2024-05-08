@@ -2,6 +2,7 @@
 defineOptions({
   name: 'CzBanner'
 })
+const bannerRef = ref<HTMLDivElement>()
 const props = defineProps({
   scrollY: {
     type: Number,
@@ -21,13 +22,18 @@ const props = defineProps({
   }
 })
 const bannerUrlComputed = computed(() => props.bannerUrl)
+
+// 解决水合问题
+watch(() => bannerUrlComputed.value, () => {
+  if (!process.server) {
+    bannerRef.value?.style.setProperty('--banner-cover', `url(${bannerUrlComputed.value})`)
+  }
+})
 </script>
 
 <template>
-  <div>
+  <div ref="bannerRef">
     <div
-      :style="{'--banner-cover': `url(${bannerUrlComputed ||
-        'https://s3.bmp.ovh/imgs/2022/11/27/44ecddb9454b34ae.jpg'})`}"
       class="repo md:cz-h-[450px] cz-h-52 cz-bg-fixed"
     >
       <div style="margin: 0 auto;max-width: 620px; z-index: 10">
