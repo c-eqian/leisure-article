@@ -125,7 +125,9 @@ const useHeadOption = computed(() => {
   };
 });
 useHead(useHeadOption);
-console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
+if (process.client) {
+  console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
+}
 </script>
 
 <template>
