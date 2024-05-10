@@ -89,7 +89,6 @@ const changeCategory = (category_id = '') => {
 const getVisitorInfo = () => {
   getSystemVisitor().then((res) => {
     visitorInfo.value = res;
-    console.log(visitorInfo.value);
   });
 };
 const websiteInfo = () => {
@@ -126,6 +125,7 @@ const useHeadOption = computed(() => {
   };
 });
 useHead(useHeadOption);
+console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
 </script>
 
 <template>
