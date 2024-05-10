@@ -6,7 +6,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@element-plus/nuxt',
     'nuxt-quasar-ui',
   ],
   devtools: { enabled: false },

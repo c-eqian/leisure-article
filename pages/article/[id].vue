@@ -149,7 +149,7 @@ getArticle();
             <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">
               <div class="cz-pr-[10px] cz-pl-[10px]">
                 <CzIcon name="calendar2-check" />
-                发布时间：{{ useFormatDate(article.create_date, 'yyyy-MM-dd HH:mm') }}
+                发布时间：{{ useFormatDate(article.create_date || '', 'yyyy-MM-dd HH:mm') }}
               </div>
             </div>
           </div>
@@ -183,7 +183,8 @@ getArticle();
       <!--      <CzSkeleton v-if="useIsEmptyObject(article)" class="cz-h-screen" />-->
       <article class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
         <div class="cz-w-full cz-px-10 cz-text-gray-500">
-          <div class="cz-py-4 md:cz-flex cz-items-center cz-space-x-5 max-md: cz-hidden">
+          <h1>{{ article.title }}</h1>
+          <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="person" />
               <span>{{ article.user_info?.username }}</span>
@@ -208,7 +209,7 @@ getArticle();
             </client-only>
           </div>
         </div>
-        <hr class="max-md: cz-hidden">
+        <hr class="max-md:cz-hidden">
         <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
@@ -261,7 +262,7 @@ getArticle();
       >
         <q-toggle v-model="isCategory" label="目录" />
         <div
-          class="cz-bg-gray-50 cz-bg-[--card-bg] cz-overflow-auto dark:cz-text-gray-50 cz-min-h-72 cz-h-[580px]"
+          class="cz-bg-[--card-bg] cz-overflow-auto dark:cz-text-gray-50 cz-min-h-72 cz-h-[580px]"
           :style="{
             display: isCategory? 'block': 'none'
           }"
