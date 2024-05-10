@@ -106,12 +106,12 @@ websiteInfo();
  */
 const useHeadOption = computed(() => {
   return {
-    title: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，让我们用情感的笔触，书写属于我们的故事',
+    title: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，用情感的笔触，书写属于我们的故事',
     meta: [
       {
         hid: 'description',
         name: 'description',
-        content: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，让我们用情感的笔触，书写属于我们的故事'
+        content: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，用情感的笔触，书写属于我们的故事'
       },
       {
         hid: 'keywords',

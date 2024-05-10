@@ -67,7 +67,7 @@ export default defineNuxtConfig({
     // SEO一些配置
     head: {
       charset: 'utf-8',
-      title: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，让我们用情感的笔触，书写属于我们的故事',
+      title: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，用情感的笔触，书写属于我们的故事',
       htmlAttrs: {
         lang: 'zh-CN'
       },
