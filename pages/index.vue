@@ -107,17 +107,20 @@ websiteInfo();
  */
 const useHeadOption = computed(() => {
   return {
-    title: 'Eqian主页',
+    title: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，让我们用情感的笔触，书写属于我们的故事',
     meta: [
       {
         hid: 'description',
         name: 'description',
-        content: 'Eqian主页'
+        content: 'Eqian主页，感受生活的酸甜苦辣，让每一个故事都成为你心灵的寄托，让我们用情感的笔触，书写属于我们的故事'
       },
       {
         hid: 'keywords',
         name: 'keywords',
-        content: 'Eqian主页'
+        content: '情感流淌的角落，文字是我们的灵魂之窗，每一篇文章都是一次心灵的交流。' +
+            '用心写就，用情阅读，每一个故事都是一个心灵的追寻，每一句话都是一次心灵的对话。或许你正在经历着人生的起起落落，' +
+            '或许你正在寻找一丝温暖和慰藉，' +
+            'Eqian会陪伴你，为你送上一份心灵的慰籍，为你的心灵搭起一座桥梁，让你找到心灵的归属'
       }
     ]
   };
