@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@element-plus/nuxt": "^1.0.7",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/tailwindcss": "^6.11.0",
     "@vueuse/core": "^10.9.0",
@@ -31,7 +30,6 @@
     "@quasar/extras": "^1.16.11",
     "bootstrap-icons": "^1.11.3",
     "co-utils-vue": "^2.2.1",
-    "element-plus": "^2.5.3",
     "js-cookie": "^3.0.5",
     "md-editor-v3": "^4.13.5",
     "nuxt-quasar-ui": "^2.1.0",
