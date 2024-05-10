@@ -134,7 +134,7 @@ if (process.client) {
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
     <cz-banner :banner-url="website.website_cover">
       <h1 class="cz-text-gray-200 cz-text-4xl max-md:cz-text-xs">
-        秋谨
+        Eqian
       </h1>
       <p class="description max-md:cz-hidden max-md:cz-text-sm">
         在黑暗中看到了微光，朝着光明去前行
