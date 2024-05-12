@@ -27,16 +27,16 @@ const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
  * 作者近期文章
  */
-const getArticle = () => {
+const getArticle = async () => {
   if (!id) { return; }
-  getArticleItemDetailById(id as string).then((res) => {
-    article.value = res;
-  });
-  // useFetch(`/article/detail/${id}`, {
-  //   method: 'GET'
-  // }).then((res) => {
-  //   article.value = res.data.value;
+  // getArticleItemDetailById(id as string).then((res) => {
+  //   article.value = res;
   // });
+  const res = await useFetch(`/article/detail/${id}`, {
+    method: 'GET'
+  });
+  console.log('请求数据', res.data.value);
+  article.value = res.data.value;
   // getArticleRecentByUid(id as string).then((res) => {
   //   authorSRecentArticles.value = res;
   // });
@@ -130,7 +130,7 @@ getArticle();
       <client-only>
         <div>
           <cz-typing
-            :text="article.title"
+            :text="article?.title"
             class="description cz-text-2xl"
           />
         </div>
@@ -139,17 +139,17 @@ getArticle();
             <div class="cz-tracking-widest cz-flex cz-text-center cz-items-center cz-justify-center">
               <div class="cz-pr-[10px] cz-pl-[10px]">
                 <CzIcon name="box" />
-                字数：{{ useCountTransform(article.word_count || 0) }}
+                字数：{{ useCountTransform(article?.word_count || 0) }}
               </div>
               <div class="cz-pr-[10px] cz-pl-[10px]">
                 <CzIcon name="hourglass-bottom" />
-                预计阅读时长：{{ (article.expect_reading_time) + '分钟' }}
+                预计阅读时长：{{ (article?.expect_reading_time) + '分钟' }}
               </div>
             </div>
             <div class="cz-flex cz-text-center cz-py-4 cz-items-center cz-justify-center">
               <div class="cz-pr-[10px] cz-pl-[10px]">
                 <CzIcon name="calendar2-check" />
-                发布时间：{{ useFormatDate(article.create_date || '', 'yyyy-MM-dd HH:mm') }}
+                发布时间：{{ useFormatDate(article?.create_date || '', 'yyyy-MM-dd HH:mm') }}
               </div>
             </div>
           </div>
@@ -183,37 +183,33 @@ getArticle();
       <!--      <CzSkeleton v-if="useIsEmptyObject(article)" class="cz-h-screen" />-->
       <article class="max-md:cz-w-full cz-w-4/5 cz-bg-[--card-bg]  cz-pb-10 cz-rounded-2xl">
         <div class="cz-w-full cz-px-10 cz-text-gray-500">
-          <h1>{{ article.title }}</h1>
+          <h1>{{ article?.title }}</h1>
           <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="person" />
-              <span>{{ article.user_info?.username }}</span>
+              <span>{{ article?.user_info?.username }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
-              <span>{{ article.category?.category_name }}</span>
-            </div>
-            <div class="cz-space-x-1.5">
-              <CzIcon name="tags" />
-              <span>{{ article.tags?.join('、') }}</span>
+              <span>{{ article?.category?.category_name }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="calendar-date" />
-              <span>{{ useFormatDate(article.create_date|| '', 'YYYY-MM-dd HH:mm') }}</span>
+              <span>{{ useFormatDate(article?.create_date|| '', 'YYYY-MM-dd HH:mm') }}</span>
             </div>
             <client-only>
               <div v-if="article.province" class="cz-space-x-1.5">
                 <CzIcon name="geo-alt" />
-                <span>发布于： {{ handleAddress(article.province, article.city) }}</span>
+                <span>发布于： {{ handleAddress(article?.province, article?.city) }}</span>
               </div>
             </client-only>
           </div>
         </div>
         <hr class="max-md:cz-hidden">
-        <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article.content" />
+        <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article?.content" />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
-          <time>{{ useFormatDate(article.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
+          <time>{{ useFormatDate(article?.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
         </div>
         <hr class="cz-divider cz-clear-right">
         <client-only>
@@ -250,10 +246,10 @@ getArticle();
           <div class="cz-px-2">
             <CzComment :is-login="userInfoComputed.isLogin" @on-sub-mit="handleSubMit">
               <div ref="commentFieldRef">
-                评论（{{ article.comment_count || 0 }}）
+                评论（{{ article?.comment_count || 0 }}）
               </div>
             </CzComment>
-            <CzArticleComment ref="czArticleCommentRef" :is-login="userInfoComputed.isLogin" :author-id="article.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
+            <CzArticleComment ref="czArticleCommentRef" :is-login="userInfoComputed.isLogin" :author-id="article?.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
           </div>
         </client-only>
       </article>
