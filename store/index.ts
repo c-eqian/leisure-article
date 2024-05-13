@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAsyncData } from '#app'
 import piniaPersistConfig from '~/utils'
 import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
@@ -73,12 +74,16 @@ export const useGlobalStore = defineStore({
           // }).catch((error) => {
           //   reject(error)
           // })
-          getSystemWebsite().then((res) => {
-            this.setWebsite(res || {})
-            resolve(res || {})
-          }).catch((error) => {
-            reject(error)
+          useAsyncData('SYSTEM-SITE', () => getSystemWebsite()).then((res) => {
+            this.setWebsite(<IWebsite.Data>res.data.value || {})
+            resolve(<IWebsite.Data>res.data.value || {})
           })
+          // getSystemWebsite().then((res) => {
+          //   this.setWebsite(res || {})
+          //   resolve(res || {})
+          // }).catch((error) => {
+          //   reject(error)
+          // })
         } else {
           resolve(this.website)
         }

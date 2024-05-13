@@ -27,16 +27,16 @@ const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
  * 作者近期文章
  */
-const getArticle = async () => {
+const getArticle = () => {
   if (!id) { return; }
-  // getArticleItemDetailById(id as string).then((res) => {
-  //   article.value = res;
-  // });
-  const res = await useFetch(`/article/detail/${id}`, {
-    method: 'GET'
+  useAsyncData('article-detail', () => getArticleItemDetailById((id as string))).then((res) => {
+    article.value = res.data.value || {} as IArticleItem;
   });
-  console.log('请求数据', res.data.value);
-  article.value = res.data.value;
+  // const res = await useFetch(`/article/detail/${id}`, {
+  //   method: 'GET'
+  // });
+  // console.log('请求数据', res.data.value);
+  // article.value = res.data.value;
   // getArticleRecentByUid(id as string).then((res) => {
   //   authorSRecentArticles.value = res;
   // });

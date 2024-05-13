@@ -23,6 +23,7 @@ export const getArticleList = (params?: {
 export const getArticleItemDetailById = (uid: string) => {
   return http.request<IArticleItem>({
     url: `/article/detail/${uid}`,
+    server: true,
     method: 'GET'
   })
 }

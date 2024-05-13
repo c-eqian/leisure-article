@@ -1,12 +1,5 @@
 import type { IRequestParamsConfig } from '~/api/type'
 import { useGetTokenCookie } from '~/composables/use-cookies'
-const baseConfig = {
-  // 默认地址
-  // baseURL: 'http://43.138.188.22:13209/api/v3',
-  // baseURL: import.meta.env.VITE_BASE_URL,
-  // 设置超时时间
-  lazy: true
-}
 /**
  * 参数处理
  * @param {*} params  参数
@@ -39,7 +32,7 @@ export function tansParams (params: { [x: string]: any; }) {
 class Http {
   BASEURL:string
   public constructor () {
-    // this.BASEURL = process.env.NODE_ENV === 'production' ? '/api/' : 'http://43.138.222.187:8000/'
+    this.BASEURL = ''
   }
 
   getUrl (config:IRequestParamsConfig) {
@@ -62,27 +55,28 @@ class Http {
   }
 
   request <T=any> (config: IRequestParamsConfig): Promise<T> {
-    const { $config } = useNuxtApp();
-    this.BASEURL = $config.public.BASE_URL;
+    const { $config } = useNuxtApp()
+    this.BASEURL = $config.public.BASE_URL
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       await useFetch(this.BASEURL + config.url.replace(/^\//, ''), {
         method: config.method || 'GET',
         lazy: true,
-        server: false,
+        server: !!config.server,
         query: (config.method === 'GET' || config.method === 'DELETE') ? config.params : undefined,
         body: (config.method === 'POST' || config.method === 'PUT') ? config.params : undefined,
-        onRequest ({ request, options }): Promise<void> | void {
+        onRequest ({ request: _, options }): Promise<void> | void {
           // console.log(' 请求处理', request, options)
           const cookies = useGetTokenCookie()
           if (config.params?.token || cookies) {
             options.headers = { ...options.headers, Authorization: config.params?.token || cookies }
           }
         },
-        onRequestError ({ request, options, error }) {
+        onRequestError ({ request }) {
           // console.log(' 请求错误', request, options, error)
           reject(request)
         },
-        onResponse ({ request, response, options }) {
+        onResponse ({ request: _, response }) {
           const { code } = response._data
           if (code !== 200) {
             reject(response._data)
@@ -90,7 +84,7 @@ class Http {
             resolve(response._data.data || {})
           }
         },
-        onResponseError ({ request, response }) {
+        onResponseError ({ request: _, response }) {
           // console.log(' 响应错误', request, response)
           reject(response._data)
         }
