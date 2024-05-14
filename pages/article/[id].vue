@@ -13,7 +13,8 @@ import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import { getArticleItemDetailById } from '~/api/article';
 definePageMeta({
-  layout: 'detail'
+  layout: 'detail',
+  scrollToTop: true
 });
 const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);

@@ -21,7 +21,7 @@ const catalogueList = ref<CatalogueList[]>([]);
 const typedRef = ref<HTMLDivElement>();
 const sentenceList = ref<ISystemSentence.Datum[]>([]);
 const query = ref({
-  page_size: 10,
+  page_size: 20,
   category_id: '',
   page_num: 1
 });
