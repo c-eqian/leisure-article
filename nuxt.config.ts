@@ -92,7 +92,11 @@ export default defineNuxtConfig({
         }
       ]
     },
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: {
+      name: 'scale',
+      appear: true,
+      mode: 'out-in',
+    },
   },
   vite: {
     vueJsx: {
