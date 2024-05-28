@@ -98,7 +98,6 @@ if (process.browser) {
                 (val:string)=> val.length >= 5 && val.length <= 16 || '账号长度为5-16位',
               ]"
               dense
-              autofocus
               label="账号"
               @keyup.enter="dialogVisible = false"
             />
@@ -111,7 +110,6 @@ if (process.browser) {
                 (val:string)=> val.length >= 6 && val.length <= 16 || '密码长度为6-16位',
               ]"
               dense
-              autofocus
               label="密码"
             />
             <div class="cz-flex cz-justify-between cz-items-center">
@@ -136,7 +134,6 @@ if (process.browser) {
                 (val:string)=> val.length >= 5 && val.length <= 16 || '账号长度为5-16位',
               ]"
               dense
-              autofocus
               label="账号"
               @keyup.enter="dialogVisible = false"
             />
@@ -147,7 +144,6 @@ if (process.browser) {
                 (val:string)=> !!val.trim() || '请输入昵称'
               ]"
               dense
-              autofocus
               label="昵称"
             />
             <q-input
@@ -159,7 +155,6 @@ if (process.browser) {
               ]"
               type="password"
               dense
-              autofocus
               label="密码"
             />
             <q-input
@@ -171,7 +166,6 @@ if (process.browser) {
               ]"
               type="password"
               dense
-              autofocus
               label="确认密码"
             />
           </q-form>
