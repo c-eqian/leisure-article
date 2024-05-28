@@ -60,15 +60,23 @@ const handleConfirm = () => {
   } else {
     registryFormRef.value?.validate().then(async (success :boolean) => {
       if (success) {
-        await userRegistry(registryFormModel.value)
-        $q.notify({
-          type: 'positive',
-          position: 'top',
-          timeout: 3000,
-          message: '注册成功'
+        userRegistry(registryFormModel.value).then(() => {
+          $q.notify({
+            type: 'positive',
+            position: 'top',
+            timeout: 3000,
+            message: '注册成功'
+          })
+          registryFormModel.value = useEmptyObject(registryFormModel.value)
+          isRegistry.value = false
+        }).catch((error) => {
+          $q.notify({
+            type: 'warning',
+            position: 'top',
+            timeout: 3000,
+            message: error.msg || '操作失败'
+          })
         })
-        registryFormModel.value = useEmptyObject(registryFormModel.value)
-        isRegistry.value = false
       }
     })
   }
@@ -127,7 +135,7 @@ if (process.browser) {
           </q-banner>
           <q-form v-else ref="registryFormRef" no-error-focus>
             <q-input
-              v-model="formModel.account"
+              v-model="registryFormModel.account"
               lazy-rules
               :rules="[
                 (val)=> !!val || '请输入账号',
@@ -138,7 +146,7 @@ if (process.browser) {
               @keyup.enter="dialogVisible = false"
             />
             <q-input
-              v-model="formModel.username"
+              v-model="registryFormModel.username"
               lazy-rules
               :rules="[
                 (val:string)=> !!val.trim() || '请输入昵称'
@@ -147,7 +155,7 @@ if (process.browser) {
               label="昵称"
             />
             <q-input
-              v-model="formModel.password"
+              v-model="registryFormModel.password"
               lazy-rules
               :rules="[
                 (val:string)=> !!val.trim() || '请输入密码',
