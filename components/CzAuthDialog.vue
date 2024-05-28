@@ -124,7 +124,7 @@ if (process.browser) {
           </q-form>
         </q-card-section>
         <q-card-section v-else>
-          <q-banner v-if="systemStore.website.is_registry===1" rounded class="cz-bg-orange-400">
+          <q-banner v-if="systemStore.website.is_registry===0" rounded class="cz-bg-orange-400">
             管理员已禁止注册！
           </q-banner>
           <q-form v-else ref="registryFormRef" no-error-focus>
