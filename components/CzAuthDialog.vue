@@ -178,7 +178,7 @@ if (process.browser) {
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn color="secondary" flat label="取消" @click="onDialogCancel" />
-          <q-btn v-if="!(isRegistry && systemStore.website.is_registry===1)" flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
+          <q-btn v-if="!(isRegistry && systemStore.website.is_registry===0)" flat icon="bi-box-arrow-in-right" label="确定" @click.stop="handleConfirm" />
         </q-card-actions>
       </q-card>
     </q-dialog>
