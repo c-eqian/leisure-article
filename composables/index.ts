@@ -57,3 +57,8 @@ export const useCountTransform = (count: number) => {
   }
   return _count
 }
+// 检测是否为移动端
+export const isMobile = useMediaQuery(
+  '(max-width: 767px) and (orientation: portrait), ' +
+    '(max-width: 1023px) and (orientation: landscape)'
+)

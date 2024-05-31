@@ -54,8 +54,8 @@ const handleLogoutItemClick = () => {
   })
 }
 let websiteTitle
- systemStore.getWebsite().then(res=>{
-   websiteTitle = res.website_title
+systemStore.getWebsite().then((res) => {
+  websiteTitle = res.website_title
 })
 </script>
 
@@ -95,7 +95,11 @@ let websiteTitle
                     <q-list>
                       <q-item v-close-popup clickable>
                         <q-item-section>
-                          <q-item-label>个人中心</q-item-label>
+                          <q-item-label>
+                            <nuxt-link :to="'/profile'">
+                              个人中心
+                            </nuxt-link>
+                          </q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item v-close-popup clickable @click="handleLogoutItemClick">
