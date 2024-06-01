@@ -79,6 +79,10 @@ export interface IArticleItem {
      */
     is_top?: 0 | 1;
     /**
+     * 是否已赞
+     */
+    is_like?: 0 | 1;
+    /**
      * 点赞量，点赞量
      */
     like_number?: number;

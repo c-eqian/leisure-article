@@ -4,6 +4,7 @@ import { useQuasar } from 'quasar'
 import { onClickOutside } from '@vueuse/core'
 import { initEmoji } from '~/composables/emoji'
 import CzAuthDialog from '~/components/CzAuthDialog.vue'
+import { useLogin } from '~/composables/use-login'
 interface IEmoji {
   title: string;
   name: string;
@@ -48,16 +49,7 @@ onBeforeUnmount(() => {
   valueComputed.value = ''
 })
 const handleLogin = () => {
-  $q.dialog({
-    component: CzAuthDialog
-
-  }).onOk(() => {
-    console.log('OK')
-  }).onCancel(() => {
-    console.log('Cancel')
-  }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
-  })
+  useLogin()
 }
 </script>
 

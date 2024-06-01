@@ -1,5 +1,6 @@
 import type { IRequestParamsConfig } from '~/api/type'
 import { useGetTokenCookie } from '~/composables/use-cookies'
+import { useLogin } from '~/composables/use-login'
 /**
  * 参数处理
  * @param {*} params  参数
@@ -79,6 +80,9 @@ class Http {
         onResponse ({ request: _, response }) {
           const { code } = response._data
           if (code !== 200) {
+            if (code === 401 || code === 423) {
+              useLogin()
+            }
             reject(response._data)
           } else {
             resolve(response._data.data || {})

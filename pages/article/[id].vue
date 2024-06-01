@@ -11,7 +11,8 @@ import { useGlobalStore } from '~/store';
 import CzArticleComment from '~/components/CzArticleComment.vue';
 import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
-import { getArticleItemDetailById } from '~/api/article';
+import { articleLike, getArticleItemDetailById } from '~/api/article';
+import { useLogin } from '~/composables/use-login';
 definePageMeta({
   layout: 'detail',
   scrollToTop: true
@@ -123,6 +124,16 @@ const handleAddress = (province:string, city:string) => {
 const userInfoComputed = computed(() => systemStorage.userInfo);
 useHead(useHeadOption);
 getArticle();
+const handleArticleLike = async () => {
+  if (!systemStorage?.userInfo?.isLogin) {
+    useLogin();
+    return;
+  }
+  await articleLike(article.value.id);
+  article.value.is_like = article.value.is_like === 1 ? 0 : 1;
+  const { like_number = 0 } = article.value;
+  article.value.like_number = article.value.is_like === 1 ? like_number + 1 : like_number - 1;
+};
 </script>
 
 <template>
@@ -171,8 +182,14 @@ getArticle();
         <div
           :badge="useCountTransform(article?.like_number || 0)"
           class="cz-relative cz-panel-btn cz-mb-1.5 cz-w-12 cz-h-12 cz-flex cz-items-center cz-justify-center"
+          @click="handleArticleLike"
         >
-          <CzIcon name="hand-thumbs-up" />
+          <CzIcon
+            name="hand-thumbs-up"
+            :class="{
+              'is-like': article.is_like==1
+            }"
+          />
         </div>
         <div
           :badge="useCountTransform(article?.view_number || 0)"
@@ -289,6 +306,9 @@ getArticle();
 <style scoped>
 :deep(.md-editor){
   background: var(--card-bg);
+}
+.is-like{
+  @apply cz-text-orange-400
 }
 .cz-panel-btn {
   background-position: 50%;

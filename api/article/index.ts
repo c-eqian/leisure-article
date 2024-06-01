@@ -28,6 +28,16 @@ export const getArticleItemDetailById = (uid: string) => {
   })
 }
 /**
+ * 点赞文章
+ * @param articleId
+ */
+export const articleLike = (articleId: any) => {
+  return http.request<IArticleItem>({
+    url: `/article/like/${articleId}`,
+    method: 'PUT'
+  })
+}
+/**
  * 根据文章uid查询作者近期文章
  * @param uid
  */
