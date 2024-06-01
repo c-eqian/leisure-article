@@ -14,7 +14,6 @@ const userInfo = computed(() => userStore.userInfo)
     <div class="cz-flex cz-flex-1">
       <img
         :src="userInfo.avatar"
-        loading="lazy"
         alt="头像"
         style="object-fit: cover"
         class="cz-h-20 cz-w-20 cz-rounded-[8px]"

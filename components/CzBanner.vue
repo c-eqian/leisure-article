@@ -12,6 +12,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  height: {
+    type: String,
+    default: '450px'
+  },
   fixed: {
     type: Boolean,
     default: true
@@ -24,8 +28,8 @@ const props = defineProps({
 const bannerUrlComputed = computed(() => props.bannerUrl)
 
 // 解决水合问题
-watch(() => bannerUrlComputed.value, () => {
-  if (!process.server) {
+watchEffect(() => {
+  if (process.client) {
     bannerRef.value?.style.setProperty('--banner-cover', `url(${bannerUrlComputed.value})`)
   }
 })
@@ -34,11 +38,13 @@ watch(() => bannerUrlComputed.value, () => {
 <template>
   <div ref="bannerRef">
     <div
+      :style="{height}"
       class="repo md:cz-h-[450px] cz-h-52 cz-bg-fixed"
     >
       <div style="margin: 0 auto;max-width: 620px; z-index: 10">
         <slot />
       </div>
+      <slot name="layout" />
     </div>
   </div>
 </template>
@@ -71,7 +77,7 @@ watch(() => bannerUrlComputed.value, () => {
     left: 0;
     right: 0;
     height: 100%;
-    z-index: 2;
+    z-index: -1;
     background-color: rgba(0, 0, 0, .4);
   }
 
