@@ -22,7 +22,12 @@ const tabsName = ref('dynamic')
           <q-tab name="article" label="文章" />
           <q-tab name="other" label="收藏" />
         </q-tabs>
-        <q-tab-panels v-model="tabsName">
+        <q-tab-panels
+          v-model="tabsName"
+          animated
+          transition-prev="scale"
+          transition-next="scale"
+        >
           <q-tab-panel name="dynamic">
             <div class="cz-py-4 cz-flex">
               <div class="cz-flex-1 card-bg cz-rounded-[8px] cz-min-h-96">

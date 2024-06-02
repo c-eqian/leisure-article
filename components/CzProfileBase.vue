@@ -22,7 +22,7 @@ const userInfo = computed(() => userStore.userInfo)
         <div class="cz-font-bold cz-text-sm">
           {{ userInfo.username }}
         </div>
-        <div class="cz-text-xs cz-py-2 cz-text-[#a0a0a0]">
+        <div class="cz-text-xs cz-py-2 cz-text-sub">
           <p class="cz-tracking-tight">
             {{ userInfo.motto || '-' }}
           </p>

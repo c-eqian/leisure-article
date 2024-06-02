@@ -58,3 +58,19 @@ export const getArticleRecent = () => {
     method: 'GET'
   })
 }
+/**
+ * 文章时间线
+ * @param params
+ */
+export const getArticleTimeline = (params?: {
+  page_size?: number;
+  page_num?: number;
+  user_id?: number;
+}) => {
+  return http.request<IArticleRes>({
+    url: '/article/timeline',
+    method: 'GET',
+    params,
+    isLoading: false
+  })
+}
