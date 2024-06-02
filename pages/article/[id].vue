@@ -14,7 +14,6 @@ import { useTargetBlankExtension } from '~/composables/md-it';
 import { articleLike, getArticleItemDetailById } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
 definePageMeta({
-  layout: 'detail',
   scrollToTop: true
 });
 const systemStorage = useGlobalStore();

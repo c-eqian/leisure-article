@@ -25,6 +25,9 @@ const query = ref({
   category_id: '',
   page_num: 1
 });
+definePageMeta({
+  keepalive: true
+});
 const isLoading = ref(false);
 const visitorInfo = ref<ISystemVisitor.IRes['data']>();
 const loadingStatus = ref<'loading' | 'error' | 'success'>('loading');

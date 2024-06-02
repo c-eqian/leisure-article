@@ -25,6 +25,7 @@ const tabsName = ref('dynamic')
         <q-tab-panels
           v-model="tabsName"
           animated
+          keep-alive
           transition-prev="scale"
           transition-next="scale"
         >
