@@ -335,6 +335,11 @@ const handleArticleLike = async () => {
     color: #fff;
   }
 }
+.md-editor-preview {
+  ol, li {
+    list-style: disc !important;
+  }
+}
 :deep(.md-editor-catalog-active) {
    > span {
      padding: 0 5px;
