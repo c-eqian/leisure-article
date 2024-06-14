@@ -335,8 +335,11 @@ const handleArticleLike = async () => {
     color: #fff;
   }
 }
-.md-editor-preview {
-  ol, li {
+:deep(.md-editor-preview-wrapper) {
+  ol li {
+    list-style: decimal !important;
+  }
+  ul li {
     list-style: disc !important;
   }
 }
