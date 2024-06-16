@@ -137,7 +137,7 @@ defineExpose({
     >
       <template #avatar>
         <div class="cz-h-9 cz-w-9">
-          <CzImg round :img-src="comment.user_info.avatar" />
+          <CzImg is-default-img round :img-src="comment.user_info.avatar" />
         </div>
       </template>
       <template #left>
@@ -188,7 +188,7 @@ defineExpose({
           >
             <template #avatar>
               <div class="cz-h-9 cz-w-9">
-                <CzImg round :img-src="subComment.user_info.avatar" />
+                <CzImg is-default-img round :img-src="subComment.user_info.avatar" />
               </div>
             </template>
             <template #left>

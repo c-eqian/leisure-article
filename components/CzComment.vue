@@ -32,7 +32,7 @@ const input = ref('')
 const isShowAction = ref(false)
 const handleShowEmoji = (item: any) => {
   if (item.url) { return item.url }
-  return `https://oss.cz-leisure.com/face/${emoji.name}`
+  return `https://oss.cz-leisure.com/face/${item.name}`
 }
 const handleClickEmoji = (item: IEmoji) => {
   valueComputed.value += item.title

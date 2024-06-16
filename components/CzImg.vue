@@ -37,7 +37,7 @@ const style = computed(() => {
 
 <template>
   <img
-    v-if="isDefaultImg && imgSrc"
+    v-if="isDefaultImg || imgSrc"
     ref="imgRef"
     :src="imgSrc || defaultImg"
     alt=""
