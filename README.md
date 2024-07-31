@@ -1,6 +1,4 @@
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# 基于nuxt开发博客
 
 ## Setup
 
@@ -56,20 +54,16 @@ yarn build
 bun run build
 ```
 
-Locally preview production build:
+# 效果
 
-```bash
-# npm
-npm run preview
+![image-20240731083553852](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083553852.png)
 
-# pnpm
-pnpm run preview
+![image-20240731083646340](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083646340.png)
 
-# yarn
-yarn preview
+![image-20240731083732365](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083732365.png)
 
-# bun
-bun run preview
-```
+![image-20240731083707900](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083707900.png)
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+![image-20240731083754183](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083754183.png)
+
+![image-20240731083811406](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083811406.png)
