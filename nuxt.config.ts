@@ -7,10 +7,16 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-quasar-ui',
+      '@element-plus/nuxt'
   ],
   devtools: { enabled: false },
   devServer: {
     host: '0.0.0.0'
+  },
+  nitro: {
+    imports: {
+      exclude: [/.*.nuxt\/dist\/server.*/],
+    },
   },
   runtimeConfig: {
     public: {
@@ -54,7 +60,12 @@ export default defineNuxtConfig({
     transpile: ['vuetify']
   },
   imports: {
-    dirs: ['./store'] // 导入所有store
+    dirs: ['./store'], // 导入所有store,
+    transform: {
+      // you could also add the path of your built library to prevent this happening
+      // for your users, but the issue is probably only replicable in your monorepo
+      exclude: [/\be-plus-ui\b/]
+    }
   },
   // nitro: {
   //   esbuild: {
@@ -118,6 +129,8 @@ export default defineNuxtConfig({
   css: [
       '@/assets/styles/global.scss',
       '@/assets/styles/vars.scss',
+      'element-plus/dist/index.css',
+      'e-plus-ui/lib/index.css',
       'bootstrap-icons/font/bootstrap-icons.css'
   ]
 })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
-import { useFormatDate } from 'co-utils-vue';
+import { useFormatDate } from '@eqian/utils-vue';
 import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
@@ -13,6 +13,7 @@ import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import { articleLike, getArticleItemDetailById } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
+import CzCommentV2 from '~/components/CzCommentV2.vue';
 definePageMeta({
   scrollToTop: true
 });
@@ -22,7 +23,7 @@ const isCategory = ref(true);
 const { id } = useRoute().params;
 const $q = useQuasar();
 const article = ref<IArticleItem>({} as IArticleItem);
-const scrollElement = process.browser ? document.documentElement : 'body';
+const scrollElement = import.meta.browser ? document.documentElement : 'body';
 const commentFieldRef = ref<HTMLDivElement | null>(null);
 const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
@@ -266,7 +267,7 @@ const handleArticleLike = async () => {
                 评论（{{ article?.comment_count || 0 }}）
               </div>
             </CzComment>
-            <CzArticleComment ref="czArticleCommentRef" :is-login="userInfoComputed.isLogin" :author-id="article?.user_info?.id" :article-id="article.id" @update-comment-count="(v)=> article.comment_count + v" />
+            <CzCommentV2 :article-id="article.id" :is-login="userInfoComputed.isLogin" />
           </div>
         </client-only>
       </article>

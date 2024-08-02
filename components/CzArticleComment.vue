@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBeforeDate } from 'co-utils-vue'
+import { useBeforeDate } from '@eqian/utils-vue'
 import { useQuasar } from 'quasar'
 import type { ICommentList } from '~/api/comment/type'
 import { deleteCommentItem, getCommentList, postArticleComment } from '~/api/comment'

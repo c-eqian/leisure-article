@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useBeforeDate } from 'co-utils-vue'
+import { useBeforeDate } from '@eqian/utils-vue'
 import type { PropType } from 'vue'
 
 import type { IArticleItem } from '~/api/article/type'

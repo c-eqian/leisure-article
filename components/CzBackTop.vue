@@ -4,7 +4,7 @@ import { useQuasar } from 'quasar'
 import { useGlobalStore } from '~/store'
 let isDarkEl: any
 let toggleDark:any
-if (process.browser) {
+if (import.meta.browser) {
   isDarkEl = useDark()
   toggleDark = useToggle(isDarkEl)
 }

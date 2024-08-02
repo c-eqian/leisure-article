@@ -5,5 +5,5 @@
 </template>
 
 <script lang="ts" setup>
-import '~/assets/styles/export.index.scss'
+import '~/assets/styles/export.index.scss';
 </script>

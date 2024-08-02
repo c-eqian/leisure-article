@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFormatDate } from 'co-utils-vue'
+import { useFormatDate } from '@eqian/utils-vue'
 import type { IArticleRes } from '~/api/article/type'
 import { getArticleTimeline } from '~/api/article'
 import { useGlobalStore } from '~/store'

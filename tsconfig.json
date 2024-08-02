@@ -3,6 +3,7 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
 //    "types": ["vite-plugin-svg-icons/client"],
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "types": ["e-plus-ui/types/components"]
   }
 }

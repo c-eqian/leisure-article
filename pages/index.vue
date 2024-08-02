@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Typed from 'typed.js';
-import { usePriceToThousand } from 'co-utils-vue';
+import { usePriceToThousand } from '@eqian/utils-vue';
 import CzBanner from '~/components/CzBanner.vue';
 
 import { getArticleList } from '~/api/article';

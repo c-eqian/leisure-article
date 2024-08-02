@@ -1,0 +1,124 @@
+<script setup lang="ts">
+import { EpComment, type ICommentConfig, EpImage, type IResolveParams } from 'e-plus-ui'
+import { getCommentList, postArticleComment } from '~/api/comment'
+import type { ICommentList } from '~/api/comment/type'
+const $q = useQuasar()
+const config = {
+  hasMore: 'is_more',
+  defaultAvatar: 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg',
+  commentFields: {
+    avatar: 'user_info.avatar',
+    username: 'user_info.username',
+    subComment: 'sub_comment',
+    likeCount: 'like_count',
+    commentId: 'comment_id',
+    createDate: 'created_date',
+    reply: 'reply_info',
+    parentId: 'parent_id'
+  }
+
+} as ICommentConfig
+const props = defineProps({
+  articleId: {
+    type: [Number, String],
+    default: 0
+  },
+  isLogin: {
+    type: Boolean,
+    default: false
+  }
+})
+const commentList = ref<ICommentList.IResponse>({ list: [], total: 0 } as ICommentList.IResponse)
+const isLogin = computed(() => props.isLogin)
+// const queryParams = new Map<String, {
+//   sub_page_num: number,
+//   page_num: number,
+//   parent_id: string
+// }>()
+const handleGetCommentList = () => {
+  if (!props.articleId) { return }
+  getCommentList({
+    article_id: props.articleId || ''
+  }).then((res) => {
+    commentList.value = res
+  })
+}
+onMounted(() => {
+  handleGetCommentList()
+})
+watch(() => props.articleId, () => {
+  if (!props.articleId) {
+    commentList.value = { list: [], total: 0 } as ICommentList.IResponse
+  } else {
+    handleGetCommentList()
+  }
+})
+const handleConfirmReply = async (params: IResolveParams) => {
+  try {
+    const { resolve, value, item, clear, isSubReply } = params
+    if (!value) { return }
+    const data = await postArticleComment({
+      article_id: props.articleId,
+      content: value,
+      reply_id: isSubReply ? item.sub_comment_id : undefined,
+      parent_id: isSubReply ? item.parent_id : item.comment_id
+    })
+    resolve && resolve(data)
+    clear && clear(true)
+    $q.notify({
+      type: 'positive',
+      position: 'top',
+      timeout: 3000,
+      message: '评论成功'
+    })
+  } catch (e:any) {
+    $q.notify({
+      type: 'positive',
+      position: 'top',
+      timeout: 3000,
+      message: e.msg || '操作失败'
+    })
+  }
+}
+const handleReplyBefore = () => {
+  if (!isLogin.value) {
+    useLogin()
+    return false
+  } else {
+    return true
+  }
+}
+// const handleLazyLoad: CommentLoadFn = ({ isSubReply, item, resolve, la }) => {
+//   if(isSubReply) {
+//     const res = queryParams.get(item.sub_comment_id)
+//     if(res) {
+//       res.sub_page_num += 1
+//       queryParams.set(item.sub_comment_id, res)
+//     } else{
+//       queryParams.set(item.sub_comment_id, {
+//         page_num: 2,
+//         sub_page_num: 2,
+//         parent_id: item.parent_id
+//       })
+//     }
+//   }
+//   getCommentList({
+//     article_id: props.articleId || '',
+//     page_num: isSubReply ? queryParams.value +=1
+//   }).then((res) => {
+//     commentList.value = res
+//   })
+// }
+</script>
+
+<template>
+  <EpComment :before-reply="handleReplyBefore" :data="commentList" :config="config" @confirm-reply="handleConfirmReply">
+    <template #avatar="{item, isSubReply}">
+      <EpImage round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
+    </template>
+  </EpComment>
+</template>
+
+<style scoped lang="scss">
+
+</style>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFormatDate } from 'co-utils-vue';
+import { useFormatDate } from '@eqian/utils-vue';
 
 import { getWallpaperBing, getWallpaperList, getWallpaperTypes } from '~/api/wallpaper';
 import type { IWallpaperData, IWallpaperReq, IWallpaperRes, IWallpaperTypes } from '~/api/wallpaper/type';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuasar, useDialogPluginComponent } from 'quasar'
-import { useEmptyObject, usePick } from 'co-utils-vue'
+import { useEmptyObject, usePick } from '@eqian/utils-vue'
 import { useGlobalStore } from '~/store'
 import { userRegistry } from '~/api/user'
 const dialogVisible = defineModel('value', {

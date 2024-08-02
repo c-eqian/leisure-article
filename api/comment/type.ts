@@ -3,7 +3,7 @@ export namespace IArticleComment {
         /**
          * 评论的文章ID
          */
-        article_id: string;
+        article_id: any;
         /**
          * 评论内容
          */
@@ -86,7 +86,7 @@ export namespace ICommentList {
     }
 
     export interface IReq {
-        article_id: string;
+        article_id: any;
         page_num?: number;
         page_size?: number;
         parent_id?: number;
