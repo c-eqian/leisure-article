@@ -18,7 +18,7 @@ const computedCls = computed(() => {
       <div
         v-for="(image, index) in imageList"
         :key="image + index"
-        class="cz-h-full cz-w-full cz-bg-blue-300"
+        class="cz-h-full cz-w-full"
       >
         <img :src="image" alt="" class="cz-h-full cz-image cz-w-full cz-object-cover cz-rounded-md">
       </div>

@@ -15,10 +15,17 @@ const menuList = ref([
     icon: 'house'
   },
   {
-    name: '壁纸',
+    name: '宝箱',
+    isReplace: false,
+    path: '/utils/list',
+    icon: 'file-earmark-text'
+  },
+  {
+    name: '必应',
     isReplace: false,
     path: '/wallpaper/list',
-    icon: 'image'
+    icon: 'image',
+    _blank: '_blank'
   },
   {
     name: '登录',
@@ -76,14 +83,14 @@ systemStore.getWebsite().then((res) => {
           </li>
         </ul>
       </q-drawer>
-      <q-header reveal class="cz-fixed cz-bg-transparent cz-top-0 cz-text-white">
+      <q-header reveal class="cz-fixed  cz-top-0 cz-text-white">
         <q-toolbar class="cz-text-inherit">
           <q-toolbar-title>
             <span class="cz-select-none">{{ websiteTitle || '小白菜leisure' }}</span>
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-              <NuxtLink v-if="!item.isReplace" :to="item.path" target="_blank" class="cz-px-2">
+              <NuxtLink v-if="!item.isReplace" :to="item.path" :target="item._blank" class="cz-px-2">
                 <CzIcon :name="item.icon" />
                 {{ item.name }}
               </NuxtLink>
