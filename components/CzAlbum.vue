@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { EpImage } from 'e-plus-ui'
 const imageList = defineModel('imageList', {
   type: Array<string>,
   default: () => []
@@ -16,11 +17,11 @@ const computedCls = computed(() => {
   <client-only>
     <div class="cz-grid cz-gap-2 cz-h-full cz-w-full" :class="computedCls">
       <div
-        v-for="(image, index) in imageList"
-        :key="image + index"
+        v-for="image in imageList"
+        :key="image"
         class="cz-h-full cz-w-full"
       >
-        <img :src="image" alt="" class="cz-h-full cz-image cz-w-full cz-object-cover cz-rounded-md">
+        <EpImage border-radius="6px" scale :url="image" class="cz-h-full cz-image cz-w-full" />
       </div>
     </div>
   </client-only>
