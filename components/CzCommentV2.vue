@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EpComment, type ICommentConfig, EpImage, type IResolveParams } from 'e-plus-ui'
+import { type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
 import { getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
 const $q = useQuasar()
@@ -18,6 +18,10 @@ const config = {
   }
 
 } as ICommentConfig
+const queryParams = ref({
+  page_num: 1,
+  page_size: 10
+})
 const props = defineProps({
   articleId: {
     type: [Number, String],
@@ -30,12 +34,8 @@ const props = defineProps({
 })
 const commentList = ref<ICommentList.IResponse>({ list: [], total: 0 } as ICommentList.IResponse)
 const isLogin = computed(() => props.isLogin)
-// const queryParams = new Map<String, {
-//   sub_page_num: number,
-//   page_num: number,
-//   parent_id: string
-// }>()
 const handleGetCommentList = () => {
+  queryParams.value.page_num = 1
   if (!props.articleId) { return }
   getCommentList({
     article_id: props.articleId || ''
@@ -109,12 +109,30 @@ const handleReplyBefore = () => {
 //     commentList.value = res
 //   })
 // }
+const handleLoad = (load: LoadData) => {
+  const { resolve } = load
+  if (!props.articleId) {
+    resolve([], false)
+    return
+  }
+  queryParams.value.page_num += 1
+  getCommentList({
+    article_id: props.articleId || '',
+    ...queryParams.value
+  }).then((res) => {
+    const { is_more: isMore, list } = res
+    resolve(list, isMore === 1)
+  })
+}
+defineExpose({
+  handleGetCommentList
+})
 </script>
 
 <template>
-  <EpComment :before-reply="handleReplyBefore" :data="commentList" :config="config" @confirm-reply="handleConfirmReply">
+  <EpComment :load="handleLoad" :before-reply="handleReplyBefore" :data="commentList" :config="config" @confirm-reply="handleConfirmReply">
     <template #avatar="{item, isSubReply}">
-      <EpImage round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
+      <ep-image round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
     </template>
   </EpComment>
 </template>

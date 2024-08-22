@@ -267,7 +267,7 @@ const handleArticleLike = async () => {
                 评论（{{ article?.comment_count || 0 }}）
               </div>
             </CzComment>
-            <CzCommentV2 :article-id="article.id" :is-login="userInfoComputed.isLogin" />
+            <CzCommentV2 ref="czArticleCommentRef" :article-id="article.id" :is-login="userInfoComputed.isLogin" />
           </div>
         </client-only>
       </article>

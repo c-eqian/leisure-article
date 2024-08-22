@@ -82,6 +82,7 @@ export namespace ICommentList {
      */
     export interface IResponse {
         total: number;
+        is_more: 0 | 1
         list: DataList[];
     }
 
