@@ -9,10 +9,16 @@ const $q = useQuasar()
 const userInfoComputed = computed(() => systemStore.userInfo)
 const menuList = ref([
   {
-    name: '首页',
+    name: '文章',
     path: '/',
     isReplace: false,
     icon: 'house'
+  },
+  {
+    name: '笔记',
+    isReplace: false,
+    path: '/notes/list',
+    icon: 'file-earmark-text'
   },
   {
     name: '宝箱',
