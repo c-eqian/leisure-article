@@ -9,15 +9,19 @@ export default defineNuxtConfig({
     'nuxt-quasar-ui',
       '@element-plus/nuxt'
   ],
+
   devtools: { enabled: false },
+
   devServer: {
     host: '0.0.0.0'
   },
+
   nitro: {
     imports: {
       exclude: [/.*.nuxt\/dist\/server.*/],
     },
   },
+
   runtimeConfig: {
     public: {
       // 因为这里用到了SSR 代理请求其他服务接口，如果/api/代理，就会提示找不到地址，
@@ -25,6 +29,7 @@ export default defineNuxtConfig({
       BASE_URL: process.env.NODE_ENV === 'production' ? 'https://www.eqian.site/api/v2/' : 'http://43.138.222.187:8000/'
     }
   },
+
   quasar: {
     // config: {
     //     brand: {
@@ -56,9 +61,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
   build: {
     transpile: ['vuetify']
   },
+
   imports: {
     dirs: ['./store'], // 导入所有store,
     transform: {
@@ -67,6 +74,7 @@ export default defineNuxtConfig({
       exclude: [/\be-plus-ui\b/]
     }
   },
+
   // nitro: {
   //   esbuild: {
   //     options: {
@@ -109,6 +117,7 @@ export default defineNuxtConfig({
       mode: 'out-in',
     },
   },
+
   vite: {
     vueJsx: {
       mergeProps: true
@@ -126,11 +135,14 @@ export default defineNuxtConfig({
       })
     ]
   },
+
   css: [
       '@/assets/styles/global.scss',
       '@/assets/styles/vars.scss',
       'element-plus/dist/index.css',
       'e-plus-ui/lib/index.css',
       'bootstrap-icons/font/bootstrap-icons.css'
-  ]
+  ],
+
+  compatibilityDate: '2024-08-22'
 })

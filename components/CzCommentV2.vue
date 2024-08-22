@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
+import { EpImage, EpComment, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
 import { getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
 const $q = useQuasar()
