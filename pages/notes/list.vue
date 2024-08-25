@@ -1,43 +1,61 @@
 <script setup lang="ts">
-import { EpTextFold, EpLine } from 'e-plus-ui';
+import { EpTextFold, EpLine, EpPagination } from 'e-plus-ui';
+import { useFormatDate } from '@eqian/utils-vue';
+import { getNotesList } from '~/api/notes';
+import type { INoteRes } from '~/api/notes/type';
+const noteData = ref<INoteRes>();
+const params = ref({
+  page_size: 20,
+  page_num: 1
+});
+const getList = () => {
+  getNotesList(params.value).then((res) => {
+    noteData.value = res;
+  });
+};
+getList();
+const getDay = (date: Date | string) => {
+  const format = useFormatDate(date, 'dd');
+  return format || '-';
+};
 </script>
 
 <template>
   <div class="cz-my-0 cz-mx-auto cz-max-w-3xl">
     <div class="cz-mt-20 cz-shadow-lg">
-      <div v-for="i in 10" :key="i" class="cz-flex cz-space-y-10">
-        <div class="left-time cz-relative cz-flex cz-items-center">
-          <div class="cz-absolute cz-rounded -cz-left-0 cz-z-10 cz-top-[48%] cz-border cz-w-16 cz-h-16" />
-          <div class="cz-absolute cz-rounded cz-bg-amber-200 cz-shadow-lg cz-shadow-lime-50 -cz-left-2 cz-z-20 cz-top-1/2 cz-border cz-w-16 cz-h-16">
-            <span class="cz-inline-block cz-text-3xl cz-font-bold">15</span>
-            <time class="cz-text-xs cz-inline-block cz-font-bold">2024-08</time>
+      <div v-for="item in noteData?.list" :key="item.id" class="cz-flex cz-space-y-10">
+        <div class="left-time cz-relative cz-w-12 cz-flex cz-items-center">
+          <div class="cz-absolute cz-rounded cz-border-amber-400 -cz-left-0 cz-z-10 cz-top-[28%] cz-border cz-w-16 cz-h-16" />
+          <div class="cz-absolute cz-rounded cz-bg-sky-600 cz-text-white cz-shadow-lg cz-shadow-lime-50 -cz-left-2 cz-z-20 cz-top-1/3 cz-border cz-w-16 cz-h-16">
+            <span class="cz-inline-block cz-text-center cz-w-full cz-text-3xl cz-font-bold">{{ getDay(item.create_date ?? '') }}</span>
+            <time class="cz-text-xs cz-inline-block  cz-text-center cz-w-full cz-font-bold">{{ useFormatDate(item.create_date ?? '', 'yyyy/MM') }}</time>
           </div>
         </div>
         <div class="cz-flex-1 cz-px-8">
-          <div class="top-title cz-py-4">
-            标题
-          </div>
-          <div class="cz-flex cz-space-x-10">
-            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3">阅读次数 9999</span>
-            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3">标签 9999</span>
+          <h3 class="top-title cz-py-4">
+            {{ item.title }}
+          </h3>
+          <div class="cz-flex  cz-space-x-10">
+            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： 9999</span>
+            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="bookmark" />{{ item.tags?item.tags?.join('、') : '-' }}</span>
+            <span v-if="item.city" class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="geo" />   {{ item.city }}</span>
           </div>
           <article class="cz-note-content">
             <ep-text-fold :line="3">
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
-              正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容正文内容
+              {{ item.content }}
             </ep-text-fold>
           </article>
-          <div class="cz-flex cz-justify-end cz-px-6 cz-py-8">
-            <div class="cz-text-orange-300">
-              全文
-            </div>
+          <div class="cz-flex cz-justify-end cz-px-6 cz-py-4">
+            <a href="#" class="cz-text-orange-500">
+              阅读全文
+              <cz-icon name="arrow-return-right" />
+            </a>
           </div>
           <ep-line />
         </div>
+      </div>
+      <div class="cz-py-10">
+        <EpPagination :total="noteData?.total" layout="prev, pager, next, jumper, ->" />
       </div>
     </div>
   </div>

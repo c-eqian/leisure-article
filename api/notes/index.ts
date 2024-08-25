@@ -1,5 +1,5 @@
 import { http } from '~/api/http'
-import type { INoteItem, NoteData } from '~/api/notes/type'
+import type { INoteItem, INoteRes } from '~/api/notes/type'
 /**
  * 笔记列表
  * @param params
@@ -8,7 +8,7 @@ export const getNotesList = (params?: {
     page_size?: number;
     page_num?: number;
 }) => {
-  return http.request<NoteData>({
+  return http.request<INoteRes>({
     url: '/note/list',
     method: 'GET',
     params,
