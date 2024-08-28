@@ -28,7 +28,7 @@ export interface INoteItem {
     /**
      * 描述，描述
      */
-    describe?: null | string;
+    description?: null | string;
     /**
      * 所在区，所在区
      */

@@ -3,6 +3,7 @@ import { EpTextFold, EpLine, EpPagination } from 'e-plus-ui';
 import { useFormatDate } from '@eqian/utils-vue';
 import { getNotesList } from '~/api/notes';
 import type { INoteRes } from '~/api/notes/type';
+import { ROUTER_PREFIX } from '~/constant';
 const noteData = ref<INoteRes>();
 const params = ref({
   page_size: 20,
@@ -36,20 +37,23 @@ const getDay = (date: Date | string) => {
             {{ item.title }}
           </h3>
           <div class="cz-flex  cz-space-x-10">
-            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： 9999</span>
+            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： {{ item.view_number ?? 999 }}</span>
             <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="bookmark" />{{ item.tags?item.tags?.join('、') : '-' }}</span>
             <span v-if="item.city" class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="geo" />   {{ item.city }}</span>
           </div>
           <article class="cz-note-content">
             <ep-text-fold :line="3">
-              {{ item.content }}
+              {{ item.description }}
             </ep-text-fold>
           </article>
           <div class="cz-flex cz-justify-end cz-px-6 cz-py-4">
-            <a href="#" class="cz-text-orange-500">
+            <NuxtLink
+              :to="`${ROUTER_PREFIX}/notes/${item.uid}`"
+              class="cz-p-1 cz-text-orange-500"
+            >
               阅读全文
               <cz-icon name="arrow-return-right" />
-            </a>
+            </NuxtLink>
           </div>
           <ep-line />
         </div>
