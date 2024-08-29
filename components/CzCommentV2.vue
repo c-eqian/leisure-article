@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { EpImage, EpComment, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
-import { getCommentList, postArticleComment } from '~/api/comment'
+import { deleteCommentItem, getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
 const $q = useQuasar()
 const config = {
   hasMore: 'is_more',
   defaultAvatar: 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg',
+  actionsExtra: true,
   commentFields: {
     avatar: 'user_info.avatar',
     username: 'user_info.username',
@@ -34,6 +35,7 @@ const props = defineProps({
 })
 const commentList = ref<ICommentList.IResponse>({ list: [], total: 0 } as ICommentList.IResponse)
 const isLogin = computed(() => props.isLogin)
+const commentRef = ref<InstanceType<typeof EpComment>>()
 const handleGetCommentList = () => {
   queryParams.value.page_num = 1
   if (!props.articleId) { return }
@@ -48,7 +50,7 @@ onMounted(() => {
 })
 watch(() => props.articleId, () => {
   if (!props.articleId) {
-    commentList.value = { list: [], total: 0 } as ICommentList.IResponse
+    commentList.value = { list: [] as any[], total: 0 } as ICommentList.IResponse
   } else {
     handleGetCommentList()
   }
@@ -88,27 +90,6 @@ const handleReplyBefore = () => {
     return true
   }
 }
-// const handleLazyLoad: CommentLoadFn = ({ isSubReply, item, resolve, la }) => {
-//   if(isSubReply) {
-//     const res = queryParams.get(item.sub_comment_id)
-//     if(res) {
-//       res.sub_page_num += 1
-//       queryParams.set(item.sub_comment_id, res)
-//     } else{
-//       queryParams.set(item.sub_comment_id, {
-//         page_num: 2,
-//         sub_page_num: 2,
-//         parent_id: item.parent_id
-//       })
-//     }
-//   }
-//   getCommentList({
-//     article_id: props.articleId || '',
-//     page_num: isSubReply ? queryParams.value +=1
-//   }).then((res) => {
-//     commentList.value = res
-//   })
-// }
 const handleLoad = (load: LoadData) => {
   const { resolve } = load
   if (!props.articleId) {
@@ -124,13 +105,36 @@ const handleLoad = (load: LoadData) => {
     resolve(list, isMore === 1)
   })
 }
+const handleActions = async (type: 0| 1, { item, isSubReply }) => {
+  if (type === 0 && handleReplyBefore()) {
+    const data = {} as {
+      comment_id?: number;
+      sub_comment_id?: number;
+    }
+    if (isSubReply) {
+      data.sub_comment_id = item.sub_comment_id
+    } else {
+      data.comment_id = item.comment_id
+    }
+    await deleteCommentItem(data)
+    commentRef.value?.deleteComment(item)
+  }
+}
 defineExpose({
   handleGetCommentList
 })
 </script>
 
 <template>
-  <EpComment :load="handleLoad" :before-reply="handleReplyBefore" :data="commentList" :config="config" @confirm-reply="handleConfirmReply">
+  <EpComment
+    ref="commentRef"
+    :load="handleLoad"
+    :before-reply="handleReplyBefore"
+    :data="commentList"
+    :config="config"
+    @actions="handleActions"
+    @confirm-reply="handleConfirmReply"
+  >
     <template #avatar="{item, isSubReply}">
       <ep-image round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
     </template>
