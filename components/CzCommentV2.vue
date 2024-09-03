@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { EpImage, EpComment, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
+import { EpImage, EpComment, EpLine, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
+import { Delete, Warning } from '@element-plus/icons-vue'
 import { deleteCommentItem, getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
 const $q = useQuasar()
@@ -106,6 +107,7 @@ const handleLoad = (load: LoadData) => {
   })
 }
 const handleActions = async (type: 0| 1, { item, isSubReply }) => {
+  if (item.is_publisher !== 1) { return }
   if (type === 0 && handleReplyBefore()) {
     const data = {} as {
       comment_id?: number;
@@ -132,11 +134,23 @@ defineExpose({
     :before-reply="handleReplyBefore"
     :data="commentList"
     :config="config"
-    @actions="handleActions"
     @confirm-reply="handleConfirmReply"
   >
     <template #avatar="{item, isSubReply}">
       <ep-image round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
+    </template>
+    <template #actions-extra="{item}">
+      <el-button v-if="item.is_publisher === 1" link type="danger" :icon="Delete" @click="()=> handleActions(0, {item})">
+        删 除
+      </el-button>
+      <ep-line />
+      <el-button
+        link
+        size="small"
+        :icon="Warning"
+      >
+        投 诉
+      </el-button>
     </template>
   </EpComment>
 </template>
