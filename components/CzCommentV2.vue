@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { EpImage, EpComment, EpLine, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
 import { Delete, Warning } from '@element-plus/icons-vue'
+import { isEmpty } from '@eqian/utils-vue'
 import { deleteCommentItem, getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
+import { useEmojiTransform } from '~/composables/emoji'
 const $q = useQuasar()
 const config = {
   hasMore: 'is_more',
@@ -138,6 +140,14 @@ defineExpose({
   >
     <template #avatar="{item, isSubReply}">
       <ep-image round scale :url="item.user_info.avatar || config.defaultAvatar" :width="isSubReply ? 24 : 36" :height="isSubReply ? 24 : 36" />
+    </template>
+    <template #content="{item, isSubReply, reply}">
+      <div>
+        <div v-dompurify-html="useEmojiTransform(item.content)" />
+        <div v-if="isSubReply && !isEmpty(reply)" class="cz-border cz-rounded-2xl cz-my-1 cz-text-[12px] cz-text-gray-600">
+          <div v-dompurify-html="useEmojiTransform(reply.content)" class="cz-p-2" />
+        </div>
+      </div>
     </template>
     <template #actions-extra="{item}">
       <el-button v-if="item.is_publisher === 1" link type="danger" :icon="Delete" @click="()=> handleActions(0, {item})">

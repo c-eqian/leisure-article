@@ -99,7 +99,7 @@ export const useEmojiTransform = (text: string) => {
   return text.replace(regex, (match, _emojiTitle) => {
     const emoji = emojiList.find(e => e.title === match)
     if (emoji) {
-      const url = emoji.url ? emoji.url : `https://oss.cz-leisure.com/face/${emoji.name}`
+      const url = emoji.url ? emoji.url : `https://oss.eqian.site/face/${emoji.name}`
       return `<span 
             class="emoji-img" 
             style="background-image: url(${url});width: 14px;
