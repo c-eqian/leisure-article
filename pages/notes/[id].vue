@@ -49,9 +49,14 @@ const handleAddress = (province:string, city:string) => {
   return '';
 };
 useHead(useHeadOption);
-getNote(id as string).then((res) => {
-  noteData.value = res;
-});
+const getNoteDetail = () => {
+  if (!id) { return; }
+  useAsyncData('note-detail', () => getNote(id as string)).then((res) => {
+    noteData.value = res.data.value || {} as INoteItem;
+  });
+};
+
+getNoteDetail();
 </script>
 
 <template>
