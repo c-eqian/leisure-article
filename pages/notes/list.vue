@@ -4,21 +4,27 @@ import { useFormatDate } from '@eqian/utils-vue';
 import { getNotesList } from '~/api/notes';
 import type { INoteRes } from '~/api/notes/type';
 import { ROUTER_PREFIX } from '~/constant';
-const noteData = ref<INoteRes>();
+const noteData = ref<INoteRes>({
+  total: 0,
+  list: [],
+  is_more: 1
+});
 const params = ref({
   page_size: 20,
   page_num: 1
 });
-const getList = () => {
-  getNotesList(params.value).then((res) => {
-    noteData.value = res;
-  });
+const getList = async () => {
+  const { data } = await useAsyncData('note-list', () => getNotesList(params.value));
+  if (data.value) {
+    noteData.value = data.value;
+  }
 };
-getList();
+
 const getDay = (date: Date | string) => {
   const format = useFormatDate(date, 'dd');
   return format || '-';
 };
+await getList();
 </script>
 
 <template>
@@ -37,7 +43,7 @@ const getDay = (date: Date | string) => {
             {{ item.title }}
           </h3>
           <div class="cz-flex  cz-space-x-10">
-            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： {{ item.view_number ?? 999 }}</span>
+            <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： {{ item.view_number ?? '-' }}</span>
             <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="bookmark" />{{ item.tags?item.tags?.join('、') : '-' }}</span>
             <span v-if="item.city" class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="geo" />   {{ item.city }}</span>
           </div>
@@ -58,7 +64,7 @@ const getDay = (date: Date | string) => {
           <ep-line />
         </div>
       </div>
-      <div class="cz-py-10">
+      <div class="cz-py-20">
         <EpPagination :total="noteData?.total" layout="prev, pager, next, jumper, ->" />
       </div>
     </div>
