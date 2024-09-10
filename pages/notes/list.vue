@@ -24,7 +24,7 @@ const getDay = (date: Date | string) => {
   const format = useFormatDate(date, 'dd');
   return format || '-';
 };
-await getList();
+getList();
 </script>
 
 <template>
@@ -49,7 +49,9 @@ await getList();
           </div>
           <article class="cz-note-content">
             <ep-text-fold :line="3">
-              {{ item.description }}
+              <p>
+                {{ item.description }}
+              </p>
             </ep-text-fold>
           </article>
           <div class="cz-flex cz-justify-end cz-px-6 cz-py-4">

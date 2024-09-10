@@ -224,7 +224,14 @@ const handleArticleLike = async () => {
           </div>
         </div>
         <hr class="max-md:cz-hidden">
-        <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="article?.content" />
+        <md-preview
+          id="md-preview-id"
+          code-theme="stackoverflow"
+          :code-foldable="false"
+          :theme="themeMode"
+          editor-id="md-preview-id"
+          :model-value="article?.content"
+        />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
           <time>{{ useFormatDate(article?.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>

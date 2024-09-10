@@ -87,7 +87,14 @@ getNoteDetail();
           </div>
         </div>
         <hr class="max-md:cz-hidden">
-        <md-preview id="md-preview-id" :theme="themeMode" editor-id="md-preview-id" :model-value="noteData?.content" />
+        <md-preview
+          id="md-preview-note"
+          :code-foldable="false"
+          code-theme="stackoverflow"
+          :theme="themeMode"
+          editor-id="md-preview-note"
+          :model-value="noteData?.content"
+        />
         <div class="update-time cz-px-4 cz-float-right cz-text-[#a0a0a0] cz-py-5 cz-text-xs">
           <span>最近更新：</span>
           <time>{{ useFormatDate(noteData?.update_date|| '', 'yyyy-MM-dd HH:mm') }}</time>
