@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Typed from 'typed.js';
 import { usePriceToThousand } from '@eqian/utils-vue';
+import { EpImage } from 'e-plus-ui';
 import CzBanner from '~/components/CzBanner.vue';
-
 import { getArticleList } from '~/api/article';
 import type { IArticleRes } from '~/api/article/type';
 import { getCatalogueList } from '@/api/catalogue';
@@ -17,6 +17,7 @@ const articleList = ref<IArticleRes>({} as IArticleRes);
 const typed = ref<Typed>();
 const website = ref<IWebsite.Data>({} as IWebsite.Data);
 const systemStore = useGlobalStore();
+const userInfoComputed = computed(() => systemStore.userInfo);
 const catalogueList = ref<CatalogueList[]>([]);
 const typedRef = ref<HTMLDivElement>();
 const sentenceList = ref<ISystemSentence.Datum[]>([]);
@@ -26,7 +27,8 @@ const query = ref({
   page_num: 1
 });
 definePageMeta({
-  keepalive: true
+  keepalive: true,
+  layout: 'header'
 });
 const isLoading = ref(false);
 const visitorInfo = ref<ISystemVisitor.IRes['data']>();
@@ -219,16 +221,25 @@ if (process.client) {
           >
             <div class="cz-absolute -cz-top-5 cz-left-1/2 -cz-translate-x-1/2">
               <img
+                v-if="!userInfoComputed.isLogin"
                 src="@/assets/default-avatar.jpg"
                 alt=""
                 class="cz-w-20 cz-h-20 cz-rounded-full cz-transition-all hover:cz-scale-125"
               >
+              <ep-image
+                v-else
+                round
+                :url="userInfoComputed.avatar"
+                width="80"
+                height="80"
+                scale
+              />
             </div>
             <div class="cz-pt-10 cz-border-b cz-border-dashed">
               <div class="cz-text-center">
                 <cz-typing
                   class="cz-text-xs cz-py-4 cz-text-[#a0a0a0]"
-                  text="大丈夫生于天地之间,怎能郁郁久居人下"
+                  :text="userInfoComputed.isLogin ? userInfoComputed.motto : '大丈夫生于天地之间,怎能郁郁久居人下'"
                 />
               </div>
               <hr class="cz-divider">

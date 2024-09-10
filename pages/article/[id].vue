@@ -15,7 +15,8 @@ import { articleLike, getArticleItemDetailById } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
 import CzCommentV2 from '~/components/CzCommentV2.vue';
 definePageMeta({
-  scrollToTop: true
+  scrollToTop: true,
+  layout: 'header'
 });
 const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);

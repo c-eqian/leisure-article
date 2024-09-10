@@ -7,6 +7,12 @@ const drawer = ref(false)
 const systemStore = useGlobalStore()
 const $q = useQuasar()
 const userInfoComputed = computed(() => systemStore.userInfo)
+const props = defineProps({
+  bgInherit: {
+    type: Boolean,
+    default: false
+  }
+})
 const menuList = ref([
   {
     name: '文章',
@@ -41,6 +47,7 @@ const menuList = ref([
   }
 ])
 // const router = useRouter()
+const { path } = useRoute()
 const handleToRouter = () => {
   // router.replace('/login')
   // dialogVisible.value = true
@@ -89,7 +96,13 @@ systemStore.getWebsite().then((res) => {
           </li>
         </ul>
       </q-drawer>
-      <q-header reveal class="cz-fixed  cz-top-0 cz-text-white">
+      <q-header
+        reveal
+        class="cz-fixed cz-top-0 cz-text-white"
+        :class="{
+          'cz-bg-inherit':props.bgInherit
+        }"
+      >
         <q-toolbar class="cz-text-inherit">
           <q-toolbar-title>
             <span class="cz-select-none">{{ websiteTitle || '小白菜leisure' }}</span>
