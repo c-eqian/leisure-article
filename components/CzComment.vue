@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 
-import { useQuasar } from 'quasar'
 import { onClickOutside } from '@vueuse/core'
 import { initEmoji } from '~/composables/emoji'
-import CzAuthDialog from '~/components/CzAuthDialog.vue'
 import { useLogin } from '~/composables/use-login'
 interface IEmoji {
   title: string;
   name: string;
   url?:string;
 }
-const $q = useQuasar()
 const emits = defineEmits<{(event: 'onSubMit', v: string): void;
 }>()
 const valueComputed = defineModel('value', {

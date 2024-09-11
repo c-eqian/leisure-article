@@ -75,7 +75,13 @@ export const emojiList = [
 ]
 
 export const initEmoji = () => {
-  return emojiList
+  return emojiList.map((item) => {
+    return {
+      name: item.title,
+      title: item.title,
+      url: `https://oss.eqian.site/face/${item.name}`
+    }
+  })
 }
 // export const getEmo = ()=>{
 //     let modulesEmoji = []

@@ -33,6 +33,12 @@ const menuList = ref([
     icon: 'file-earmark-text'
   },
   {
+    name: '留言',
+    isReplace: false,
+    path: '/message/list',
+    icon: 'file-earmark-text'
+  },
+  {
     name: '必应',
     isReplace: false,
     path: '/wallpaper/list',
@@ -47,7 +53,6 @@ const menuList = ref([
   }
 ])
 // const router = useRouter()
-const { path } = useRoute()
 const handleToRouter = () => {
   // router.replace('/login')
   // dialogVisible.value = true
