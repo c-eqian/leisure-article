@@ -86,7 +86,7 @@ systemStore.getWebsite().then((res) => {
 
 <template>
   <section>
-    <q-layout view="hHh lpR fFf">
+    <q-layout view="hHh lpR fFf" style="min-height: 0">
       <q-drawer v-model="drawer" behavior="mobile" overlay side="right">
         <ul class="cz-flex cz-px-8">
           <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
@@ -166,7 +166,7 @@ systemStore.getWebsite().then((res) => {
           />
         </q-toolbar>
       </q-header>
-      <main class="cz-h-screen cz-w-full !cz-pt-0">
+      <main class="cz-w-full !cz-pt-0">
         <slot />
       </main>
     </q-layout>

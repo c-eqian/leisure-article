@@ -25,7 +25,6 @@ export const getMessageList = (params?: IMessageList.IReq) => {
     url: 'message/list',
     params,
     method: 'GET',
-    server: true,
     cache: false,
     isLoading: false
   })
