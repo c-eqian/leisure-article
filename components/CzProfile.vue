@@ -55,7 +55,6 @@ const tabsName = ref('dynamic')
     </div>
   </div>
   <div
-    v-if="false"
     class="wallpaper"
   >
     <video

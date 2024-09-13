@@ -3,7 +3,7 @@ import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
 import { Minus, Plus, RefreshLeft, RefreshRight } from '@element-plus/icons-vue'
 import { ElDialog, ElRow, ElCol, ElUpload, ElButton } from 'element-plus'
-import { defineFormSchema, useFormSchema } from 'e-plus-ui'
+import { defineFormSchema, useFormSchema, EpLine, EpFormSchema, EpCard } from 'e-plus-ui'
 import { usePick } from '@eqian/utils-vue'
 import { useGlobalStore } from '~/store'
 import { updateUserInfo, uploadFile } from '~/api/user'
@@ -64,6 +64,7 @@ function beforeUpload (file: File) {
 }
 /** 实时预览 */
 function realTime (data: any) {
+  console.log(232, data)
   options.previews = data
 }
 /** 关闭窗口 */
@@ -119,22 +120,26 @@ const config = defineFormSchema<User.IUserInfoResponse>({
       type: 'input',
       prop: 'username',
       label: '昵称',
+      labelWidth: '80px',
       rules: true
     },
     {
       type: 'input',
       prop: 'phone',
+      labelWidth: '80px',
       label: '联系'
     },
     {
       type: 'input',
       prop: 'email',
+      labelWidth: '80px',
       label: '邮箱'
     },
     {
       type: 'input',
       prop: 'motto',
       label: '签名',
+      col: 24,
       componentProps: {
         type: 'textarea',
         maxlength: 100,
@@ -162,7 +167,7 @@ const config = defineFormSchema<User.IUserInfoResponse>({
           alt="头像"
           style="object-fit: cover"
           class="cz-h-20 cz-w-20 cz-rounded-[8px]"
-          @click="editCropper()"
+          @click="editCropper"
         >
         <div class="cz-px-2 cz-flex-1">
           <div class="cz-font-bold cz-text-sm">
@@ -190,137 +195,163 @@ const config = defineFormSchema<User.IUserInfoResponse>({
           </div>
         </div>
       </div>
-      <el-dialog
-        v-model="open"
-        :title="title"
-        width="800px"
-        :close-on-click-modal="false"
-        append-to-body
-        @opened="modalOpened"
-        @close="closeDialog"
-      >
-        <el-row>
-          <el-col
-            :xs="24"
-            :md="12"
-            :style="{ height: '350px' }"
-          >
-            <vue-cropper
-              v-if="visible"
-              ref="cropper"
-              :img="options.img"
-              :info="true"
-              :auto-crop="options.autoCrop"
-              :auto-crop-width="options.autoCropWidth"
-              :auto-crop-height="options.autoCropHeight"
-              :fixed-box="options.fixedBox"
-              :output-type="options.outputType"
-              @real-time="realTime"
-            />
-          </el-col>
-          <el-col
-            :xs="24"
-            :md="12"
-            :style="{ height: '350px' }"
-          >
-            <div class="avatar-upload-preview">
-              <img
-                :src="options.previews.url"
-                :style="options.previews.img"
-                alt=""
+      <div class="user-info-head">
+        <el-dialog
+          v-model="open"
+          :title="title"
+          width="800px"
+          :close-on-click-modal="false"
+          append-to-body
+          @opened="modalOpened"
+          @close="closeDialog"
+        >
+          <el-row>
+            <el-col
+              :xs="24"
+              :md="12"
+              :style="{ height: '350px' }"
+            >
+              <client-only>
+                <vue-cropper
+                  v-if="visible"
+                  ref="cropper"
+                  :img="options.img"
+                  :info="true"
+                  :auto-crop="options.autoCrop"
+                  :auto-crop-width="options.autoCropWidth"
+                  :auto-crop-height="options.autoCropHeight"
+                  :fixed-box="options.fixedBox"
+                  :output-type="options.outputType"
+                  @real-time="realTime"
+                />
+              </client-only>
+            </el-col>
+            <el-col
+              :xs="24"
+              :md="12"
+              :style="{ height: '350px' }"
+            >
+              <div class="avatar-upload-preview">
+                <img
+                  :src="options.previews.url"
+                  :style="options.previews.img"
+                  alt=""
+                >
+              </div>
+            </el-col>
+          </el-row>
+          <br>
+          <el-row>
+            <el-col
+              :lg="2"
+              :md="2"
+            >
+              <el-upload
+                action="#"
+                :show-file-list="false"
+                :before-upload="beforeUpload"
               >
-            </div>
-          </el-col>
-        </el-row>
-        <br>
-        <el-row>
-          <el-col
-            :lg="2"
-            :md="2"
-          >
-            <el-upload
-              action="#"
-              :show-file-list="false"
-              :before-upload="beforeUpload"
+                <el-button>
+                  选择
+                  <el-icon class="el-icon--right">
+                    <!--                <Upload />-->
+                  </el-icon>
+                </el-button>
+              </el-upload>
+            </el-col>
+            <el-col
+              :lg="{ span: 1, offset: 2 }"
+              :md="2"
             >
-              <el-button>
-                选择
-                <el-icon class="el-icon--right">
-                  <!--                <Upload />-->
-                </el-icon>
-              </el-button>
-            </el-upload>
-          </el-col>
-          <el-col
-            :lg="{ span: 1, offset: 2 }"
-            :md="2"
-          >
-            <el-button
-              :icon="Plus"
-              @click="changeScale(1)"
-            />
-          </el-col>
-          <el-col
-            :lg="{ span: 1, offset: 1 }"
-            :md="2"
-          >
-            <el-button
-              :icon="Minus"
-              @click="changeScale(-1)"
-            />
-          </el-col>
-          <el-col
-            :lg="{ span: 1, offset: 1 }"
-            :md="2"
-          >
-            <el-button
-              :icon="RefreshLeft"
-              @click="rotateLeft()"
-            />
-          </el-col>
-          <el-col
-            :lg="{ span: 1, offset: 1 }"
-            :md="2"
-          >
-            <el-button
-              :icon="RefreshRight"
-              @click="rotateRight()"
-            />
-          </el-col>
-          <el-col
-            :lg="{ span: 2, offset: 2 }"
-            :md="2"
-          >
-            <el-button
-              type="primary"
-              :loading="saveLoading"
-              @click="saveUploadImg"
+              <el-button
+                :icon="Plus"
+                @click="changeScale(1)"
+              />
+            </el-col>
+            <el-col
+              :lg="{ span: 1, offset: 1 }"
+              :md="2"
             >
-              保 存
-            </el-button>
-          </el-col>
-          <el-col
-            :lg="{ span: 2, offset: 2 }"
-            :md="2"
-          >
-            <el-button
-              :disabled="avatarUrl===''"
-              type="primary"
-              @click="uploadImg"
+              <el-button
+                :icon="Minus"
+                @click="changeScale(-1)"
+              />
+            </el-col>
+            <el-col
+              :lg="{ span: 1, offset: 1 }"
+              :md="2"
             >
-              提 交
-            </el-button>
-          </el-col>
-        </el-row>
-        <ep-line />
-        <ep-card title="修改信息">
-          <ep-form-schema :config @registry="registry" />
-        </ep-card>
-      </el-dialog>
+              <el-button
+                :icon="RefreshLeft"
+                @click="rotateLeft()"
+              />
+            </el-col>
+            <el-col
+              :lg="{ span: 1, offset: 1 }"
+              :md="2"
+            >
+              <el-button
+                :icon="RefreshRight"
+                @click="rotateRight()"
+              />
+            </el-col>
+          </el-row>
+          <ep-line />
+          <el-row>
+            <el-col>
+              <ep-card title="修改信息">
+                <ep-form-schema :config @registry="registry" />
+              </ep-card>
+            </el-col>
+          </el-row>
+          <template #footer>
+            <el-row>
+              <el-col
+                :lg="{ span: 2, offset: 2 }"
+                :md="2"
+              >
+                <el-button
+                  type="primary"
+                  :loading="saveLoading"
+                  @click="saveUploadImg"
+                >
+                  保 存
+                </el-button>
+              </el-col>
+              <el-col
+                :lg="{ span: 2, offset: 2 }"
+                :md="2"
+              >
+                <el-button
+                  :disabled="avatarUrl===''"
+                  type="primary"
+                  @click="uploadImg"
+                >
+                  提 交
+                </el-button>
+              </el-col>
+            </el-row>
+          </template>
+        </el-dialog>
+      </div>
     </div>
   </client-only>
 </template>
 
 <style scoped lang="scss">
-
+.user-info-head {
+  position: relative;
+  display: inline-block;
+  height: 120px;
+}
+.avatar-upload-preview {
+  position: absolute;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #ccc;
+  overflow: hidden;
+}
 </style>
