@@ -135,7 +135,7 @@ getList();
                   <el-button v-if="item.item.is_publisher === 1" link type="danger" :icon="Delete" @click="()=> handleActions(0, item)">
                     删 除
                   </el-button>
-                  <ep-line />
+                  <ep-line v-show="item.item.is_publisher === 1" />
                   <el-button
                     link
                     size="small"

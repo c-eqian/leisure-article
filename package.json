@@ -39,6 +39,7 @@
     "pinia": "^2.1.7",
     "quasar": "^2.15.4",
     "typed.js": "^2.1.0",
+    "vue-cropper": "^0.6.5",
     "vue-dompurify-html": "^5.0.1"
   }
 }

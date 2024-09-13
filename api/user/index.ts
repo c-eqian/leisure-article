@@ -39,3 +39,27 @@ export const userLogout = () => {
     method: 'GET'
   })
 }
+/**
+ * 上传
+ * @param data
+ */
+export const uploadFile = (data: {
+  path: string,
+  file: File
+}) => {
+  const form = new FormData()
+  form.append('file', data.file)
+  form.append('path', data.path)
+  return http.request<{
+    'size': number,
+    'name': string,
+    'url': string
+  }>({
+    url: 'oss/ali-oss-upload',
+    method: 'POST',
+    header: {
+      'Content-Type': 'multipart/form-data'
+    },
+    params: data
+  })
+}

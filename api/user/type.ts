@@ -53,7 +53,7 @@ export namespace User {
     }
 
     export interface IUserInfoRequest {
-        id: number;
+        id: any;
         username?: string;
         avatar?: any;
         phone?: string;
