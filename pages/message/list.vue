@@ -34,7 +34,7 @@ const fieldsConfig: ICommentConfig = {
       return h(EpIcon, {
         width: 12,
         height: 12,
-        color: '#f8c828'
+        color: '#6495fc'
       }, {
         default: () => h(Auth)
       });
@@ -43,7 +43,7 @@ const fieldsConfig: ICommentConfig = {
   },
   showIpAddress: ({ item }) => {
     if (!item.province) { return ''; }
-    return `<span class="cz-inline-block cz-px-2 cz-text-[10px]">来自·${item.province ? `${item.province}` : ''}</span>`;
+    return `<span class="cz-inline-block cz-px-2 cz-text-[10px]">来自·${item.province ? `${item.province?.replace('省', '')}` : ''}</span>`;
   },
   subStyle: {
     backgroundColor: 'rgba(248,249,250, .3)'
