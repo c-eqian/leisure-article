@@ -24,7 +24,7 @@ export namespace IMessageList {
      */
     export interface IUserInfo {
         avatar: string;
-        user_id: number;
+        id: number;
         username: string;
     }
 

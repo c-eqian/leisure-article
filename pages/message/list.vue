@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { ICommentConfig, IResolveParams } from 'e-plus-ui';
-import { EpComment, EpEditor, EpLine } from 'e-plus-ui';
+import { EpComment, EpEditor, EpLine, EpIcon } from 'e-plus-ui';
+import { Auth } from '@e-plus-ui/icons';
 import { ref, h } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Warning } from '@element-plus/icons-vue';
 import { isEmpty } from '@eqian/utils-vue';
 import { initEmoji, useEmojiTransform } from '~/composables/emoji';
 import { deleteMessageItem, getMessageList, postMessage } from '~/api/message';
+import type { IMessageList } from '~/api/message/type';
 const commentRef = ref<InstanceType<typeof EpComment>>();
 const messageData = ref<any>({});
 definePageMeta({
@@ -27,10 +29,24 @@ const fieldsConfig: ICommentConfig = {
   hasMore: 'is_more',
   defaultAvatar: 'https://s3.bmp.ovh/imgs/2024/05/02/f298a3b692dca2ba.jpg',
   actionsExtra: true,
+  showLevel: ({ item }: {item: IMessageList.DataList}) => {
+    if (item?.user_info.id === 6) {
+      return h(EpIcon, {
+        width: 12,
+        height: 12,
+        color: '#f8c828'
+      }, {
+        default: () => h(Auth)
+      });
+    }
+    return '';
+  },
   showIpAddress: ({ item }) => {
-    return h('span', {
-      class: 'cz-inline-block cz-px-2 cz-text-[10px]'
-    }, item.province ? `${item.province} · ${item.city}` : '');
+    if (!item.province) { return ''; }
+    return `<span class="cz-inline-block cz-px-2 cz-text-[10px]">来自·${item.province ? `${item.province}` : ''}</span>`;
+  },
+  subStyle: {
+    backgroundColor: 'rgba(248,249,250, .3)'
   },
   commentFields: {
     avatar: 'user_info.avatar',
@@ -112,7 +128,7 @@ getList();
                 <template #content="{item, isSubReply, reply}">
                   <div v-html="useEmojiTransform(item.content)" />
                   <div v-if="isSubReply && !isEmpty(reply)" class="cz-border cz-rounded-2xl cz-my-1 cz-text-[12px] cz-text-gray-600">
-                    <div v-dompurify-html="useEmojiTransform(reply.content)" class="cz-p-2" />
+                    <div class="cz-p-2" v-html="useEmojiTransform(reply.content)" />
                   </div>
                 </template>
                 <template #actionsExtra="item">
