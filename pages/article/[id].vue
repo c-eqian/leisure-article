@@ -174,7 +174,7 @@ const handleArticleLike = async () => {
               </div>
             </client-only>
             <div v-if="article.source === 1" class="cz-space-x-1.5">
-              <span class="cz-p-2 cz-bg-sky-500 cz-text-gray-50 cz-rounded">转载</span>
+              <span class="cz-p-1 cz-bg-sky-500 cz-text-gray-50 cz-rounded">转载</span>
             </div>
           </div>
         </div>
