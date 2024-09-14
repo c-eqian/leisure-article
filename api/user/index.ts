@@ -1,5 +1,6 @@
 import type { User } from './type'
 import { http } from '~/api/http'
+import { useGetTokenCookie } from '~/composables/use-cookies'
 
 export const userLogin = (data: User.ILoginRequest) => {
   return http.request<User.ILoginResponse>({
@@ -50,16 +51,24 @@ export const uploadFile = (data: {
   const form = new FormData()
   form.append('file', data.file)
   form.append('path', data.path)
-  return http.request<{
-    'size': number,
-    'name': string,
-    'url': string
-  }>({
-    url: 'oss/ali-oss-upload',
+  const { $config } = useNuxtApp()
+  const BASEURL = $config.public.BASE_URL
+  // console.log(' 请求处理', request, options)
+  const cookies = useGetTokenCookie()
+  return fetch(BASEURL + 'oss/ali-oss-upload', {
     method: 'POST',
-    header: {
-      'Content-Type': 'multipart/form-data'
+    headers: {
+      Authorization: cookies
     },
-    params: data
+    body: form
   })
+  // return http.request<{
+  //   'size': number,
+  //   'name': string,
+  //   'url': string
+  // }>({
+  //   url: 'oss/ali-oss-upload',
+  //   method: 'POST',
+  //   params: data
+  // })
 }

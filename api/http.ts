@@ -72,6 +72,9 @@ class Http {
           if (config.params?.token || cookies) {
             options.headers = { ...options.headers, Authorization: config.params?.token || cookies }
           }
+          if (config.header) {
+            options.headers = { ...options.headers, ...config.header }
+          }
         },
         onRequestError ({ request }) {
           // console.log(' 请求错误', request, options, error)

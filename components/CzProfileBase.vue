@@ -86,11 +86,12 @@ const useBlobToFile = (theBlob: any, fileName: string) => {
 const saveUploadImg = async () => {
   saveLoading.value = true
   proxy.$refs.cropper.getCropBlob(async (data: any) => {
-    const file = useBlobToFile(data, fileName.value || 'avatar.jpg')
+    const file = useBlobToFile(data, 'avatar.jpg')
     try {
       const res = await uploadFile({ file, path: 'avatar' })
       saveLoading.value = false
-      avatarUrl.value = res.url
+      const data = await res.json()
+      avatarUrl.value = 'https://' + data.data.url
       ElMessage.success('保存成功')
     } catch (e) {
       saveLoading.value = false
@@ -99,7 +100,7 @@ const saveUploadImg = async () => {
   })
 }
 const uploadImg = async () => {
-  const data = getFieldsValues()
+  const data = await getFieldsValues()
   if (data) {
     if (avatarUrl.value) {
       data.avatar = avatarUrl.value
@@ -323,7 +324,6 @@ const config = defineFormSchema<User.IUserInfoResponse>({
                 :md="2"
               >
                 <el-button
-                  :disabled="avatarUrl===''"
                   type="primary"
                   @click="uploadImg"
                 >
@@ -339,12 +339,16 @@ const config = defineFormSchema<User.IUserInfoResponse>({
 </template>
 
 <style scoped lang="scss">
+
 .user-info-head {
   position: relative;
   display: inline-block;
   height: 120px;
 }
 .avatar-upload-preview {
+  img {
+    max-width: none !important;
+  }
   position: absolute;
   top: 50%;
   transform: translate(50%, -50%);
