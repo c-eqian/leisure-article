@@ -64,7 +64,6 @@ function beforeUpload (file: File) {
 }
 /** 实时预览 */
 function realTime (data: any) {
-  console.log(232, data)
   options.previews = data
 }
 /** 关闭窗口 */
