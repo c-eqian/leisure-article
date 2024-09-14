@@ -19,7 +19,6 @@ const isCategory = ref(true);
 const { id } = useRoute().params;
 const article = ref<IArticleItem>({} as IArticleItem);
 const scrollElement = import.meta.browser ? document.documentElement : 'body';
-const commentFieldRef = ref<HTMLDivElement | null>(null);
 /**
  * 作者近期文章
  */
@@ -49,13 +48,6 @@ const handleLayoutMethod = (rowItem: any) => {
     return 'flex-end';
   }
   return 'space-between';
-};
-const handleToComment = () => {
-  commentFieldRef.value?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-    inline: 'center'
-  });
 };
 config({
   markdownItConfig (md) {
@@ -139,13 +131,6 @@ const handleArticleLike = async () => {
       <aside
         class="article-panel dark:cz-text-white cz-h-[500px] cz-fixed cz-top-[460px] -cz-ml-24 cz-z-[2] cz-w-[100px]"
       >
-        <div
-          :badge="useCountTransform(article?.comment_count || 0)"
-          class="cz-relative   cz-panel-btn cz-mb-1.5 cz-w-12 cz-h-12 cz-flex cz-items-center cz-justify-center"
-          @click="handleToComment"
-        >
-          <CzIcon name="chat-left-dots" />
-        </div>
         <div
           :badge="useCountTransform(article?.like_number || 0)"
           class="cz-relative cz-panel-btn cz-mb-1.5 cz-w-12 cz-h-12 cz-flex cz-items-center cz-justify-center"

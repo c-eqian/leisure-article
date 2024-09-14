@@ -84,11 +84,11 @@ defineProps({
               >{{ useBeforeDate(row.create_date) }}</a>
             </div>
             <div class="cz-px-3 md:cz-block cz-hidden">
-              <CzIcon name="chat-square-dots " class="cz-text-xs" />
+              <CzIcon name="at" class="cz-text-xs" />
               <a
                 class="cz-px-0.5"
                 href="#"
-              >{{ row.comment_count ? (row.comment_count+ '条评论') : '暂无评论' }}</a>
+              >{{ row.source===1 ? '转 载': '原 创' }}</a>
             </div>
           </div>
         </div>
