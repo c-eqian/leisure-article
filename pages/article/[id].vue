@@ -222,6 +222,9 @@ const handleArticleLike = async () => {
                 <span>发布于： {{ handleAddress(article?.province, article?.city) }}</span>
               </div>
             </client-only>
+            <div v-if="article.source === 1" class="cz-space-x-1.5">
+              <span class="cz-p-2 cz-bg-sky-500 cz-text-gray-50 cz-rounded">转载</span>
+            </div>
           </div>
         </div>
         <hr class="max-md:cz-hidden">
