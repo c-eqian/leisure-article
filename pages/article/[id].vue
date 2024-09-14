@@ -2,18 +2,13 @@
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from '@eqian/utils-vue';
-import { useQuasar } from 'quasar';
 import type { IArticleItem } from '~/api/article/type';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
-import CzComment from '~/components/CzComment.vue';
 import { useGlobalStore } from '~/store';
-import CzArticleComment from '~/components/CzArticleComment.vue';
-import { postArticleComment } from '~/api/comment';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import { articleLike, getArticleItemDetailById } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
-import CzCommentV2 from '~/components/CzCommentV2.vue';
 definePageMeta({
   scrollToTop: true,
   layout: 'header'
@@ -22,11 +17,9 @@ const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);
 const isCategory = ref(true);
 const { id } = useRoute().params;
-const $q = useQuasar();
 const article = ref<IArticleItem>({} as IArticleItem);
 const scrollElement = import.meta.browser ? document.documentElement : 'body';
 const commentFieldRef = ref<HTMLDivElement | null>(null);
-const czArticleCommentRef = ref<InstanceType<typeof CzArticleComment>>();
 /**
  * 作者近期文章
  */
@@ -64,32 +57,6 @@ const handleToComment = () => {
     inline: 'center'
   });
 };
-const handleSubMit = async (v: string) => {
-  if (!v) {
-    return;
-  }
-  try {
-    await postArticleComment({
-      article_id: article.value.id,
-      content: v
-    });
-    czArticleCommentRef.value?.handleGetCommentList();
-    article.value.comment_count += 1;
-    $q.notify({
-      type: 'positive',
-      position: 'top',
-      timeout: 3000,
-      message: '评论成功'
-    });
-  } catch (e) {
-    $q.notify({
-      type: 'positive',
-      position: 'top',
-      timeout: 3000,
-      message: e.msg || '操作失败'
-    });
-  }
-};
 config({
   markdownItConfig (md) {
     return useTargetBlankExtension(md);
@@ -122,7 +89,6 @@ const handleAddress = (province:string, city:string) => {
   if (province) { return [province, city].join('·'); }
   return '';
 };
-const userInfoComputed = computed(() => systemStorage.userInfo);
 useHead(useHeadOption);
 getArticle();
 const handleArticleLike = async () => {
@@ -271,14 +237,6 @@ const handleArticleLike = async () => {
                 {{ article?.next_article?.title }}
               </NuxtLink>
             </div>
-          </div>
-          <div class="cz-px-2">
-            <CzComment :is-login="userInfoComputed.isLogin" @on-sub-mit="handleSubMit">
-              <div ref="commentFieldRef">
-                评论（{{ article?.comment_count || 0 }}）
-              </div>
-            </CzComment>
-            <CzCommentV2 ref="czArticleCommentRef" :article-id="article.id" :is-login="userInfoComputed.isLogin" />
           </div>
         </client-only>
       </article>
