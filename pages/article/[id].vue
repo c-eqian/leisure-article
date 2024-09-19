@@ -57,7 +57,7 @@ config({
 /**
  * SEO
  */
-const metaDescription = computed(() => article.value?.describe?.substring(0, 200)
+const metaDescription = computed(() => article.value?.content?.substring(0, 500)
   .replace(/\r?\n/g, '').replace(/#/g, '') + '...');
 const metaKeywords = computed(() => article.value?.title?.length > 0 ? article.value.title : '');
 const useHeadOption = computed(() => {
@@ -156,8 +156,8 @@ const handleArticleLike = async () => {
           <h1>{{ article?.title }}</h1>
           <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
-              <CzIcon name="person" />
-              <span>{{ article?.user_info?.username }}</span>
+              <CzIcon name="bookmark" />
+              <span>{{ article?.tags?.join('、') }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />

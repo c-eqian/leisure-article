@@ -24,7 +24,7 @@ config({
 /**
  * SEO
  */
-const metaDescription = computed(() => noteData.value?.description?.substring(0, 200)
+const metaDescription = computed(() => noteData.value?.content?.substring(0, 500)
   .replace(/\r?\n/g, '').replace(/#/g, '') + '...');
 const metaKeywords = computed(() => noteData.value?.title?.length > 0 ? noteData.value.title : '');
 const useHeadOption = computed(() => {
