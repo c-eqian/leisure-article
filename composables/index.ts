@@ -1,3 +1,5 @@
+import {useToFixedFix} from "@eqian/utils-vue";
+
 /**
  * 获取随机颜色
  * @param colors
@@ -52,7 +54,7 @@ export const useCountTransform = (count: number) => {
     return `${kCount.replace(regexp, '$1')} k`
   }
   if (_count >= 10000) {
-    const tCount = Math.ceil((_count / 10000)).toFixed(3)
+    const tCount = useToFixedFix(_count / 10000, 2) + ''
     return `${tCount.replace(regexp, '$1')} w`
   }
   return _count
