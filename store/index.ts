@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { useAsyncData } from '#app'
 import piniaPersistConfig from '~/utils'
 import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
@@ -67,26 +66,23 @@ export const useGlobalStore = defineStore({
      */
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve, reject) => {
-        if (Array.from(Object.keys(this.website)).length === 0) {
-          // useFetch('/system/website').then((res) => {
-          //   this.setWebsite(res.data.value || {})
-          //   resolve(res.data.value || {})
-          // }).catch((error) => {
-          //   reject(error)
-          // })
-          useAsyncData('SYSTEM-SITE', () => getSystemWebsite()).then((res) => {
-            this.setWebsite(<IWebsite.Data>res.data.value || {})
-            resolve(<IWebsite.Data>res.data.value || {})
-          })
-          // getSystemWebsite().then((res) => {
-          //   this.setWebsite(res || {})
-          //   resolve(res || {})
-          // }).catch((error) => {
-          //   reject(error)
-          // })
-        } else {
-          resolve(this.website)
-        }
+        // useFetch('/system/website').then((res) => {
+        //   this.setWebsite(res.data.value || {})
+        //   resolve(res.data.value || {})
+        // }).catch((error) => {
+        //   reject(error)
+        // })
+        useAsyncData('SYSTEM-SITE', () => getSystemWebsite()).then((res) => {
+          this.setWebsite(<IWebsite.Data>res.data.value || {})
+          resolve(<IWebsite.Data>res.data.value || {})
+        })
+        // getSystemWebsite().then((res) => {
+        //   this.setWebsite(res || {})
+        //   resolve(res || {})
+        // }).catch((error) => {
+        //   reject(error)
+        // })
+        resolve(this.website)
       })
     },
     setWebsite (v: IWebsite.Data) {
