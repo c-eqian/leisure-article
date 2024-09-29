@@ -4,7 +4,6 @@ import { EpComment, EpEditor, EpLine, EpIcon } from 'e-plus-ui';
 import { Auth } from '@e-plus-ui/icons';
 import { ref, h } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Delete, Warning } from '@element-plus/icons-vue';
 import { isEmpty } from '@eqian/utils-vue';
 import { initEmoji, useEmojiTransform } from '~/composables/emoji';
 import { deleteMessageItem, getMessageList, postMessage } from '~/api/message';
@@ -132,16 +131,21 @@ getList();
                   </div>
                 </template>
                 <template #actionsExtra="item">
-                  <el-button v-if="item.item.is_publisher === 1" link type="danger" :icon="Delete" @click="()=> handleActions(0, item)">
+                  <el-button v-if="item.item.is_publisher === 1" link type="danger" @click="()=> handleActions(0, item)">
                     删 除
+                    <template #icon>
+                      <cz-icon name="trash" />
+                    </template>
                   </el-button>
                   <ep-line v-show="item.item.is_publisher === 1" />
                   <el-button
                     link
                     size="small"
-                    :icon="Warning"
                   >
-                    投 诉
+                    反馈
+                    <template #icon>
+                      <cz-icon name="question-circle" />
+                    </template>
                   </el-button>
                 </template>
               </ep-comment>

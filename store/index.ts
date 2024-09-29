@@ -65,24 +65,11 @@ export const useGlobalStore = defineStore({
      * 获取站点配置
      */
     getWebsite () {
-      return new Promise<IWebsite.Data>((resolve, reject) => {
-        // useFetch('/system/website').then((res) => {
-        //   this.setWebsite(res.data.value || {})
-        //   resolve(res.data.value || {})
-        // }).catch((error) => {
-        //   reject(error)
-        // })
+      return new Promise<IWebsite.Data>((resolve) => {
         useAsyncData('SYSTEM-SITE', () => getSystemWebsite()).then((res) => {
-          this.setWebsite(<IWebsite.Data>res.data.value || {})
-          resolve(<IWebsite.Data>res.data.value || {})
+          this.setWebsite(<IWebsite.Data>unref(res.data) || {})
+          resolve(<IWebsite.Data>unref(res.data) || {})
         })
-        // getSystemWebsite().then((res) => {
-        //   this.setWebsite(res || {})
-        //   resolve(res || {})
-        // }).catch((error) => {
-        //   reject(error)
-        // })
-        resolve(this.website)
       })
     },
     setWebsite (v: IWebsite.Data) {

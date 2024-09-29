@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
-import { Minus, Plus, RefreshLeft, RefreshRight } from '@element-plus/icons-vue'
 import { ElDialog, ElRow, ElCol, ElUpload, ElButton } from 'element-plus'
 import { defineFormSchema, useFormSchema, EpLine, EpFormSchema, EpCard } from 'e-plus-ui'
 import { usePick } from '@eqian/utils-vue'
@@ -264,36 +263,48 @@ const config = defineFormSchema<User.IUserInfoResponse>({
               :md="2"
             >
               <el-button
-                :icon="Plus"
                 @click="changeScale(1)"
-              />
+              >
+                <template #icon>
+                  <cz-icon name="plus-circle" />
+                </template>
+              </el-button>
             </el-col>
             <el-col
               :lg="{ span: 1, offset: 1 }"
               :md="2"
             >
               <el-button
-                :icon="Minus"
                 @click="changeScale(-1)"
-              />
+              >
+                <template #icon>
+                  <cz-icon name="dash-circle" />
+                </template>
+              </el-button>
             </el-col>
             <el-col
               :lg="{ span: 1, offset: 1 }"
               :md="2"
             >
               <el-button
-                :icon="RefreshLeft"
                 @click="rotateLeft()"
-              />
+              >
+                <template #icon>
+                  <cz-icon name="arrow-repeat" />
+                </template>
+              </el-button>
             </el-col>
             <el-col
               :lg="{ span: 1, offset: 1 }"
               :md="2"
             >
               <el-button
-                :icon="RefreshRight"
                 @click="rotateRight()"
-              />
+              >
+                <template #icon>
+                  <cz-icon name="arrow-clockwise" />
+                </template>
+              </el-button>
             </el-col>
           </el-row>
           <ep-line />

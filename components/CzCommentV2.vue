@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { EpImage, EpComment, EpLine, type ICommentConfig, type IResolveParams, type LoadData } from 'e-plus-ui'
-import { Delete, Warning } from '@element-plus/icons-vue'
 import { isEmpty } from '@eqian/utils-vue'
 import { deleteCommentItem, getCommentList, postArticleComment } from '~/api/comment'
 import type { ICommentList } from '~/api/comment/type'
@@ -150,16 +149,21 @@ defineExpose({
       </div>
     </template>
     <template #actions-extra="{item}">
-      <el-button v-if="item.is_publisher === 1" link type="danger" :icon="Delete" @click="()=> handleActions(0, {item})">
+      <el-button v-if="item.is_publisher === 1" link type="danger" @click="()=> handleActions(0, {item})">
         删 除
+        <template #icon>
+          <cz-icon name="trash" />
+        </template>
       </el-button>
       <ep-line />
       <el-button
         link
         size="small"
-        :icon="Warning"
       >
         投 诉
+        <template #icon>
+          <cz-icon name="question-circle" />
+        </template>
       </el-button>
     </template>
   </EpComment>
