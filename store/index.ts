@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { isEmpty } from '@eqian/utils-vue'
 import piniaPersistConfig from '~/utils'
 import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
@@ -66,10 +67,14 @@ export const useGlobalStore = defineStore({
      */
     getWebsite () {
       return new Promise<IWebsite.Data>((resolve) => {
-        useAsyncData('SYSTEM-SITE', () => getSystemWebsite()).then((res) => {
-          this.setWebsite(<IWebsite.Data>unref(res.data) || {})
-          resolve(<IWebsite.Data>unref(res.data) || {})
-        })
+        if (isEmpty(this.website)) {
+          getSystemWebsite().then((res) => {
+            this.setWebsite(<IWebsite.Data>unref(res) || {})
+            resolve(<IWebsite.Data>unref(res) || {})
+          })
+        } else {
+          resolve(this.website)
+        }
       })
     },
     setWebsite (v: IWebsite.Data) {
