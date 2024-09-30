@@ -3,6 +3,8 @@ import { useQuasar } from 'quasar'
 import CzIcon from '~/components/CzIcon.vue'
 import { useGlobalStore } from '~/store'
 import CzAuthDialog from '~/components/CzAuthDialog.vue'
+import type { IWebsite } from '~/api/system/type'
+import { useAsyncRequest } from '~/api/server'
 const drawer = ref(false)
 const systemStore = useGlobalStore()
 const $q = useQuasar()
@@ -13,6 +15,7 @@ const props = defineProps({
     default: false
   }
 })
+const { data: website = {} as IWebsite.Data } = await useAsyncRequest<IWebsite.Data>('WEBSITE-CONFIG', 'system/website')
 const menuList = ref([
   {
     name: '文章',
@@ -78,10 +81,6 @@ const handleLogoutItemClick = () => {
     await systemStore.logout()
   })
 }
-let websiteTitle
-systemStore.getWebsite().then((res) => {
-  websiteTitle = res.website_title
-})
 </script>
 
 <template>
@@ -110,7 +109,7 @@ systemStore.getWebsite().then((res) => {
       >
         <q-toolbar class="cz-text-inherit">
           <q-toolbar-title>
-            <span class="cz-select-none">{{ websiteTitle || '小白菜leisure' }}</span>
+            <span class="cz-select-none">{{ website?.website_title || '小白菜leisure' }}</span>
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">

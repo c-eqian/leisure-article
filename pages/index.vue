@@ -12,10 +12,11 @@ import type { ISystemSentence, ISystemVisitor, IWebsite } from '~/api/system/typ
 import { useRandomColor } from '~/composables';
 import { useGlobalStore } from '~/store';
 import CzIcp from '~/components/CzIcp.vue';
+import { useAsyncRequest } from '~/api/server';
 
 const articleList = ref<IArticleRes>({} as IArticleRes);
 const typed = ref<Typed>();
-const website = ref<IWebsite.Data>({} as IWebsite.Data);
+// const website = ref<IWebsite.Data>({} as IWebsite.Data);
 const systemStore = useGlobalStore();
 const userInfoComputed = computed(() => systemStore.userInfo);
 const catalogueList = ref<CatalogueList[]>([]);
@@ -33,6 +34,7 @@ definePageMeta({
 const isLoading = ref(false);
 const visitorInfo = ref<ISystemVisitor.IRes['data']>();
 const loadingStatus = ref<'loading' | 'error' | 'success'>('loading');
+const { data: website = {} as IWebsite.Data } = await useAsyncRequest<IWebsite.Data>('WEBSITE-CONFIG', 'system/website');
 const getList = () => {
   if (isLoading.value) { return; }
   if (query.value.page_num > 1) { isLoading.value = true; }
@@ -96,16 +98,15 @@ const getVisitorInfo = () => {
     visitorInfo.value = res;
   });
 };
-const websiteInfo = () => {
-  systemStore.getWebsite().then((res) => {
-    website.value = res;
-  });
-};
+// const websiteInfo = () => {
+//   systemStore.getWebsite().then((res) => {
+//     website.value = res;
+//   });
+// };
 getList();
 getSentence();
 catalogueData();
 getVisitorInfo();
-websiteInfo();
 /**
  * SEO
  */
@@ -130,14 +131,14 @@ const useHeadOption = computed(() => {
   };
 });
 useHead(useHeadOption);
-if (process.client) {
+if (import.meta.client) {
   console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
 }
 </script>
 
 <template>
   <div class="cz-w-full cz-h-full cz-flex cz-flex-col">
-    <cz-banner :banner-url="website.website_cover">
+    <cz-banner :banner-url="website?.website_cover">
       <h1 class="cz-text-gray-200 cz-text-4xl max-md:cz-text-xs">
         Eqian
       </h1>
@@ -264,13 +265,13 @@ if (process.client) {
               </div>
             </div>
             <div class="cz-py-2">
-              本站稳定运行：{{ website.website_run_days || '-' }} 天
+              本站稳定运行：{{ website?.website_run_days || '-' }} 天
             </div>
             <div class="cz-py-2">
-              本站访问量：{{ usePriceToThousand(website.website_request_count, 0) || '-' }} 次
+              本站访问量：{{ usePriceToThousand(website?.website_request_count ?? 0, 0) || '-' }} 次
             </div>
             <div class="cz-py-2">
-              本站文章数量：{{ website.article_count || '-' }} 篇
+              本站文章数量：{{ website?.article_count || '-' }} 篇
             </div>
           </div>
           <div

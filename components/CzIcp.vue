@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import type { IWebsite } from '@/api/system/type'
-import { useGlobalStore } from '~/store'
+// import { useGlobalStore } from '~/store'
+import { useAsyncRequest } from '~/api/server'
 
-const systemStore = useGlobalStore()
-const website = ref<IWebsite.Data>({} as IWebsite.Data)
+// const systemStore = useGlobalStore()
+// const website = ref<IWebsite.Data>({} as IWebsite.Data)
 
-const websiteInfo = () => {
-  systemStore.getWebsite().then((res) => {
-    website.value = res
-  })
-}
-websiteInfo()
+// const websiteInfo = () => {
+//   systemStore.getWebsite().then((res) => {
+//     website.value = res
+//   })
+// }
+// websiteInfo()
+const { data: website = {} as IWebsite.Data } = await useAsyncRequest<IWebsite.Data>('WEBSITE-CONFIG', 'system/website')
 </script>
 
 <template>
@@ -24,8 +26,8 @@ websiteInfo()
         <a
           href="https://beian.miit.gov.cn"
           target="_blank"
-        >{{ website.website_icp?.split('//')[0] }}</a>
-        &nbsp; {{ website.website_icp?.split('//')[1] || '' }}
+        >{{ website?.website_icp?.split('//')[0] }}</a>
+        &nbsp; {{ website?.website_icp?.split('//')[1] || '' }}
       </div>
     </div>
   </footer>

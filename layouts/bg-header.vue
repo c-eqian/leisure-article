@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import { useGlobalStore } from '~/store';
+// import { useGlobalStore } from '~/store';
 import type { IWebsite } from '~/api/system/type';
-const website = ref<IWebsite.Data>({} as IWebsite.Data);
-const systemStore = useGlobalStore();
-const websiteInfo = () => {
-  systemStore.getWebsite().then((res) => {
-    website.value = res;
-  });
-};
+import { useAsyncRequest } from '~/api/server';
+// const website = ref<IWebsite.Data>({} as IWebsite.Data);
+// const systemStore = useGlobalStore();
+
+const { data: website = {} as IWebsite.Data } = await useAsyncRequest<IWebsite.Data>('WEBSITE-CONFIG', 'system/website');
 const computedStyle = computed(() => {
   return {
-    background: `url(${website.value.website_cover})  no-repeat fixed`
+    background: `url(${unref(website)?.website_cover})  no-repeat fixed`
   };
 });
-websiteInfo();
 </script>
 
 <template>
