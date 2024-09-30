@@ -2,6 +2,9 @@
 import { EpCard } from 'e-plus-ui';
 import { getSystemGithub } from '~/api/system';
 import type { Github } from '~/api/system/type';
+definePageMeta({
+  layout: 'bg-header'
+});
 const github = ref<Github[]>([]);
 getSystemGithub().then((res) => {
   github.value = res;
@@ -13,23 +16,23 @@ getSystemGithub().then((res) => {
     <ep-card
       title="仓库项目"
       class="
-      cz-min-h-[300px] cz-items-start cz-py-0 cz-my-16 cz-flex-1
+      cz-min-h-[300px] cz-items-start cz-py-0 cz-my-16 !cz-bg-gray-50/80 cz-flex-1
       md:cz-px-5"
     >
       <cz-empty v-if="github.length===0" />
-      <div v-else class="cz-flex cz-flex-wrap cz-justify-start cz-space-x-2">
+      <div v-else class="cz-flex cz-flex-wrap cz-justify-start cz-space-x-2 cz-overflow-auto">
         <ep-card
           v-for="item in github"
           :key="item.repo_name"
           :avatar="item.avatar_url"
-          shadow="always"
+          shadow="hover"
           :title="item.repo_name"
-          class="cz-min-h-48 cz-min-w-64 cz-flex-1"
+          class="cz-min-h-48 cz-min-w-64 cz-flex-1 !cz-bg-gray-50/80"
         >
           <template #extra>
             <a :href="item.html_url" target="_blank" class="flex items-center cz-space-5">
               <cz-icon name="share" />
-              <span class="cz-inline-block">详情</span>
+              <span class="cz-inline-block cz-px-2">详情</span>
             </a>
           </template>
           {{ item.description }}
