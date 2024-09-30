@@ -4,7 +4,7 @@
 /**
  * 获取验证码
  */
-import type { ISystemCaptcha, ISystemSentence, ISystemVisitor, IWebsite } from './type'
+import type { Github, ISystemCaptcha, ISystemSentence, ISystemVisitor, IWebsite } from './type'
 import { http } from '~/api/http'
 
 export const getSystemCaptcha = () => {
@@ -44,6 +44,15 @@ export const getSystemSentence = () => {
 export const getSystemVisitor = () => {
   return http.request<ISystemVisitor.IRes['data']>({
     url: '/system/access',
+    method: 'GET'
+  })
+}
+/**
+ * 获取github项目
+ */
+export const getSystemGithub = () => {
+  return http.request<Github[]>({
+    url: '/system/github',
     method: 'GET'
   })
 }

@@ -107,3 +107,16 @@ export namespace ISystemVisitor {
         successful: string;
     }
 }
+
+export interface Github {
+    repo_name: string;
+    description: string;
+    private: boolean;
+    forks_count: number;
+    stargazers_count: number;
+    created_at: string;
+    updated_at: string;
+    html_url: string;
+    avatar_url: string;
+    readme: string;
+}
