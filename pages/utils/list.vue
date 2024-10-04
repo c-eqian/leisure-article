@@ -13,14 +13,13 @@ getSystemGithub().then((res) => {
 
 <template>
   <div class="cz-max-w-5xl dark:cz-text-white cz-p-2 cz-w-full cz-relative cz-mx-auto cz-my-0">
-    <ep-card
-      title="仓库项目"
+    <main
       class="
       cz-min-h-[300px] cz-items-start cz-py-0 cz-my-16 !cz-bg-gray-50/80 cz-flex-1
-      md:cz-px-5"
+      md:cz-px-5 cz-overflow-auto cz-h-[calc(100vh-100px)]"
     >
       <cz-empty v-if="github.length===0" />
-      <div v-else class="cz-flex cz-flex-wrap cz-justify-start cz-space-x-2 cz-overflow-auto">
+      <div v-else class="cz-grid cz-grid-cols-3 cz-grid-rows-3 cz-gap-2 cz-py-10">
         <ep-card
           v-for="item in github"
           :key="item.repo_name"
@@ -38,10 +37,12 @@ getSystemGithub().then((res) => {
           {{ item.description }}
         </ep-card>
       </div>
-    </ep-card>
+    </main>
   </div>
 </template>
 
 <style scoped lang="scss">
-
+.cz-card-body{
+  overflow: hidden;
+}
 </style>
