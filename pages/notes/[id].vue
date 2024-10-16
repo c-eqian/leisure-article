@@ -2,6 +2,7 @@
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from '@eqian/utils-vue';
+import { isArray } from '@vue/shared';
 import { useGlobalStore } from '~/store';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import type { INoteItem } from '~/api/notes/type';
@@ -57,6 +58,12 @@ const getNoteDetail = () => {
 };
 
 getNoteDetail();
+const handleTags = (tags: string[] | string |undefined) => {
+  if (isArray(tags)) {
+    return tags.join('、');
+  }
+  return tags ?? '';
+};
 </script>
 
 <template>
@@ -72,7 +79,7 @@ getNoteDetail();
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
-              <span>{{ noteData?.tags?.join('、') }}</span>
+              <span>{{ handleTags(noteData?.tags) }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="calendar-date" />

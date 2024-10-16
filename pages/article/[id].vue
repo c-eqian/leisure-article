@@ -2,6 +2,7 @@
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from '@eqian/utils-vue';
+import { isArray } from '@vue/shared';
 import type { IArticleItem } from '~/api/article/type';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
@@ -93,6 +94,12 @@ const handleArticleLike = async () => {
   const { like_number = 0 } = article.value;
   article.value.like_number = article.value.is_like === 1 ? like_number + 1 : like_number - 1;
 };
+const handleTags = (tags: string[] | string |undefined) => {
+  if (isArray(tags)) {
+    return tags.join('、');
+  }
+  return tags ?? '';
+};
 </script>
 
 <template>
@@ -157,7 +164,7 @@ const handleArticleLike = async () => {
           <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
-              <span>{{ article?.tags?.join('、') }}</span>
+              <span>{{ handleTags(article?.tags) }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
