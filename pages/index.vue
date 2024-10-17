@@ -134,6 +134,7 @@ useHead(useHeadOption);
 if (import.meta.client) {
   console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
 }
+const defaultMotto = '大丈夫生于天地之间,怎能郁郁久居人下';
 </script>
 
 <template>
@@ -240,7 +241,7 @@ if (import.meta.client) {
               <div class="cz-text-center">
                 <cz-typing
                   class="cz-text-xs cz-py-4 cz-text-[#a0a0a0]"
-                  :text="userInfoComputed.isLogin ? userInfoComputed.motto : '大丈夫生于天地之间,怎能郁郁久居人下'"
+                  :text="userInfoComputed.isLogin ? (userInfoComputed.motto || defaultMotto) : defaultMotto"
                 />
               </div>
               <hr class="cz-divider">
