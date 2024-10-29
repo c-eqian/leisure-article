@@ -5,6 +5,7 @@ import { getNotesList } from '~/api/notes';
 import type { INoteRes } from '~/api/notes/type';
 import { ROUTER_PREFIX } from '~/constant';
 import { useTags } from '~/composables/tags';
+
 const noteData = ref<INoteRes>({
   total: 0,
   list: [],
@@ -15,22 +16,20 @@ const params = ref({
   page_num: 1
 });
 const getList = async () => {
-  const { data } = await useAsyncData('note-list', () => getNotesList(params.value));
-  if (data.value) {
-    noteData.value = data.value;
-  }
+  const { data } = await useAsyncData(`NOTES-LIST-${params.value.page_num}-${params.value.page_size}`, () => getNotesList(params.value));
+  noteData.value = data.value || {} as any;
 };
 
 const getDay = (date: Date | string) => {
   const format = useFormatDate(date, 'dd');
   return format || '-';
 };
-await getList();
 const handlePagination = async ({ page, limit }) => {
   params.value.page_num = page;
   params.value.page_size = limit;
   await getList();
 };
+getList();
 </script>
 
 <template>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Typed from 'typed.js';
 import { usePriceToThousand } from '@eqian/utils-vue';
-import { EpImage } from 'e-plus-ui';
 import CzBanner from '~/components/CzBanner.vue';
 import { getArticleList } from '~/api/article';
 import type { IArticleRes } from '~/api/article/type';
@@ -221,22 +220,6 @@ const defaultMotto = '大丈夫生于天地之间,怎能郁郁久居人下';
           <div
             class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50 dark:cz-bg-slate-800"
           >
-            <div class="cz-absolute -cz-top-5 cz-left-1/2 -cz-translate-x-1/2">
-              <img
-                v-if="!userInfoComputed.isLogin"
-                src="@/assets/default-avatar.jpg"
-                alt=""
-                class="cz-w-20 cz-h-20 cz-rounded-full cz-transition-all hover:cz-scale-125"
-              >
-              <ep-image
-                v-else
-                round
-                :url="userInfoComputed.avatar"
-                width="80"
-                height="80"
-                scale
-              />
-            </div>
             <div class="cz-pt-10 cz-border-b cz-border-dashed">
               <div class="cz-text-center">
                 <cz-typing

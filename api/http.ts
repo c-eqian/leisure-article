@@ -63,6 +63,7 @@ class Http {
       await useFetch(this.BASEURL + config.url.replace(/^\//, ''), {
         method: config.method || 'GET',
         lazy: true,
+        timeout: 10000,
         server: !!config.server,
         query: (config.method === 'GET' || config.method === 'DELETE') ? config.params : undefined,
         body: (config.method === 'POST' || config.method === 'PUT') ? config.params : undefined,
