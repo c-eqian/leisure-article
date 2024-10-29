@@ -89,10 +89,10 @@ const handleLogoutItemClick = () => {
       <q-drawer v-model="drawer" behavior="mobile" overlay side="right">
         <ul class="cz-flex cz-px-8">
           <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-            <NuxtLink v-if="!item.isReplace" :to="item.path" target="_blank" class="cz-px-2">
+            <a v-if="!item.isReplace" :href="item.path" target="_blank" class="cz-px-2">
               <CzIcon :name="item.icon" />
               {{ item.name }}
-            </NuxtLink>
+            </a>
             <div v-else class="cz-px-2 cz-cursor-pointer" @click="handleToRouter">
               <CzIcon :name="item.icon" />
               {{ item.name }}
@@ -113,10 +113,10 @@ const handleLogoutItemClick = () => {
           </q-toolbar-title>
           <ul class="cz-flex cz-px-8 max-md:cz-hidden">
             <li v-for="item in menuList" :key="item.name" class="nav-item cz-mx-2 cz-cursor-pointer cz-flex cz-items-center">
-              <NuxtLink v-if="!item.isReplace" :to="item.path" :target="item._blank" class="cz-px-2">
+              <a v-if="!item.isReplace" :href="item.path" :target="item._blank" class="cz-px-2">
                 <CzIcon :name="item.icon" />
                 {{ item.name }}
-              </NuxtLink>
+              </a>
             </li>
             <client-only>
               <li>

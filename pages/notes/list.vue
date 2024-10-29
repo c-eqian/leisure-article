@@ -29,7 +29,7 @@ const handlePagination = async ({ page, limit }) => {
   params.value.page_size = limit;
   await getList();
 };
-getList();
+await getList();
 </script>
 
 <template>
