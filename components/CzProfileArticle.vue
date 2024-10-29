@@ -2,15 +2,14 @@
 import { useFormatDate } from '@eqian/utils-vue'
 import type { IArticleRes } from '~/api/article/type'
 import { getArticleTimeline } from '~/api/article'
-import { useGlobalStore } from '~/store'
 import { ROUTER_PREFIX } from '~/constant'
 import CzEmpty from '~/components/CzEmpty.vue'
-const systemStore = useGlobalStore()
+const { id } = useRoute().params
 const articleTimeline = ref<IArticleRes>({} as IArticleRes)
 const isLoading = ref(false)
 const query = ref({
   page_size: 20,
-  user_id: systemStore.userInfo.id,
+  user_id: id,
   page_num: 1
 })
 const loadingStatus = ref<'loading' | 'error' | 'success'>('loading')

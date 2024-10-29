@@ -13,6 +13,10 @@ export interface NoteData {
 }
 
 export interface INoteItem {
+    public: 0 | 1;
+    view_scope: 0 | 1;
+    view_key: string | null;
+    category_tags: any[];
     /**
      * 城市，城市
      */

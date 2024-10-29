@@ -2,11 +2,11 @@
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from '@eqian/utils-vue';
-import { isArray } from '@vue/shared';
 import { useGlobalStore } from '~/store';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import type { INoteItem } from '~/api/notes/type';
 import { getNote } from '~/api/notes';
+import { useTags } from '~/composables/tags';
 definePageMeta({
   scrollToTop: true
 });
@@ -58,12 +58,6 @@ const getNoteDetail = () => {
 };
 
 getNoteDetail();
-const handleTags = (tags: string[] | string |undefined) => {
-  if (isArray(tags)) {
-    return tags.join('、');
-  }
-  return tags ?? '';
-};
 </script>
 
 <template>
@@ -79,7 +73,7 @@ const handleTags = (tags: string[] | string |undefined) => {
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
-              <span>{{ handleTags(noteData?.tags) }}</span>
+              <span>{{ useTags(noteData) }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="calendar-date" />

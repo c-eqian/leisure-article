@@ -49,6 +49,7 @@ export interface ICommonUser {
     [property: string]: any;
 }
 export interface IArticleItem {
+    category_tags: any[];
     category?: ICategory;
     /**
      * 城市，城市

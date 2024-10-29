@@ -5,6 +5,7 @@ import CzAlbum from '~/components/CzAlbum.vue'
 import { getDailyList } from '~/api/daily'
 import type { Data } from '~/api/daily/type'
 const loadingStatus = ref<'loading' | 'error' | 'success'>('loading')
+const { id } = useRoute().params
 const transformImage = (image:string) => {
   return image.split(',').map(item => item.startsWith('https')
     ? item.replace('oss.cz-leisure.com', 'oss.eqian.site')
@@ -13,6 +14,7 @@ const transformImage = (image:string) => {
 const dailyData = ref<Data>({} as Data)
 const query = ref({
   page_size: 20,
+  user_id: id,
   page_num: 1
 })
 const getList = (done?:any) => {

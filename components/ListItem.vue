@@ -64,10 +64,9 @@ defineProps({
           <div class="article-info cz-p-0.5 cz-flex cz-justify-start cz-text-xs cz-text-[#a0a0a0]">
             <div class="cz-pr-3">
               <CzIcon name="person" class="cz-text-xs" />
-              <a
-                class="cz-px-0.5"
-                href="#"
-              >{{ row?.user_info?.username }}</a>
+              <nuxt-link class="cz-px-0.5" :to="`/profile/${row?.user_info?.id}`">
+                {{ row?.user_info?.username }}
+              </nuxt-link>
             </div>
             <div class="cz-px-3 md:cz-block cz-hidden">
               <CzIcon name="book" class="cz-text-xs" />

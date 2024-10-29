@@ -2,7 +2,6 @@
 import { MdPreview, MdCatalog, config } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { useFormatDate } from '@eqian/utils-vue';
-import { isArray } from '@vue/shared';
 import type { IArticleItem } from '~/api/article/type';
 import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
@@ -10,6 +9,7 @@ import { useGlobalStore } from '~/store';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import { articleLike, getArticleItemDetailById } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
+import { useTags } from '~/composables/tags';
 definePageMeta({
   scrollToTop: true,
   layout: 'header'
@@ -28,14 +28,6 @@ const getArticle = () => {
   useAsyncData('article-detail', () => getArticleItemDetailById((id as string))).then((res) => {
     article.value = res.data.value || {} as IArticleItem;
   });
-  // const res = await useFetch(`/article/detail/${id}`, {
-  //   method: 'GET'
-  // });
-  // console.log('请求数据', res.data.value);
-  // article.value = res.data.value;
-  // getArticleRecentByUid(id as string).then((res) => {
-  //   authorSRecentArticles.value = res;
-  // });
 };
 /**
  * 处理上一章-下一章的布局方式
@@ -93,12 +85,6 @@ const handleArticleLike = async () => {
   article.value.is_like = article.value.is_like === 1 ? 0 : 1;
   const { like_number = 0 } = article.value;
   article.value.like_number = article.value.is_like === 1 ? like_number + 1 : like_number - 1;
-};
-const handleTags = (tags: string[] | string |undefined) => {
-  if (isArray(tags)) {
-    return tags.join('、');
-  }
-  return tags ?? '';
 };
 </script>
 
@@ -164,7 +150,7 @@ const handleTags = (tags: string[] | string |undefined) => {
           <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />
-              <span>{{ handleTags(article?.tags) }}</span>
+              <span>{{ useTags(article) }}</span>
             </div>
             <div class="cz-space-x-1.5">
               <CzIcon name="bookmark" />

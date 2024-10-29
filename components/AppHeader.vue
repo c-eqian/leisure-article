@@ -126,7 +126,7 @@ const handleLogoutItemClick = () => {
                       <q-item v-close-popup clickable>
                         <q-item-section>
                           <q-item-label>
-                            <nuxt-link :to="'/profile'">
+                            <nuxt-link :to="`/profile/${systemStore.userInfo.id}`">
                               个人中心
                             </nuxt-link>
                           </q-item-label>

@@ -4,6 +4,7 @@ import { useFormatDate } from '@eqian/utils-vue';
 import { getNotesList } from '~/api/notes';
 import type { INoteRes } from '~/api/notes/type';
 import { ROUTER_PREFIX } from '~/constant';
+import { useTags } from '~/composables/tags';
 const noteData = ref<INoteRes>({
   total: 0,
   list: [],
@@ -51,7 +52,7 @@ const handlePagination = async ({ page, limit }) => {
             </h3>
             <div class="cz-flex  cz-space-x-10">
               <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="eye" /> 阅读次数： {{ item.view_number ?? '-' }}</span>
-              <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="bookmark" />{{ item.tags?item.tags?.join('、') : '-' }}</span>
+              <span class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="bookmark" />{{ useTags(item) }}</span>
               <span v-if="item.city" class="cz-inline-block cz-text-xs cz-text-sub cz-py-3"><cz-icon name="geo" />   {{ item.city }}</span>
             </div>
             <article class="cz-note-content">
