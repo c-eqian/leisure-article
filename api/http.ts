@@ -1,5 +1,5 @@
 import type { IRequestParamsConfig } from '~/api/type'
-import { useGetTokenCookie } from '~/composables/use-cookies'
+// import { useGetTokenCookie } from '~/composables/use-cookies'
 import { useLogin } from '~/composables/use-login'
 /**
  * 参数处理
@@ -69,9 +69,10 @@ class Http {
         body: (config.method === 'POST' || config.method === 'PUT') ? config.params : undefined,
         onRequest ({ request: _, options }): Promise<void> | void {
           // console.log(' 请求处理', request, options)
-          const cookies = useGetTokenCookie()
+          // const cookies = useGetTokenCookie()
+          const cookies = useCookie('__TOKEN_KEY__')
           if (config.params?.token || cookies) {
-            options.headers = { ...options.headers, Authorization: config.params?.token || cookies }
+            options.headers = { ...options.headers, Authorization: config.params?.token || cookies.value } as any
           }
           if (config.header) {
             options.headers = { ...options.headers, ...config.header }

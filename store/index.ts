@@ -4,7 +4,6 @@ import piniaPersistConfig from '~/utils'
 import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
 import type { User } from '~/api/user/type'
-import { useRemoveTokenCookie, useSetTokenCookie, useGetTokenCookie } from '~/composables/use-cookies'
 import { getSystemWebsite } from '~/api/system'
 export interface IUserInfo extends Partial<User.IUserInfoResponse> {
   isLogin?: boolean;
@@ -13,7 +12,7 @@ export const useGlobalStore = defineStore({
   id: 'GlobalStore',
   state: () => ({
     // 用户信息
-    userInfo: { isLogin: !!useGetTokenCookie() } as IUserInfo,
+    userInfo: { } as IUserInfo,
     theme: 'light',
     loginInfo: {
       account: '',
@@ -32,12 +31,15 @@ export const useGlobalStore = defineStore({
     login (params: User.ILoginRequest) {
       return new Promise((resolve, reject) => {
         userLogin(params).then(async (res) => {
-          useSetTokenCookie(res.token)
+          // useSetTokenCookie(res.token)
+          const token = useCookie('__TOKEN_KEY__', {
+            maxAge: 60 * 60 * 24
+          })
+          token.value = res.token
           this.userInfo.isLogin = true
-          await this.getUserInfo()
+          await this.getUserInfo(res.token)
           resolve(res)
         }).catch((error) => {
-          console.log(error)
           reject(error)
         })
       })
@@ -45,7 +47,9 @@ export const useGlobalStore = defineStore({
     logout () {
       return new Promise((resolve, reject) => {
         userLogout().then(() => {
-          useRemoveTokenCookie()
+          // useRemoveTokenCookie()
+          const c = useCookie('__TOKEN_KEY__')
+          c.value = ''
           this.userInfo = {}
           this.$reset()
           resolve('退出成功')
@@ -54,9 +58,11 @@ export const useGlobalStore = defineStore({
         })
       })
     },
-    getUserInfo () {
+    getUserInfo (token:string) {
       return new Promise((resolve) => {
-        userInfo().then((res) => {
+        userInfo({
+          token
+        }).then((res) => {
           Object.assign(this.userInfo, res)
           resolve(res)
         })

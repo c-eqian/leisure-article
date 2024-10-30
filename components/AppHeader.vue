@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar'
+import { isEmpty } from '@eqian/utils-vue'
 import CzIcon from '~/components/CzIcon.vue'
 import { useGlobalStore } from '~/store'
 import CzAuthDialog from '~/components/CzAuthDialog.vue'
@@ -14,6 +15,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
+})
+const cookie = useCookie('__TOKEN_KEY__')
+const isLogin = computed(() => {
+  return cookie.value && !isEmpty(systemStore.userInfo)
 })
 const { data: website = {} as IWebsite.Data } = await useAsyncRequest<IWebsite.Data>('WEBSITE-CONFIG', 'system/website')
 const menuList = ref([
@@ -120,7 +125,7 @@ const handleLogoutItemClick = () => {
             </li>
             <client-only>
               <li>
-                <div v-if="userInfoComputed.isLogin" class="cz-px-2 cz-cursor-pointer nav-item">
+                <div v-if="isLogin" class="cz-px-2 cz-cursor-pointer nav-item">
                   <q-btn-dropdown unelevated>
                     <q-list>
                       <q-item v-close-popup clickable>

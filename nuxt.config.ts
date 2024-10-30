@@ -25,7 +25,7 @@ export default defineNuxtConfig({
     public: {
       // 因为这里用到了SSR 代理请求其他服务接口，如果/api/代理，就会提示找不到地址，
       // 猜测可能是部署nginx时使用的代理转发没有请求正确地址 因此需要完整写出前端域名地址
-      BASE_URL: process.env.NODE_ENV === 'production' ? 'https://www.eqian.site/api/v2/' : 'http://43.138.222.187:8000/'
+      BASE_URL: process.env.NODE_ENV === 'production' ? 'https://www.eqian.site/api/v2/' : 'http://10.14.10.106:9966/'
     }
   },
 
@@ -64,7 +64,6 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
-
   imports: {
     dirs: ['./store'], // 导入所有store,
   },
