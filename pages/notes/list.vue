@@ -34,7 +34,7 @@ await getList();
 
 <template>
   <div class="cz-my-0 cz-mx-auto cz-max-w-3xl">
-    <div class="cz-mt-20 cz-shadow-lg">
+    <div class="cz-mt-20 cz-rounded-2xl cz-bg-gray-50 dark:cz-bg-slate-800">
       <cz-empty v-if="noteData.list?.length===0" />
       <template v-else>
         <div v-for="item in noteData?.list" :key="item.id" class="cz-flex cz-space-y-10">
