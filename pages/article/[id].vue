@@ -149,11 +149,11 @@ const handleArticleLike = async () => {
           <h1>{{ article?.title }}</h1>
           <div class="cz-py-1 md:cz-flex cz-items-center cz-text-xs cz-space-x-5 max-md: cz-hidden">
             <div class="cz-space-x-1.5">
-              <CzIcon name="bookmark" />
+              <CzIcon name="tag" />
               <span>{{ useTags(article) }}</span>
             </div>
             <div class="cz-space-x-1.5">
-              <CzIcon name="bookmark" />
+              <CzIcon name="book" />
               <span>{{ article?.category?.category_name }}</span>
             </div>
             <div class="cz-space-x-1.5">

@@ -72,7 +72,7 @@ getNoteDetail();
               <span>{{ noteData?.user_info?.username }}</span>
             </div>
             <div class="cz-space-x-1.5">
-              <CzIcon name="bookmark" />
+              <CzIcon name="tag" />
               <span>{{ useTags(noteData) }}</span>
             </div>
             <div class="cz-space-x-1.5">
@@ -124,7 +124,7 @@ getNoteDetail();
               <md-catalog
                 :theme="themeMode"
                 :scroll-element="scrollElement"
-                editor-id="md-preview-id"
+                editor-id="my-preview-id"
               />
             </div>
           </div>
