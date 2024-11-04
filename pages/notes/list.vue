@@ -5,7 +5,7 @@ import { getNotesList } from '~/api/notes';
 import type { INoteRes } from '~/api/notes/type';
 import { ROUTER_PREFIX } from '~/constant';
 import { useTags } from '~/composables/tags';
-
+const loadingStatus = ref<'loading' | 'error' | 'success'>('loading');
 const noteData = ref<INoteRes>({
   total: 0,
   list: [],
@@ -16,8 +16,20 @@ const params = ref({
   page_num: 1
 });
 const getList = async () => {
-  const { data } = await useAsyncData(`NOTES-LIST-${params.value.page_num}-${params.value.page_size}`, () => getNotesList(params.value));
-  noteData.value = data.value || {} as any;
+  if (params.value.page_num === 1) {
+    loadingStatus.value = 'loading';
+  }
+  try {
+    const { data } = await useAsyncData('NOTES-LIST', () => getNotesList(params.value));
+    loadingStatus.value = 'success';
+    if (data.value) {
+      noteData.value = data.value;
+    }
+  } catch (error) {
+    if (params.value.page_num === 1) {
+      loadingStatus.value = 'error';
+    }
+  }
 };
 
 const getDay = (date: Date | string) => {
@@ -29,14 +41,14 @@ const handlePagination = async ({ page, limit }) => {
   params.value.page_size = limit;
   await getList();
 };
-await getList();
+getList();
 </script>
 
 <template>
   <div class="cz-my-0 cz-mx-auto cz-max-w-3xl">
     <div class="cz-mt-20 cz-rounded-2xl cz-bg-gray-50 dark:cz-bg-slate-800">
-      <cz-empty v-if="noteData.list?.length===0" />
-      <template v-else>
+      <CzSkeleton v-if="loadingStatus==='loading'" class="cz-h-screen" />
+      <template v-else-if="loadingStatus==='success' && noteData.list?.length">
         <div v-for="item in noteData?.list" :key="item.id" class="cz-flex cz-space-y-10">
           <div class="left-time cz-relative cz-w-12 cz-flex cz-items-center">
             <div class="cz-absolute cz-rounded cz-border-amber-400 -cz-left-0 cz-z-10 cz-top-[28%] cz-border cz-w-16 cz-h-16" />
@@ -83,6 +95,7 @@ await getList();
           />
         </div>
       </template>
+      <cz-empty v-else />
     </div>
   </div>
 </template>
