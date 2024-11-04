@@ -11,7 +11,7 @@ export const getNotesList = (params?: {
   return http.request<INoteRes>({
     url: '/note/list',
     method: 'GET',
-    server: true,
+    server: false,
     params,
     isLoading: false
   })

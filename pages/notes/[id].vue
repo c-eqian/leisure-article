@@ -5,8 +5,9 @@ import { useFormatDate } from '@eqian/utils-vue';
 import { useGlobalStore } from '~/store';
 import { useTargetBlankExtension } from '~/composables/md-it';
 import type { INoteItem } from '~/api/notes/type';
-import { getNote } from '~/api/notes';
 import { useTags } from '~/composables/tags';
+import { useAsyncRequest } from '~/api/server';
+import type { IWebsite } from '~/api/system/type';
 definePageMeta({
   scrollToTop: true
 });
@@ -14,9 +15,9 @@ const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);
 const isCategory = ref(true);
 const { id } = useRoute().params;
-const noteData = ref<INoteItem>({} as INoteItem);
+// const noteData = ref<INoteItem>({} as INoteItem);
 const scrollElement = import.meta.browser ? document.documentElement : 'body';
-
+const { data: noteData = {} as INoteItem } = await useAsyncRequest<IWebsite.Data>(`note/detail/${id}`, `note/detail/${id}`);
 config({
   markdownItConfig (md) {
     return useTargetBlankExtension(md);
@@ -50,14 +51,13 @@ const handleAddress = (province:string, city:string) => {
   return '';
 };
 useHead(useHeadOption);
-const getNoteDetail = () => {
-  if (!id) { return; }
-  useAsyncData('note-detail', () => getNote(id as string)).then((res) => {
-    noteData.value = res.data.value || {} as INoteItem;
-  });
-};
-
-getNoteDetail();
+// const getNoteDetail = () => {
+//   if (!id) { return; }
+//   useAsyncData('note-detail', () => getNote(id as string)).then((res) => {
+//     noteData.value = res.data.value || {} as INoteItem;
+//   });
+// };
+// getNoteDetail();
 </script>
 
 <template>

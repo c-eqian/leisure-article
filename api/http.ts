@@ -1,3 +1,5 @@
+import { isEmpty } from '@eqian/utils-vue'
+import { isObject } from '@vue/shared'
 import type { IRequestParamsConfig } from '~/api/type'
 // import { useGetTokenCookie } from '~/composables/use-cookies'
 import { useLogin } from '~/composables/use-login'
@@ -55,6 +57,15 @@ class Http {
 
   }
 
+  generateKey () {
+    // 产生一个随机的uuid
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0
+      const v = c === 'x' ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
+  }
+
   request <T=any> (config: IRequestParamsConfig): Promise<T> {
     const { $config } = useNuxtApp()
     this.BASEURL = $config.public.BASE_URL
@@ -63,6 +74,7 @@ class Http {
       await useFetch(this.BASEURL + config.url.replace(/^\//, ''), {
         method: config.method || 'GET',
         lazy: true,
+        key: this.generateKey(),
         timeout: 10000,
         server: !!config.server,
         query: (config.method === 'GET' || config.method === 'DELETE') ? config.params : undefined,

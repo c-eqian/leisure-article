@@ -7,9 +7,11 @@ import { useCountTransform, useIsEmptyObject } from '~/composables';
 import { ROUTER_PREFIX } from '~/constant';
 import { useGlobalStore } from '~/store';
 import { useTargetBlankExtension } from '~/composables/md-it';
-import { articleLike, getArticleItemDetailById } from '~/api/article';
+import { articleLike } from '~/api/article';
 import { useLogin } from '~/composables/use-login';
 import { useTags } from '~/composables/tags';
+import type { IWebsite } from '~/api/system/type';
+import { useAsyncRequest } from '~/api/server';
 definePageMeta({
   scrollToTop: true,
   layout: 'header'
@@ -18,17 +20,17 @@ const systemStorage = useGlobalStore();
 const themeMode = computed(() => systemStorage.theme);
 const isCategory = ref(true);
 const { id } = useRoute().params;
-const article = ref<IArticleItem>({} as IArticleItem);
+// const article = ref<IArticleItem>({} as IArticleItem);
 const scrollElement = import.meta.browser ? document.documentElement : 'body';
 /**
  * 作者近期文章
  */
-const getArticle = () => {
-  if (!id) { return; }
-  useAsyncData('article-detail', () => getArticleItemDetailById((id as string))).then((res) => {
-    article.value = res.data.value || {} as IArticleItem;
-  });
-};
+// const getArticle = () => {
+//   useAsyncData('article-detail', () => getArticleItemDetailById((id as string))).then((res) => {
+//     article.value = res.data.value || {} as IArticleItem;
+//   });
+// };
+const { data: article = {} as IArticleItem } = await useAsyncRequest<IWebsite.Data>(`article/detail/${id}`, `article/detail/${id}`);
 /**
  * 处理上一章-下一章的布局方式
  */
@@ -75,7 +77,7 @@ const handleAddress = (province:string, city:string) => {
   return '';
 };
 useHead(useHeadOption);
-getArticle();
+// getArticle();
 const handleArticleLike = async () => {
   if (!systemStorage?.userInfo?.isLogin) {
     useLogin();

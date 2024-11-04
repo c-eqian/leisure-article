@@ -15,31 +15,28 @@ const params = ref({
   page_size: 20,
   page_num: 1
 });
-const getList = async () => {
+const getList = () => {
   if (params.value.page_num === 1) {
     loadingStatus.value = 'loading';
   }
-  try {
-    const { data } = await useAsyncData('NOTES-LIST', () => getNotesList(params.value));
+  getNotesList(params.value).then((res) => {
     loadingStatus.value = 'success';
-    if (data.value) {
-      noteData.value = data.value;
-    }
-  } catch (error) {
+    noteData.value = res;
+  }).catch(() => {
     if (params.value.page_num === 1) {
       loadingStatus.value = 'error';
     }
-  }
+  });
 };
 
 const getDay = (date: Date | string) => {
   const format = useFormatDate(date, 'dd');
   return format || '-';
 };
-const handlePagination = async ({ page, limit }) => {
+const handlePagination = ({ page, limit }) => {
   params.value.page_num = page;
   params.value.page_size = limit;
-  await getList();
+  getList();
 };
 getList();
 </script>
