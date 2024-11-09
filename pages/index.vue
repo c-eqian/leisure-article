@@ -227,7 +227,7 @@ const handleSearch = () => {
               <div class="cz-text-center">
                 <cz-typing
                   class="cz-py-4 description !cz-my-0"
-                  :text="userInfoComputed.isLogin ? (userInfoComputed.motto || defaultMotto) : defaultMotto"
+                  :text="defaultMotto"
                 />
               </div>
               <hr class="cz-divider">
