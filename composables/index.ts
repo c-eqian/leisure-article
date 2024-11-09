@@ -1,11 +1,24 @@
-import {useToFixedFix} from "@eqian/utils-vue";
-
+import { useToFixedFix } from '@eqian/utils-vue'
+const defaultColors = [
+  '#909399',
+  '#F56C6C',
+  '#E6A23C',
+  '#67C23A',
+  '#f1b46f',
+  '#869a87',
+  '#e97370',
+  '#f39f64',
+  '#4c96d9',
+  '#ec8364',
+  '#f39f64',
+  '#73ca87'
+]
 /**
  * 获取随机颜色
  * @param colors
  */
 export const useRandomColor = (colors: string[] = []) => {
-  const _colors = colors.length > 0 ? colors : ['#909399', '#F56C6C', '#E6A23C', '#67C23A']
+  const _colors = colors.length > 0 ? colors : defaultColors
   const randomIndex = Math.floor(Math.random() * _colors.length)
   return _colors[randomIndex]
 }

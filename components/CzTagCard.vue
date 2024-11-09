@@ -6,6 +6,10 @@ const props = defineProps({
   value: {
     type: Number,
     default: 0
+  },
+  isRandomColor: {
+    type: Boolean,
+    default: false
   }
 })
 const tags = ref<ICategoryTags[]>([])
@@ -31,14 +35,23 @@ const currentTag = computed({
     emits('update:value', value)
   }
 })
+const computeColor = () => {
+  return { 'cz-bg-[#cbf1f5] / 8': !props.isRandomColor }
+}
+const computeStyle = (id:number) => {
+  if (!props.isRandomColor || id === currentTag.value) { return {} }
+  return { 'background-color': useRandomColor(), color: 'white' }
+}
 </script>
 
 <template>
   <div class="cz-min-h-10 cz-flex cz-p-2 cz-flex-wrap cz-rounded-2xl cz-w-full cz-bg-gradient-to-br cz-from-[#fdcbf1] / 8 cz-from-0%  cz-via-[#fdcbf1] / 8 cz-via-10% cz-to-[#cbf1f5] / 8 cz-to-100%">
     <div
       class="cz-m-1 cz-space-x-4 cz-bg-[#cbf1f5] / 8 cz-rounded-2xl"
+      :style="computeStyle(0)"
       :class="{
-        selected: currentTag==0
+        selected: currentTag==0,
+        ...computeColor()
       }"
     >
       <a class="cz-p-2 cz-cursor-pointer" @click="() => handleClickTag(0)">全部</a>
@@ -46,9 +59,11 @@ const currentTag = computed({
     <div
       v-for="item in tagsList"
       :key="item.tag_name + item.id"
-      class="cz-m-1 cz-space-x-4 cz-bg-[#cbf1f5] / 8 cz-rounded-2xl"
+      class="cz-m-1 cz-space-x-4 cz-rounded-2xl"
+      :style="computeStyle(item.id)"
       :class="{
-        selected: currentTag === item.id
+        selected: currentTag === item.id,
+        ...computeColor()
       }"
     >
       <a class="cz-p-2 cz-cursor-pointer" @click="() => handleClickTag(item.id)">{{ item.tag_name }}</a>

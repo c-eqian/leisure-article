@@ -67,7 +67,7 @@ const handleLoadingMore = () => {
 <template>
   <div class="cz-my-0 cz-mx-auto cz-max-w-3xl">
     <div class="cz-mt-20 cz-min-h-[800px] cz-rounded-2xl cz-bg-gray-50 dark:cz-bg-slate-800">
-      <CzTagCard v-model:value="params.category_tags" @click-tag="handleClickTag" />
+      <CzTagCard v-model:value="params.category_tags" is-random-color @click-tag="handleClickTag" />
       <CzSkeleton v-if="loadingStatus==='loading'" class="cz-h-screen" />
       <template v-else-if="loadingStatus==='success' && noteData.list?.length">
         <div v-for="item in noteData?.list" :key="item.id" class="cz-flex cz-space-y-10">
