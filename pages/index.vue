@@ -223,10 +223,10 @@ const handleSearch = () => {
           <div
             class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50 dark:cz-bg-slate-800"
           >
-            <div class="cz-pt-10 cz-border-b cz-border-dashed">
+            <div class="cz-pt-2 cz-border-b cz-border-dashed">
               <div class="cz-text-center">
                 <cz-typing
-                  class="cz-text-xs cz-py-4 cz-text-[#a0a0a0]"
+                  class="cz-py-4 description !cz-my-0"
                   :text="userInfoComputed.isLogin ? (userInfoComputed.motto || defaultMotto) : defaultMotto"
                 />
               </div>
