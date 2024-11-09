@@ -5,6 +5,8 @@ import type { IWebsite } from '~/api/system/type'
 import { userInfo, userLogin, userLogout } from '~/api/user'
 import type { User } from '~/api/user/type'
 import { getSystemWebsite } from '~/api/system'
+import type { ICategoryTags } from '~/api/category/type'
+import { getCategoryTagsList } from '~/api/category'
 export interface IUserInfo extends Partial<User.IUserInfoResponse> {
   isLogin?: boolean;
 }
@@ -18,7 +20,8 @@ export const useGlobalStore = defineStore({
       account: '',
       password: ''
     },
-    website: {} as IWebsite.Data
+    website: {} as IWebsite.Data,
+    categoryTags: [] as ICategoryTags[]
   }),
   actions: {
     settingTheme (theme: string) {
@@ -85,6 +88,22 @@ export const useGlobalStore = defineStore({
     },
     setWebsite (v: IWebsite.Data) {
       this.website = { ...v }
+    },
+    getCategoryTags ():Promise<ICategoryTags[]> {
+      return new Promise((resolve) => {
+        if (this.categoryTags.length > 0) {
+          resolve(this.categoryTags)
+          return
+        }
+        getCategoryTagsList().then((res) => {
+          if (!isEmpty(res)) {
+            this.categoryTags = res
+          }
+          resolve(this.categoryTags)
+        }).catch(() => {
+          resolve(this.categoryTags)
+        })
+      })
     }
   },
   persist: piniaPersistConfig('GlobalStore', ['theme', 'userInfo', 'loginInfo'])

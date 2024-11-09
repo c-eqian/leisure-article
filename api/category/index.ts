@@ -1,4 +1,4 @@
-import type { ICategoryData } from './type'
+import type { ICategoryData, ICategoryTags } from './type'
 import { http } from '~/api/http'
 
 export const getCategoryList = (params?: {
@@ -12,5 +12,15 @@ export const getCategoryList = (params?: {
     isLoading: false,
     method: 'GET',
     params
+  })
+}
+/**
+ * 获取分类标
+ */
+export const getCategoryTagsList = () => {
+  return http.request<ICategoryTags[]>({
+    url: '/admin/category/tags',
+    isLoading: false,
+    method: 'GET'
   })
 }

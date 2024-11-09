@@ -133,7 +133,7 @@ useHead(useHeadOption);
 if (import.meta.client) {
   console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
 }
-const defaultMotto = '大丈夫生于天地之间,怎能郁郁久居人下';
+const defaultMotto = '简单记录、简单生活、爱自己是终身的浪漫';
 </script>
 
 <template>
@@ -267,8 +267,8 @@ const defaultMotto = '大丈夫生于天地之间,怎能郁郁久居人下';
               class="cz-flex  cz-py-1 cz-justify-center cz-items-center cz-cursor-pointer"
               @click.stop="changeCategory('')"
             >
-              <i class="bi bi-bookmark cz-pr-0.5" />
-              <span>目录类别</span>
+              <i class="bi bi-book cz-px-1" />
+              <span>类别</span>
             </div>
             <div class="cz-border cz-border-dashed cz-my-2" />
             <ul class="cz-leading-8">

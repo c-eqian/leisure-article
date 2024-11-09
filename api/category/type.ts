@@ -19,3 +19,12 @@ export interface ICategoryData {
   list: List[];
   total: number;
 }
+
+export interface ICategoryTags {
+  id: number;
+  category_name?: string;
+  tags: {
+    id: number;
+    tag_name: string;
+  }[]
+}
