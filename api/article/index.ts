@@ -8,11 +8,23 @@ import { http } from '~/api/http'
 export const getArticleList = (params?: {
     page_size?: number;
     page_num?: number;
+    title?: string;
 }) => {
   return http.request<IArticleRes>({
     url: '/article/list',
     method: 'GET',
     params,
+    isLoading: false
+  })
+}
+/**
+ * 搜索文章列表
+ * @param text
+ */
+export const getArticleFilterList = (text:string) => {
+  return http.request<IArticleRes['list']>({
+    url: `/article/query/${text}`,
+    method: 'GET',
     isLoading: false
   })
 }

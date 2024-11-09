@@ -21,7 +21,8 @@ export const useGlobalStore = defineStore({
       password: ''
     },
     website: {} as IWebsite.Data,
-    categoryTags: [] as ICategoryTags[]
+    categoryTags: [] as ICategoryTags[],
+    articleSearchHistory: [] as string[]
   }),
   actions: {
     settingTheme (theme: string) {
@@ -104,7 +105,14 @@ export const useGlobalStore = defineStore({
           resolve(this.categoryTags)
         })
       })
+    },
+    addArticleSearch (v:string) {
+      if (this.articleSearchHistory.includes(v)) { return }
+      if (this.articleSearchHistory.length > 30) {
+        this.articleSearchHistory.pop()
+      }
+      this.articleSearchHistory.unshift(v)
     }
   },
-  persist: piniaPersistConfig('GlobalStore', ['theme', 'userInfo', 'loginInfo'])
+  persist: piniaPersistConfig('GlobalStore', ['theme', 'userInfo', 'loginInfo', 'articleSearchHistory'])
 })

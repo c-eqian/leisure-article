@@ -6,7 +6,7 @@ const name = defineModel('name', {
 </script>
 
 <template>
-  <i class="bi" :class="`bi-${name}`" />
+  <i class="bi cz-px-1" :class="`bi-${name}`" />
 </template>
 
 <style scoped>

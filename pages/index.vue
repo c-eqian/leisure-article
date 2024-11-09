@@ -24,6 +24,7 @@ const sentenceList = ref<ISystemSentence.Datum[]>([]);
 const query = ref({
   page_size: 20,
   category_id: '',
+  title: '',
   page_num: 1
 });
 definePageMeta({
@@ -97,11 +98,6 @@ const getVisitorInfo = () => {
     visitorInfo.value = res;
   });
 };
-// const websiteInfo = () => {
-//   systemStore.getWebsite().then((res) => {
-//     website.value = res;
-//   });
-// };
 getList();
 getSentence();
 catalogueData();
@@ -134,6 +130,10 @@ if (import.meta.client) {
   console.log(`%c欢迎使用 ${location.host}!`, 'color: #1E80FF; font-size: x-large;padding: 10px;text-decoration: none;');
 }
 const defaultMotto = '简单记录、简单生活、爱自己是终身的浪漫';
+const handleSearch = () => {
+  query.value.page_num = 1;
+  getList();
+};
 </script>
 
 <template>
@@ -215,8 +215,11 @@ const defaultMotto = '简单记录、简单生活、爱自己是终身的浪漫'
           />
         </div>
       </div>
-      <div class="cz-sticky cz-top-8 cz-mt-8 cz-h-96 max-md:cz-hidden cz-w-1/3  ">
-        <div class="right-card cz-relative  cz-bottom-1.5 cz-py-2 cz-px-8">
+      <div class="cz-sticky cz-top-8 cz-h-96 max-md:cz-hidden cz-w-1/3  ">
+        <div class="right-card cz-relative cz-bottom-1.5 cz-py-2 cz-px-8">
+          <div class="cz-flex cz-justify-start">
+            <CzSearchCard v-model:value="query.title" @search="handleSearch" />
+          </div>
           <div
             class="item-card  cz-px-4 min-h-200px cz-mt-3 cz-box-border cz-bg-gray-50 dark:cz-bg-slate-800"
           >

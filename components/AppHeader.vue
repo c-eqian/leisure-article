@@ -26,28 +26,28 @@ const menuList = ref([
     name: '文章',
     path: '/',
     isReplace: false,
-    icon: 'house'
+    icon: 'book'
   },
   {
     name: '笔记',
     isReplace: false,
     path: '/notes/list',
-    icon: 'file-earmark-text'
-  },
-  {
-    name: '宝箱',
-    isReplace: false,
-    path: '/utils/list',
-    icon: 'file-earmark-text'
+    icon: 'pencil-square'
   },
   {
     name: '留言',
     isReplace: false,
     path: '/message/list',
-    icon: 'file-earmark-text'
+    icon: 'chat-dots'
   },
   {
-    name: '必应',
+    name: '宝箱',
+    isReplace: false,
+    path: '/utils/list',
+    icon: 'github'
+  },
+  {
+    name: '图片',
     isReplace: false,
     path: '/wallpaper/list',
     icon: 'image',
@@ -107,9 +107,10 @@ const handleLogoutItemClick = () => {
       </q-drawer>
       <q-header
         reveal
-        class="cz-fixed cz-top-0 cz-text-white"
+        class="cz-fixed cz-top-0"
         :class="{
-          'cz-bg-inherit':props.bgInherit
+          'cz-bg-inherit':props.bgInherit,
+          'dark:cz-bg-[#181818]':!props.bgInherit
         }"
       >
         <q-toolbar class="cz-text-inherit">

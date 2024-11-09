@@ -45,7 +45,7 @@ const computeStyle = (id:number) => {
 </script>
 
 <template>
-  <div class="cz-min-h-10 cz-flex cz-p-2 cz-flex-wrap cz-rounded-2xl cz-w-full cz-bg-gradient-to-br cz-from-[#fdcbf1] / 8 cz-from-0%  cz-via-[#fdcbf1] / 8 cz-via-10% cz-to-[#cbf1f5] / 8 cz-to-100%">
+  <div class="cz-min-h-10 cz-flex cz-p-2 cz-flex-wrap cz-rounded-2xl dark:cz-bg-none dark:cz-bg-inherit cz-w-full cz-bg-gradient-to-br cz-from-[#fdcbf1] / 8 cz-from-0%  cz-via-[#fdcbf1] / 8 cz-via-10% cz-to-[#cbf1f5] / 8 cz-to-100%">
     <div
       class="cz-m-1 cz-space-x-4 cz-bg-[#cbf1f5] / 8 cz-rounded-2xl"
       :style="computeStyle(0)"
