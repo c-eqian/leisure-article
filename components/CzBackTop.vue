@@ -23,12 +23,22 @@ const toScrollTop = () => {
     behavior: 'smooth'
   })
 }
+const toolsIcon = ref('eye')
+const handleMode = () => {
+  toolsIcon.value = toolsIcon.value === 'eye' ? 'eye-slash' : 'eye'
+  if (toolsIcon.value !== 'eye' && import.meta.client) {
+    toScrollTop()
+    systemStorage.setBannerHeight('100vh')
+    return
+  }
+  systemStorage.setBannerHeight('450px')
+}
 </script>
 
 <template>
   <teleport to="body">
     <div
-      class="right-setting d-md-none d-xl-block cz-z-10 cz-fixed max-md:cz-right-[10px] cz-right-[30px] cz-top-3/4"
+      class="right-setting  d-md-none d-xl-block cz-z-10 cz-fixed max-md:cz-right-[10px] cz-right-[30px] cz-top-3/4"
       @click="settingTheme"
     >
       <div
@@ -48,6 +58,24 @@ const toScrollTop = () => {
         <i
           class="bi cz-block bi-gear setting"
         />
+      </div>
+    </div>
+    <div v-show="y < 200" class=" cz-rounded-md    d-md-none d-xl-block cz-z-10 cz-fixed max-md:cz-right-[10px] cz-right-[30px] cz-top-[70%]" @click="handleMode">
+      <div
+        class="
+        cz-flex cz-justify-center
+        cz-items-center
+        cz-text-[#fff]
+        cz-text-center
+        cz-text-[16px]
+        cz-leading-[30px]
+        cz-cursor-pointer
+        cz-w-[30px]
+        cz-h-[30px]
+        cz-rounded-2xl
+        cz-bg-[#49b1f5]"
+      >
+        <CzIcon :name="toolsIcon" />
       </div>
     </div>
     <div

@@ -20,6 +20,7 @@ export const useGlobalStore = defineStore({
       account: '',
       password: ''
     },
+    bannerHeight: '450px',
     website: {} as IWebsite.Data,
     categoryTags: [] as ICategoryTags[],
     articleSearchHistory: [] as string[]
@@ -30,6 +31,9 @@ export const useGlobalStore = defineStore({
     },
     setLoginInfo (loginInfo: any) {
       this.loginInfo = loginInfo
+    },
+    setBannerHeight (bannerHeight: string) {
+      this.bannerHeight = bannerHeight
     },
     // 用户登录
     login (params: User.ILoginRequest) {

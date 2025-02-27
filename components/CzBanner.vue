@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import type { CSSProperties } from 'vue'
+import { useGlobalStore } from '~/store'
+
 defineOptions({
   name: 'CzBanner'
 })
 const bannerRef = ref<HTMLDivElement>()
+const systemStorage = useGlobalStore()
 const props = defineProps({
   scrollY: {
     type: Number,
@@ -26,19 +30,32 @@ const props = defineProps({
   }
 })
 const bannerUrlComputed = computed(() => props.bannerUrl)
-
+const bannerHeight = ref({
+  height: systemStorage.bannerHeight ?? props.height
+})
+const opacity = ref('rgba(0, 0, 0, .4)')
 // 解决水合问题
 watchEffect(() => {
   if (process.client) {
     bannerRef.value?.style.setProperty('--banner-cover', `url(${bannerUrlComputed.value})`)
   }
 })
+watch(() => systemStorage.bannerHeight, (v) => {
+  if (v === '100vh') {
+    opacity.value = 'rgba(0, 0, 0, .2)'
+  } else {
+    opacity.value = 'rgba(0, 0, 0, .4)'
+  }
+  bannerHeight.value.height = v
+}, {
+  immediate: true
+})
 </script>
 
 <template>
   <div ref="bannerRef">
     <div
-      :style="{height}"
+      :style="bannerHeight"
       class="repo md:cz-h-[450px] cz-h-52 cz-bg-fixed"
     >
       <div style="margin: 0 auto;max-width: 620px; z-index: 10">
@@ -78,7 +95,7 @@ watchEffect(() => {
     right: 0;
     height: 100%;
     z-index: -1;
-    background-color: rgba(0, 0, 0, .4);
+    background-color: v-bind(opacity);
   }
 
   .arrow-animation {

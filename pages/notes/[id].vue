@@ -124,7 +124,7 @@ useHead(useHeadOption);
               <md-catalog
                 :theme="themeMode"
                 :scroll-element="scrollElement"
-                editor-id="my-preview-id"
+                editor-id="md-preview-note"
               />
             </div>
           </div>
