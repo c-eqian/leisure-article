@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import LoginModal from "@/components/LoginModal.vue";
-import { useLogin } from "@/composables/useLogin";
+import { useLogin } from "../composables/useLogin";
 
 /**
  * 头部横幅组件
@@ -9,54 +8,89 @@ import { useLogin } from "@/composables/useLogin";
  */
 
 // 登录状态管理
-const { isLogin, login, logout } = useLogin();
+const { isLogin, createLoginModal, login, logout } = useLogin();
 
-// 登录模态框显示状态
-const showLoginModal = ref(false);
-
+// 退出确认弹窗
+const showLogoutConfirm = ref(false);
+const goToLogin = async () => {
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      login();
+      resolve(true);
+    }, 5000),
+  );
+};
 /**
  * 处理登录按钮点击事件
  * 如果已登录则登出，否则显示登录模态框
  */
-const handleLoginClick = () => {
+const handleLoginClick = async () => {
   if (isLogin.value) {
-    logout();
+    showLogoutConfirm.value = true;
   } else {
-    showLoginModal.value = true;
+    await createLoginModal({ loginFn: goToLogin });
   }
+};
+
+const confirmLogout = () => {
+  logout();
+  showLogoutConfirm.value = false;
 };
 </script>
 
 <template>
-  <div class="header-banner">
-    <div class="banner-image">
-      <div class="banner-overlay">
-        <div
-          v-if="isLogin"
-          class="banner-avatar logged-in"
-          @click="handleLoginClick"
-        >
-          <div class="avatar-circle">片</div>
-          <span class="avatar-text">片刻</span>
-          <div class="logout-icon">×</div>
-        </div>
-        <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
-          <div class="login-icon">👤</div>
-          <span class="avatar-text">登录</span>
+  <client-only>
+    <div class="header-banner">
+      <div class="banner-image">
+        <div class="banner-overlay">
+          <div
+            v-if="isLogin"
+            class="banner-avatar logged-in"
+            @click="handleLoginClick"
+          >
+            <div class="avatar-circle">片</div>
+            <span class="avatar-text">片刻</span>
+            <div class="logout-icon">×</div>
+          </div>
+          <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
+            <div class="login-icon">👤</div>
+            <span class="avatar-text">登录</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <LoginModal
-    v-model:visible="showLoginModal"
-    @confirm="
-      () => {
-        login();
-        showLoginModal = false;
-      }
-    "
-    @close="() => (showLoginModal = false)"
-  />
+    <BaseModal
+      :visible="showLogoutConfirm"
+      title="确认退出"
+      closable
+      @update:visible="(v) => (showLogoutConfirm = v)"
+      @close="() => (showLogoutConfirm = false)"
+    >
+      <div class="confirm-dialog">
+        <div class="confirm-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm1 15h-2v-2h2Zm0-4h-2V7h2Z"
+            />
+          </svg>
+        </div>
+        <div class="confirm-body">
+          <h3 class="confirm-title">确定退出登录？</h3>
+          <p class="confirm-desc">
+            退出后将无法进行需要登录的操作，仍要继续吗？
+          </p>
+        </div>
+        <div class="confirm-actions">
+          <button class="btn btn-ghost" @click="showLogoutConfirm = false">
+            取消
+          </button>
+          <button class="btn btn-danger" @click="confirmLogout">
+            确认退出
+          </button>
+        </div>
+      </div>
+    </BaseModal>
+  </client-only>
 </template>
 
 <style scoped>
@@ -211,5 +245,82 @@ const handleLoginClick = () => {
   .header-banner {
     height: 200px;
   }
+}
+
+/* Confirm dialog styles */
+.confirm-dialog {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  grid-template-rows: auto auto;
+  grid-column-gap: 16px;
+  align-items: start;
+}
+.confirm-icon {
+  grid-row: 1 / span 2;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 99, 71, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e05858;
+}
+.confirm-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+.confirm-body {
+  margin-bottom: 16px;
+}
+.confirm-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.confirm-desc {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.confirm-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+.btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-ghost {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+.btn-ghost:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.btn-danger {
+  background: #e05858;
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #cc4c4c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(224, 88, 88, 0.35);
 }
 </style>

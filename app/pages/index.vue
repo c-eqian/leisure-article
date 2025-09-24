@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, ref, type Ref } from "vue";
+import { onMounted, ref } from "vue";
 import BlogPost from "@/components/BlogPost.vue";
 import BlogPostSkeleton from "@/components/BlogPostSkeleton.vue";
 import CategoryTabs from "@/components/CategoryTabs.vue";
@@ -14,12 +14,8 @@ definePageMeta({
  */
 
 // 注入的加载状态和方法
-const isLoading = inject<Ref<boolean>>("isLoading", ref(false));
-const loadingMessage = inject<Ref<string>>("loadingMessage", ref("加载中..."));
-const setLoading = inject<(loading: boolean, message?: string) => void>(
-  "setLoading",
-  () => {},
-);
+const isLoading = ref(false);
+const loadingMessage = ref("加载中...");
 
 // 示例博客文章数据
 const blogPost = {
@@ -38,9 +34,10 @@ const blogPost = {
  * 展示加载状态和骨架屏效果
  */
 const simulateNetworkRequest = async () => {
-  setLoading?.(true, "正在加载文章...");
+  isLoading.value = true;
+  loadingMessage.value = "正在加载文章...";
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  setLoading?.(false);
+  isLoading.value = false;
 };
 
 // 组件挂载时添加滚动监听和模拟请求

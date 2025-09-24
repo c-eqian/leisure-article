@@ -1,203 +1,121 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useTheme } from "@/composables/useTheme";
-
-const props = defineProps<{ visible?: boolean }>();
+import { isFunction } from "@eqian/utils-vue";
+import { computed, reactive, ref } from "vue";
+const props = defineProps({
+  loginFn: {
+    type: Function,
+    default: () => null,
+  },
+});
 const emit = defineEmits<{
-  (e: "update:visible", v: boolean): void;
-  (e: "confirm" | "close"): void;
+  (e: "close"): void;
 }>();
-const { isDark } = useTheme();
-
-const username = ref("");
-const password = ref("");
+const isVisible = ref(false);
+const formValues = reactive({
+  username: "",
+  password: "",
+});
+const {  } = useLogin()
 const isLoading = ref(false);
 const errorMessage = ref("");
 
 const isFormValid = computed(
-  () => username.value.trim() !== "" && password.value.trim() !== "",
+  () => formValues.username.trim() !== "" && formValues.password.trim() !== "",
 );
-
-const handleLogin = async () => {
+const handleClose = () => {
+  isVisible.value = false;
+  emit("close");
+  resetForm();
+};
+const open = () => {
+  isVisible.value = true;
+};
+const submitLogin = async () => {
   if (!isFormValid.value) return;
-  isLoading.value = true;
-  errorMessage.value = "";
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (username.value === "admin" && password.value === "123456") {
-      emit("confirm");
-      resetForm();
-      emit("update:visible", false);
-    } else {
-      errorMessage.value = "用户名或密码错误";
-    }
-  } catch {
-    errorMessage.value = "登录失败，请重试";
-  } finally {
+  const loginFn = props.loginFn;
+  if (isFunction(loginFn)) {
+    isLoading.value = true;
+    const res = await loginFn(close);
+    console.log(res)
+    errorMessage.value = "";
+    isVisible.value = false;
+    resetForm();
     isLoading.value = false;
   }
 };
 
 const resetForm = () => {
-  username.value = "";
-  password.value = "";
+  formValues.username = "";
+  formValues.password = "";
   errorMessage.value = "";
 };
-const handleClose = () => {
-  emit("close");
-  resetForm();
-  emit("update:visible", false);
-};
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") handleClose();
-};
+defineExpose({
+  open,
+  close: handleClose,
+  submitLogin,
+  resetForm,
+});
 </script>
 
 <template>
-  <teleport to="body">
-    <transition name="modal-fade">
-      <div
-        v-if="props.visible"
-        class="modal-overlay"
-        tabindex="-1"
-        @keydown="handleKeydown"
-      >
-        <transition name="modal-scale">
-          <div
-            v-if="props.visible"
-            class="modal-container"
-            :class="{ dark: isDark }"
-            @click.stop
-          >
-            <button class="close-btn" title="关闭" @click="handleClose">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                />
-              </svg>
-            </button>
-            <div class="login-form">
-              <div class="form-header">
-                <h2>登录</h2>
-                <p>欢迎回来，请输入您的登录信息</p>
-              </div>
-              <form class="form-content" @submit.prevent="handleLogin">
-                <div class="form-group">
-                  <label for="username">用户名</label>
-                  <input
-                    id="username"
-                    v-model="username"
-                    type="text"
-                    placeholder="请输入用户名"
-                    :disabled="isLoading"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="password">密码</label>
-                  <input
-                    id="password"
-                    v-model="password"
-                    type="password"
-                    placeholder="请输入密码"
-                    :disabled="isLoading"
-                    required
-                  />
-                </div>
-                <div v-if="errorMessage" class="error-message">
-                  {{ errorMessage }}
-                </div>
-                <div class="form-actions">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    :disabled="isLoading"
-                    @click="handleClose"
-                  >
-                    取消
-                  </button>
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    :disabled="!isFormValid || isLoading"
-                  >
-                    <span v-if="isLoading" class="loading-spinner" />
-                    {{ isLoading ? "登录中..." : "登录" }}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </transition>
+  <BaseModal v-model:visible="isVisible" closable @close="handleClose">
+    <div class="login-form">
+      <div class="form-header">
+        <h2>登录</h2>
+        <p>欢迎回来，请输入您的登录信息</p>
       </div>
-    </transition>
-  </teleport>
+      <form class="form-content" @submit.prevent="submitLogin">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input
+            id="username"
+            v-model="formValues.username"
+            type="text"
+            placeholder="请输入用户名"
+            :disabled="isLoading"
+            required
+            @keydown.enter.prevent="submitLogin"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input
+            id="password"
+            v-model="formValues.password"
+            type="password"
+            placeholder="请输入密码"
+            :disabled="isLoading"
+            required
+            @keydown.enter.prevent="submitLogin"
+          />
+        </div>
+        <div v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            :disabled="isLoading"
+            @click="handleClose"
+          >
+            取消
+          </button>
+          <button
+            v-loading.lg="isLoading"
+            type="submit"
+            class="btn btn-primary"
+            :disabled="!isFormValid || isLoading"
+          >
+            {{ isLoading ? "登录中..." : "登录" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </BaseModal>
 </template>
 
 <style lang="scss" scoped>
-/* styles copied from original, expanded for readability */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  cursor: default;
-}
-
-.modal-container {
-  background: var(--bg-primary);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 400px;
-  width: 90%;
-  max-height: 90vh;
-  overflow: hidden;
-  position: relative;
-  border: 1px solid var(--border-color);
-
-  &.dark {
-    background: var(--bg-primary);
-    border-color: var(--border-color);
-  }
-}
-
-.close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-  z-index: 1;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text-primary);
-    transform: scale(1.1);
-  }
-}
-
 .login-form {
   padding: 32px;
 }
@@ -323,51 +241,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 }
 
-.loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
-.modal-scale-enter-active,
-.modal-scale-leave-active {
-  transition: all 0.3s ease;
-}
-.modal-scale-enter-from {
-  opacity: 0;
-  transform: scale(0.8) translateY(-20px);
-}
-.modal-scale-leave-to {
-  opacity: 0;
-  transform: scale(0.8) translateY(20px);
-}
-
 @media (max-width: 480px) {
-  .modal-container {
-    width: 95%;
-    margin: 20px;
-  }
   .login-form {
     padding: 24px;
   }

@@ -36,14 +36,18 @@ export const useStore = defineStore("WEBSITE-STORE", {
     // 侧边栏是否打开
     isOpenSide: false as boolean,
 
-    // 用户是否已登录
-    isLogin: false as boolean,
-
-    // 是否显示登录模态框
-    showLoginModal: false as boolean,
-
-    // 是否显示样式配置模态框
-    showStyleConfigModal: false as boolean,
+    // 用户是否已登录（优先从本地持久化中恢复）
+    isLogin:
+      typeof window !== "undefined"
+        ? (() => {
+            try {
+              const raw = localStorage.getItem("WEBSITE-STORE");
+              return raw ? (JSON.parse(raw).isLogin ?? false) : false;
+            } catch {
+              return false;
+            }
+          })()
+        : (false as boolean),
 
     // 当前样式主题
     currentStyleTheme: "default" as StyleTheme,
@@ -145,6 +149,12 @@ export const useStore = defineStore("WEBSITE-STORE", {
 
   // 持久化配置
   persist: {
-    pick: ["websiteTheme", "isMobile", "isOpenSide", "currentStyleTheme"],
+    pick: [
+      "websiteTheme",
+      "isMobile",
+      "isOpenSide",
+      "currentStyleTheme",
+      "isLogin",
+    ],
   },
 });

@@ -1,6 +1,6 @@
 import { computed } from "vue";
 import { useStore } from "@/composables/useStore";
-
+import { createBaseLoginModal } from "~/composables/createLoginModal";
 /**
  * 用户登录状态管理 Composable
  * 提供登录相关的状态和方法
@@ -29,10 +29,19 @@ export const useLogin = () => {
    */
   const toggleLogin = () => webStore.toggleLogin();
 
+  /**
+   * 创建登录
+   */
+  const createLoginModal = async (options: CreateLoginModalOptions) => {
+    const modal = await createBaseLoginModal(options);
+    modal.open();
+    return modal;
+  };
   return {
     isLogin,
     login,
     logout,
     toggleLogin,
+    createLoginModal,
   };
 };
