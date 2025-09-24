@@ -1,11 +1,41 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useTheme } from '@/composables/useTheme';
+import { computed, ref } from 'vue'
+import { useTheme } from '@/composables/useTheme'
 
-const { isDark } = useTheme();
+/**
+ * 笔记页面组件
+ * 显示技术笔记文章列表，支持按标签筛选
+ */
+
+// 主题状态
+const { isDark } = useTheme()
+
+/**
+ * 标签接口
+ */
+interface Tag {
+  id: string
+  name: string
+  active: boolean
+}
+
+/**
+ * 文章接口
+ */
+interface Article {
+  id: number
+  date: string
+  month: string
+  title: string
+  description: string
+  readCount: number
+  category: string
+  location: string
+  tags: string[]
+}
 
 // 标签数据
-const tags = ref([
+const tags = ref<Tag[]>([
   { id: 'all', name: '全部', active: true },
   { id: 'interview', name: '面经', active: false },
   { id: 'eslint', name: 'ESLint', active: false },
@@ -36,10 +66,10 @@ const tags = ref([
   { id: 'component-lib', name: '组件库', active: false },
   { id: 'selection-sort', name: '选择排序', active: false },
   { id: 'vue', name: 'Vue', active: false }
-]);
+])
 
 // 文章数据
-const articles = ref([
+const articles = ref<Article[]>([
   {
     id: 1,
     date: '10',
@@ -56,8 +86,7 @@ const articles = ref([
     date: '08',
     month: '2025/01',
     title: 'typescript类型体操-基础版',
-    description:
-        '本上下文专注于TypeScript类型体操，探索使用高级类型技术如条件类型、映射类型和递归类型来实现复杂的类型构造和转换。通过具体案例研究，分析类型推断过程，提升开发者对TypeScript类型系统的深度理解和实践能力。',
+    description: '本上下文专注于TypeScript类型体操，探索使用高级类型技术如条件类型、映射类型和递归类型来实现复杂的类型构造和转换。通过具体案例研究，分析类型推断过程，提升开发者对TypeScript类型系统的深度理解和实践能力。',
     readCount: 15,
     category: 'Typescript',
     location: '深圳市',
@@ -68,8 +97,7 @@ const articles = ref([
     date: '05',
     month: '2025/01',
     title: 'Vue 3 Composition API 深度解析',
-    description:
-        '深入探讨Vue 3的Composition API，包括setup函数、响应式API、生命周期钩子等核心概念。通过实际案例展示如何更好地组织组件逻辑，提高代码的可维护性和复用性。',
+    description: '深入探讨Vue 3的Composition API，包括setup函数、响应式API、生命周期钩子等核心概念。通过实际案例展示如何更好地组织组件逻辑，提高代码的可维护性和复用性。',
     readCount: 23,
     category: 'Vue',
     location: '深圳市',
@@ -80,8 +108,7 @@ const articles = ref([
     date: '03',
     month: '2025/01',
     title: 'React Hooks 最佳实践指南',
-    description:
-        '全面介绍React Hooks的使用方法和最佳实践，包括useState、useEffect、useContext等常用Hooks，以及如何自定义Hooks来解决复杂的状态管理问题。',
+    description: '全面介绍React Hooks的使用方法和最佳实践，包括useState、useEffect、useContext等常用Hooks，以及如何自定义Hooks来解决复杂的状态管理问题。',
     readCount: 18,
     category: 'React',
     location: '深圳市',
@@ -92,8 +119,7 @@ const articles = ref([
     date: '01',
     month: '2025/01',
     title: 'CSS Grid 布局完全指南',
-    description:
-        '详细介绍CSS Grid布局系统的各种属性和用法，包括网格容器、网格项、网格线等概念。通过实例演示如何创建复杂的响应式布局。',
+    description: '详细介绍CSS Grid布局系统的各种属性和用法，包括网格容器、网格项、网格线等概念。通过实例演示如何创建复杂的响应式布局。',
     readCount: 21,
     category: 'CSS',
     location: '深圳市',
@@ -104,8 +130,7 @@ const articles = ref([
     date: '28',
     month: '2024/12',
     title: 'JavaScript 异步编程进阶',
-    description:
-        '深入理解JavaScript异步编程模型，包括Promise、async/await、Generator等概念。通过实际案例展示如何处理复杂的异步操作和错误处理。',
+    description: '深入理解JavaScript异步编程模型，包括Promise、async/await、Generator等概念。通过实际案例展示如何处理复杂的异步操作和错误处理。',
     readCount: 19,
     category: 'JavaScript',
     location: '深圳市',
@@ -116,8 +141,7 @@ const articles = ref([
     date: '25',
     month: '2024/12',
     title: 'Webpack 5 配置优化实战',
-    description:
-        '全面介绍Webpack 5的新特性和配置优化技巧，包括模块联邦、持久化缓存、Tree Shaking等。通过实际项目案例展示如何提升构建性能。',
+    description: '全面介绍Webpack 5的新特性和配置优化技巧，包括模块联邦、持久化缓存、Tree Shaking等。通过实际项目案例展示如何提升构建性能。',
     readCount: 14,
     category: 'Webpack',
     location: '深圳市',
@@ -128,39 +152,44 @@ const articles = ref([
     date: '22',
     month: '2024/12',
     title: 'HTTP/2 协议详解',
-    description:
-        '深入解析HTTP/2协议的核心特性和优势，包括多路复用、服务器推送、头部压缩等。通过对比HTTP/1.1展示性能提升效果。',
+    description: '深入解析HTTP/2协议的核心特性和优势，包括多路复用、服务器推送、头部压缩等。通过对比HTTP/1.1展示性能提升效果。',
     readCount: 12,
     category: 'HTTP',
     location: '深圳市',
     tags: ['http', 'network']
   }
-]);
+])
 
 // 当前选中的标签
-const activeTag = ref('all');
+const activeTag = ref('all')
 
 // 筛选后的文章
 const filteredArticles = computed(() => {
   if (activeTag.value === 'all') {
-    return articles.value;
+    return articles.value
   }
-  return articles.value.filter(article => article.tags.includes(activeTag.value));
-});
+  return articles.value.filter(article => article.tags.includes(activeTag.value))
+})
 
-// 切换标签
+/**
+ * 切换标签
+ * @param tagId - 标签ID
+ */
 const selectTag = (tagId: string) => {
-  activeTag.value = tagId;
+  activeTag.value = tagId
   tags.value.forEach(tag => {
-    tag.active = tag.id === tagId;
-  });
-};
+    tag.active = tag.id === tagId
+  })
+}
 
-// 阅读文章
+/**
+ * 阅读文章
+ * @param articleId - 文章ID
+ */
 const readArticle = (articleId: number) => {
-  // 这里可以添加路由跳转或其他逻辑
-  console.info('阅读文章:', articleId);
-};
+  // TODO: 这里可以添加路由跳转或其他逻辑
+  console.info('阅读文章:', articleId)
+}
 </script>
 
 <template>

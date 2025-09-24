@@ -2,11 +2,28 @@
 import { ref } from 'vue'
 import { useLogin } from '@/composables/useLogin'
 import LoginModal from '@/components/LoginModal.vue'
+
+/**
+ * 头部横幅组件
+ * 显示网站标题和用户登录状态
+ */
+
+// 登录状态管理
 const { isLogin, login, logout } = useLogin()
+
+// 登录模态框显示状态
 const showLoginModal = ref(false)
+
+/**
+ * 处理登录按钮点击事件
+ * 如果已登录则登出，否则显示登录模态框
+ */
 const handleLoginClick = () => {
-  if (isLogin.value) logout()
-  else showLoginModal.value = true
+  if (isLogin.value) {
+    logout()
+  } else {
+    showLoginModal.value = true
+  }
 }
 </script>
 

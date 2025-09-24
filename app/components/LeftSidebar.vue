@@ -5,12 +5,26 @@ import { useSideBar } from '@/composables/useSideBar'
 import { useTheme } from '@/composables/useTheme'
 import StyleConfigModal from '@/components/StyleConfigModal.vue'
 
+/**
+ * 左侧边栏组件
+ * 包含导航菜单、站点统计、社交链接和标签等功能
+ */
+
+// 当前激活的菜单项
 const activeMenu = ref('home')
+
+// 路由相关
 const router = useRouter()
 const route = useRoute()
+
+// 主题和侧边栏状态管理
 const { isDark, toggleTheme, webStore } = useTheme()
 const { isOpenSide, isMobile } = useSideBar()
+
+// 样式配置模态框显示状态
 const showStyleConfig = ref(false)
+
+// 导航菜单项配置
 const menuItems = [
   { id: '', name: '主页', icon: '🏠' },
   { id: 'daily', name: '日常', icon: '📝' },
@@ -22,16 +36,41 @@ const menuItems = [
   { id: 'settings', name: '设置', icon: '⚙️' }
 ]
 
-const siteStats = { articles: 18, categories: 7, comments: 32, operationDays: 529 }
+// 站点统计数据
+const siteStats = {
+  articles: 18,
+  categories: 7,
+  comments: 32,
+  operationDays: 529
+}
+
+// 标签数据
 const tags = ['朋友圈', '主题', '边栏']
 
+/**
+ * 设置激活菜单项并导航
+ * @param menuId - 菜单项ID
+ */
 const setActiveMenu = (menuId: string) => {
-  if (menuId === 'settings') { showStyleConfig.value = true; return }
+  if (menuId === 'settings') {
+    showStyleConfig.value = true
+    return
+  }
+  
   activeMenu.value = menuId
-  if (isMobile.value) webStore.setIsOpenSide()
+  
+  // 移动端点击菜单后关闭侧边栏
+  if (isMobile.value) {
+    webStore.setIsOpenSide()
+  }
+  
   router.push(`/${menuId}`)
 }
-watchEffect(() => { activeMenu.value = route.path })
+
+// 监听路由变化，更新激活菜单
+watchEffect(() => {
+  activeMenu.value = route.path
+})
 </script>
 
 <template>

@@ -4,9 +4,18 @@ import RightSidebar from '@/components/RightSidebar.vue'
 import MainContent from '@/components/MainContent.vue'
 import { useTheme } from '@/composables/useTheme'
 import { onMounted } from 'vue'
-import { useStore } from '@/stores/website'
+import { useStore } from '@/composables/useStore'
+
+/**
+ * 默认布局组件
+ * 提供网站的整体布局结构，包括左侧边栏、主内容区域和右侧边栏
+ */
+
+// 主题和状态管理
 const theme = useTheme()
 const store = useStore()
+
+// 组件挂载时应用样式主题
 onMounted(() => {
   store.applyStyleTheme(store.currentStyleTheme)
 })

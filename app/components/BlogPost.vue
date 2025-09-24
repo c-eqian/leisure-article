@@ -1,19 +1,40 @@
-<!--
- * @Author: eqian 2429120006@qq.com
- * @Date: 2025-09-23 14:24:33
- * @LastEditors: eqian 2429120006@qq.com
- * @LastEditTime: 2025-09-23 14:56:50
- * @FilePath: \websiteg:\self\eqian-article\components\BlogPost.vue
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
--->
+
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+
+/**
+ * 博客文章卡片组件
+ * 显示文章的基本信息，包括标题、作者、发布时间等
+ */
+
+// 路由实例
 const router = useRouter()
-type BlogPostProps = { title: string; author: string; publishTime: string; location: string; views: number; description: string; previewUrl: string }
+
+/**
+ * 博客文章属性接口
+ */
+interface BlogPostProps {
+  title: string
+  author: string
+  publishTime: string
+  location: string
+  views: number
+  description: string
+  previewUrl: string
+}
+
+// 组件属性
 const props = defineProps<BlogPostProps>()
+
+/**
+ * 处理标题点击事件
+ * 滚动到顶部并跳转到文章详情页
+ */
 const handleTitleClick = () => {
   const mainContent = document.querySelector('.main-content') as HTMLElement | null
-  if (mainContent) mainContent.scrollTop = 0
+  if (mainContent) {
+    mainContent.scrollTop = 0
+  }
   router.push({ path: `/post/11111` })
 }
 </script>

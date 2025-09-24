@@ -1,5 +1,15 @@
 <script setup lang="ts">
-const aboutMe = { location: 'HangZhou', occupation: '自由职业者', icp: '浙ICP备20230111号-1' }
+/**
+ * 关于我组件
+ * 显示个人基本信息，包括位置、职业和备案信息
+ */
+
+// 个人信息数据
+const aboutMe = {
+  location: 'HangZhou',
+  occupation: '自由职业者',
+  icp: '浙ICP备20230111号-1'
+}
 </script>
 
 <template>

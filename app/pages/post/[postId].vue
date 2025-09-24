@@ -3,11 +3,43 @@ import MarkdownRender from '@/components/MarkdownRender.vue'
 import { computed } from 'vue'
 import { useWebSize } from '@/composables/useWebSize'
 import { text } from './test'
+
+/**
+ * 文章详情页面组件
+ * 显示文章的详细内容，包括元数据和标签
+ */
+
+// 设备类型检测
 const { isMobile } = useWebSize()
-const articleMeta = { author: '程序员凌览', publishDate: '2025-06-12', viewCount: '12,376', readTime: '阅读3分钟' }
-const articleTags = ['前端','后端','JavaScript']
-const styles = computed(() => { if (isMobile.value) return {}; return { padding: '20px' } })
-// const text = '# 预览文章\n\n这里是示例内容。'
+
+/**
+ * 文章元数据接口
+ */
+interface ArticleMeta {
+  author: string
+  publishDate: string
+  viewCount: string
+  readTime: string
+}
+
+// 文章元数据
+const articleMeta: ArticleMeta = {
+  author: '程序员凌览',
+  publishDate: '2025-06-12',
+  viewCount: '12,376',
+  readTime: '阅读3分钟'
+}
+
+// 文章标签
+const articleTags = ['前端', '后端', 'JavaScript']
+
+// 响应式样式
+const styles = computed(() => {
+  if (isMobile.value) {
+    return {}
+  }
+  return { padding: '20px' }
+})
 </script>
 
 <template>

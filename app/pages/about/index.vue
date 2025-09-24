@@ -1,10 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
+
+/**
+ * 关于我页面组件
+ * 显示个人资料信息，支持编辑功能
+ */
+
+/**
+ * 个人信息数据接口
+ */
+interface ProfileData {
+  avatar: string
+  accountName: string
+  nickname: string
+  age: number
+  gender: string
+  email: string
+  phone: string
+  region: string
+  occupation: string
+  hobbies: string
+  signature: string
+  registrationDate: string
+}
 
 // 个人信息数据
-const profileData = ref({
-  avatar:
-      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face',
+const profileData = ref<ProfileData>({
+  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face',
   accountName: 'jack',
   nickname: 'jack',
   age: 43,
@@ -16,27 +38,32 @@ const profileData = ref({
   hobbies: '打乒乓球',
   signature: '相见恨晚',
   registrationDate: '2022-01-26 16:29:44'
-});
+})
 
 // 性别选项
-const genderOptions = ['男', '女', '其他'];
+const genderOptions = ['男', '女', '其他']
 
-// 编辑模式
-const isEditing = ref(false);
+// 编辑模式状态
+const isEditing = ref(false)
 
-// 保存编辑
+/**
+ * 保存个人信息
+ * 退出编辑模式并保存数据到后端
+ */
 const saveProfile = () => {
-  isEditing.value = false;
-  // 这里可以添加保存到后端的逻辑
-  // eslint-disable-next-line no-console
-  console.log('保存个人信息:', profileData.value);
-};
+  isEditing.value = false
+  // TODO: 这里可以添加保存到后端的逻辑
+  console.log('保存个人信息:', profileData.value)
+}
 
-// 取消编辑
+/**
+ * 取消编辑
+ * 退出编辑模式并重置数据
+ */
 const cancelEdit = () => {
-  isEditing.value = false;
-  // 这里可以添加重置数据的逻辑
-};
+  isEditing.value = false
+  // TODO: 这里可以添加重置数据的逻辑
+}
 </script>
 
 <template>
