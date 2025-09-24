@@ -1,23 +1,23 @@
-import type { IArticleItem, IArticleRes } from './type'
-import { http } from '~/api/http'
+import { http } from "../http";
+import type { IArticleItem, IArticleRes } from "./type";
 
 /**
  * 文章列表查询参数接口
  */
-interface ArticleListParams {
-  page_size?: number
-  page_num?: number
-  title?: string
-}
+type ArticleListParams = {
+  page_size?: number;
+  page_num?: number;
+  title?: string;
+};
 
 /**
  * 文章时间线查询参数接口
  */
-interface ArticleTimelineParams {
-  page_size?: number
-  page_num?: number
-  user_id?: number
-}
+type ArticleTimelineParams = {
+  page_size?: number;
+  page_num?: number;
+  user_id?: number;
+};
 
 /**
  * 查询首页文章列表
@@ -26,12 +26,12 @@ interface ArticleTimelineParams {
  */
 export const getArticleList = (params?: ArticleListParams) => {
   return http.request<IArticleRes>({
-    url: '/article/list',
-    method: 'GET',
+    url: "/article/list",
+    method: "GET",
     params,
-    isLoading: false
-  })
-}
+    isLoading: false,
+  });
+};
 
 /**
  * 搜索文章列表
@@ -39,12 +39,12 @@ export const getArticleList = (params?: ArticleListParams) => {
  * @returns Promise<IArticleItem[]> 匹配的文章列表
  */
 export const getArticleFilterList = (text: string) => {
-  return http.request<IArticleRes['list']>({
+  return http.request<IArticleRes["list"]>({
     url: `/article/query/${text}`,
-    method: 'GET',
-    isLoading: false
-  })
-}
+    method: "GET",
+    isLoading: false,
+  });
+};
 
 /**
  * 根据文章ID获取文章详情
@@ -55,9 +55,9 @@ export const getArticleItemDetailById = (uid: string) => {
   return http.request<IArticleItem>({
     url: `/article/detail/${uid}`,
     server: true,
-    method: 'GET'
-  })
-}
+    method: "GET",
+  });
+};
 
 /**
  * 点赞文章
@@ -67,9 +67,9 @@ export const getArticleItemDetailById = (uid: string) => {
 export const articleLike = (articleId: string | number) => {
   return http.request<IArticleItem>({
     url: `/article/like/${articleId}`,
-    method: 'PUT'
-  })
-}
+    method: "PUT",
+  });
+};
 
 /**
  * 根据文章作者UID查询该作者的近期文章
@@ -79,9 +79,9 @@ export const articleLike = (articleId: string | number) => {
 export const getArticleRecentByUid = (uid: string) => {
   return http.request<IArticleItem[]>({
     url: `/article/author/recent/${uid}`,
-    method: 'GET'
-  })
-}
+    method: "GET",
+  });
+};
 
 /**
  * 获取首页最近文章
@@ -89,11 +89,11 @@ export const getArticleRecentByUid = (uid: string) => {
  */
 export const getArticleRecent = () => {
   return http.request<IArticleItem[]>({
-    url: '/article/recent',
+    url: "/article/recent",
     isLoading: false,
-    method: 'GET'
-  })
-}
+    method: "GET",
+  });
+};
 
 /**
  * 获取文章时间线
@@ -102,9 +102,9 @@ export const getArticleRecent = () => {
  */
 export const getArticleTimeline = (params?: ArticleTimelineParams) => {
   return http.request<IArticleRes>({
-    url: '/article/timeline',
-    method: 'GET',
+    url: "/article/timeline",
+    method: "GET",
     params,
-    isLoading: false
-  })
-}
+    isLoading: false,
+  });
+};

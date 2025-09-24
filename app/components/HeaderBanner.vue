@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useLogin } from '@/composables/useLogin'
-import LoginModal from '@/components/LoginModal.vue'
+import { ref } from "vue";
+import LoginModal from "@/components/LoginModal.vue";
+import { useLogin } from "@/composables/useLogin";
 
 /**
  * 头部横幅组件
@@ -9,10 +9,10 @@ import LoginModal from '@/components/LoginModal.vue'
  */
 
 // 登录状态管理
-const { isLogin, login, logout } = useLogin()
+const { isLogin, login, logout } = useLogin();
 
 // 登录模态框显示状态
-const showLoginModal = ref(false)
+const showLoginModal = ref(false);
 
 /**
  * 处理登录按钮点击事件
@@ -20,18 +20,22 @@ const showLoginModal = ref(false)
  */
 const handleLoginClick = () => {
   if (isLogin.value) {
-    logout()
+    logout();
   } else {
-    showLoginModal.value = true
+    showLoginModal.value = true;
   }
-}
+};
 </script>
 
 <template>
   <div class="header-banner">
     <div class="banner-image">
       <div class="banner-overlay">
-        <div v-if="isLogin" class="banner-avatar logged-in" @click="handleLoginClick">
+        <div
+          v-if="isLogin"
+          class="banner-avatar logged-in"
+          @click="handleLoginClick"
+        >
           <div class="avatar-circle">片</div>
           <span class="avatar-text">片刻</span>
           <div class="logout-icon">×</div>
@@ -43,7 +47,16 @@ const handleLoginClick = () => {
       </div>
     </div>
   </div>
-  <LoginModal v-model:visible="showLoginModal" @confirm="() => { login(); showLoginModal = false }" @close="() => (showLoginModal = false)" />
+  <LoginModal
+    v-model:visible="showLoginModal"
+    @confirm="
+      () => {
+        login();
+        showLoginModal = false;
+      }
+    "
+    @close="() => (showLoginModal = false)"
+  />
 </template>
 
 <style scoped>
@@ -84,13 +97,18 @@ const handleLoginClick = () => {
 }
 
 .banner-avatar::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -124,10 +142,18 @@ const handleLoginClick = () => {
 }
 
 .login-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 .login-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2)
+  );
 }
 
 .login-icon {
@@ -138,11 +164,19 @@ const handleLoginClick = () => {
 }
 
 .logged-in {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.3),
+    rgba(76, 175, 80, 0.1)
+  );
   border-color: rgba(76, 175, 80, 0.3);
 }
 .logged-in:hover {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(76, 175, 80, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.4),
+    rgba(76, 175, 80, 0.2)
+  );
   border-color: rgba(76, 175, 80, 0.5);
 }
 
@@ -179,5 +213,3 @@ const handleLoginClick = () => {
   }
 }
 </style>
-
-

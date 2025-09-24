@@ -7,7 +7,7 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  
+
   <!-- 路由变更时的页面标题公告器 -->
   <NuxtRouteAnnouncer />
 </template>

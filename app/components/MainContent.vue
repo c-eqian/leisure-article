@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue'
-import { useTheme } from '@/composables/useTheme'
-import { useWebSize } from '@/composables/useWebSize'
-import AboutMe from '@/components/AboutMe.vue'
+import { provide, ref } from "vue";
+import AboutMe from "@/components/AboutMe.vue";
+import { useTheme } from "@/composables/useTheme";
+import { useWebSize } from "@/composables/useWebSize";
 
 /**
  * 主内容区域组件
@@ -10,12 +10,12 @@ import AboutMe from '@/components/AboutMe.vue'
  */
 
 // 设备类型和主题状态
-const { isMobile } = useWebSize()
-const { webStore } = useTheme()
+const { isMobile } = useWebSize();
+const { webStore } = useTheme();
 
 // 加载状态管理
-const isLoading = ref(false)
-const loadingMessage = ref('加载中...')
+const isLoading = ref(false);
+const loadingMessage = ref("加载中...");
 
 /**
  * 设置加载状态
@@ -23,21 +23,27 @@ const loadingMessage = ref('加载中...')
  * @param message - 加载消息
  */
 const setLoading = (loading: boolean, message?: string) => {
-  isLoading.value = loading
+  isLoading.value = loading;
   if (message) {
-    loadingMessage.value = message
+    loadingMessage.value = message;
   }
-}
+};
 
 // 向子组件提供加载状态和方法
-provide('isLoading', isLoading)
-provide('loadingMessage', loadingMessage)
-provide('setLoading', setLoading)
+provide("isLoading", isLoading);
+provide("loadingMessage", loadingMessage);
+provide("setLoading", setLoading);
 </script>
 
 <template>
   <div class="main-content">
-    <button v-if="isMobile" class="mobile-menu-toggle" @click="webStore.toggleOpenSide">☰</button>
+    <button
+      v-if="isMobile"
+      class="mobile-menu-toggle"
+      @click="webStore.toggleOpenSide"
+    >
+      ☰
+    </button>
     <div class="content">
       <slot />
     </div>
@@ -53,7 +59,9 @@ provide('setLoading', setLoading)
   padding: 0;
   background: var(--bg-content);
   height: 100vh;
-  transition: background var(--transition-normal), color var(--transition-normal);
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal);
   color: var(--text-primary);
   overflow-x: hidden;
   overflow-y: auto;
@@ -86,11 +94,20 @@ provide('setLoading', setLoading)
 }
 
 @media (max-width: 1200px) {
-  .main-content { height: 100vh; min-height: 100vh; overflow-y: auto; }
+  .main-content {
+    height: 100vh;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
 }
 
 @media (max-width: 768px) {
-  .main-content { height: 100vh; min-height: 100vh; overflow-y: auto; background: var(--bg-content); }
+  .main-content {
+    height: 100vh;
+    min-height: 100vh;
+    overflow-y: auto;
+    background: var(--bg-content);
+  }
   .mobile-menu-toggle {
     display: block !important;
   }
@@ -99,5 +116,3 @@ provide('setLoading', setLoading)
   }
 }
 </style>
-
-

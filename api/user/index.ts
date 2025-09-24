@@ -1,14 +1,14 @@
-import type { User } from './type'
-import { http } from '~/api/http'
-import { useGetTokenCookie } from '~/composables/use-cookies'
+// import { useGetTokenCookie } from '@/composables/use-cookies';
+import { http } from "../http";
+import type { User } from "./type";
 
 /**
  * 文件上传参数接口
  */
-interface UploadFileParams {
-  path: string
-  file: File
-}
+type UploadFileParams = {
+  path: string;
+  file: File;
+};
 
 /**
  * 用户登录
@@ -17,11 +17,11 @@ interface UploadFileParams {
  */
 export const userLogin = (data: User.ILoginRequest) => {
   return http.request<User.ILoginResponse>({
-    url: 'user/login',
-    method: 'POST',
-    params: data
-  })
-}
+    url: "user/login",
+    method: "POST",
+    params: data,
+  });
+};
 
 /**
  * 用户注册
@@ -30,11 +30,11 @@ export const userLogin = (data: User.ILoginRequest) => {
  */
 export const userRegistry = (data: User.IRegistryRequest) => {
   return http.request<User.IRegistryResponse>({
-    url: 'user/registry',
-    method: 'POST',
-    params: data
-  })
-}
+    url: "user/registry",
+    method: "POST",
+    params: data,
+  });
+};
 
 /**
  * 获取用户信息
@@ -43,12 +43,12 @@ export const userRegistry = (data: User.IRegistryRequest) => {
  */
 export const userInfo = (params?: any) => {
   return http.request<User.IUserInfoResponse>({
-    url: 'user/info',
-    method: 'GET',
+    url: "user/info",
+    method: "GET",
     isLoading: false,
-    params
-  })
-}
+    params,
+  });
+};
 
 /**
  * 更新用户信息
@@ -57,13 +57,13 @@ export const userInfo = (params?: any) => {
  */
 export const updateUserInfo = (data: User.IUserInfoRequest) => {
   return http.request({
-    url: 'user/info',
+    url: "user/info",
     params: data,
-    method: 'PUT',
+    method: "PUT",
     isLoading: false,
-    isShowSuccessText: true
-  })
-}
+    isShowSuccessText: true,
+  });
+};
 
 /**
  * 用户登出
@@ -71,30 +71,30 @@ export const updateUserInfo = (data: User.IUserInfoRequest) => {
  */
 export const userLogout = () => {
   return http.request({
-    url: 'user/logout',
-    method: 'GET'
-  })
-}
+    url: "user/logout",
+    method: "GET",
+  });
+};
 
-/**
- * 文件上传到阿里云OSS
- * @param data - 文件上传参数，包含文件路径和文件对象
- * @returns Promise<Response> 上传响应
- */
-export const uploadFile = (data: UploadFileParams) => {
-  const form = new FormData()
-  form.append('file', data.file)
-  form.append('path', data.path)
-  
-  const { $config } = useNuxtApp()
-  const BASEURL = $config.public.BASE_URL
-  const cookies = useGetTokenCookie()
-  
-  return fetch(BASEURL + 'oss/ali-oss-upload', {
-    method: 'POST',
-    headers: {
-      Authorization: cookies
-    },
-    body: form
-  })
-}
+// /**
+//  * 文件上传到阿里云OSS
+//  * @param data - 文件上传参数，包含文件路径和文件对象
+//  * @returns Promise<Response> 上传响应
+//  */
+// export const uploadFile = (data: UploadFileParams) => {
+//   const form = new FormData();
+//   form.append('file', data.file);
+//   form.append('path', data.path);
+//
+//   // const { $config } = useNuxtApp();
+//   // const BASEURL = $config.public.BASE_URL;
+//   // const cookies = useGetTokenCookie();
+//
+//   return fetch(`${BASEURL}oss/ali-oss-upload`, {
+//     method: 'POST',
+//     headers: {
+//       Authorization: cookies
+//     },
+//     body: form
+//   });
+// };

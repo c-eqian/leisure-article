@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 /**
  * 关于我页面组件
@@ -10,60 +10,61 @@ import { ref } from 'vue'
  * 个人信息数据接口
  */
 interface ProfileData {
-  avatar: string
-  accountName: string
-  nickname: string
-  age: number
-  gender: string
-  email: string
-  phone: string
-  region: string
-  occupation: string
-  hobbies: string
-  signature: string
-  registrationDate: string
+  avatar: string;
+  accountName: string;
+  nickname: string;
+  age: number;
+  gender: string;
+  email: string;
+  phone: string;
+  region: string;
+  occupation: string;
+  hobbies: string;
+  signature: string;
+  registrationDate: string;
 }
 
 // 个人信息数据
 const profileData = ref<ProfileData>({
-  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face',
-  accountName: 'jack',
-  nickname: 'jack',
+  avatar:
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face",
+  accountName: "jack",
+  nickname: "jack",
   age: 43,
-  gender: '男',
-  email: '4506289653@qq.com',
-  phone: '14242424247',
-  region: '江西',
-  occupation: '务农',
-  hobbies: '打乒乓球',
-  signature: '相见恨晚',
-  registrationDate: '2022-01-26 16:29:44'
-})
+  gender: "男",
+  email: "4506289653@qq.com",
+  phone: "14242424247",
+  region: "江西",
+  occupation: "务农",
+  hobbies: "打乒乓球",
+  signature: "相见恨晚",
+  registrationDate: "2022-01-26 16:29:44",
+});
 
 // 性别选项
-const genderOptions = ['男', '女', '其他']
+const genderOptions = ["男", "女", "其他"];
 
 // 编辑模式状态
-const isEditing = ref(false)
+const isEditing = ref(false);
 
 /**
  * 保存个人信息
  * 退出编辑模式并保存数据到后端
  */
 const saveProfile = () => {
-  isEditing.value = false
+  isEditing.value = false;
   // TODO: 这里可以添加保存到后端的逻辑
-  console.log('保存个人信息:', profileData.value)
-}
+  console.log("保存个人信息:", profileData.value);
+};
 
 /**
  * 取消编辑
  * 退出编辑模式并重置数据
  */
 const cancelEdit = () => {
-  isEditing.value = false
+  isEditing.value = false;
   // TODO: 这里可以添加重置数据的逻辑
-}
+};
 </script>
 
 <template>
@@ -72,7 +73,11 @@ const cancelEdit = () => {
       <!-- 头像区域 -->
       <div class="avatar-section">
         <div class="avatar-container">
-          <img :src="profileData.avatar" :alt="profileData.nickname" class="avatar-image" />
+          <img
+            :src="profileData.avatar"
+            :alt="profileData.nickname"
+            class="avatar-image"
+          />
           <div v-if="isEditing" class="avatar-overlay">
             <button class="avatar-edit-btn">
               <i class="icon-camera">📷</i>
@@ -88,7 +93,7 @@ const cancelEdit = () => {
         <div class="card-header">
           <h3>个人信息</h3>
           <button class="edit-btn" @click="isEditing = !isEditing">
-            {{ isEditing ? '取消' : '编辑' }}
+            {{ isEditing ? "取消" : "编辑" }}
           </button>
         </div>
 
@@ -97,10 +102,10 @@ const cancelEdit = () => {
             <label class="info-label">账户名</label>
             <div class="info-value">
               <input
-                  v-if="isEditing"
-                  v-model="profileData.accountName"
-                  class="info-input"
-                  type="text"
+                v-if="isEditing"
+                v-model="profileData.accountName"
+                class="info-input"
+                type="text"
               />
               <span v-else>{{ profileData.accountName }}</span>
             </div>
@@ -110,10 +115,10 @@ const cancelEdit = () => {
             <label class="info-label">昵称</label>
             <div class="info-value">
               <input
-                  v-if="isEditing"
-                  v-model="profileData.nickname"
-                  class="info-input"
-                  type="text"
+                v-if="isEditing"
+                v-model="profileData.nickname"
+                class="info-input"
+                type="text"
               />
               <span v-else>{{ profileData.nickname }}</span>
             </div>
@@ -123,10 +128,10 @@ const cancelEdit = () => {
             <label class="info-label">年龄</label>
             <div class="info-value">
               <input
-                  v-if="isEditing"
-                  v-model.number="profileData.age"
-                  class="info-input"
-                  type="number"
+                v-if="isEditing"
+                v-model.number="profileData.age"
+                class="info-input"
+                type="number"
               />
               <span v-else>{{ profileData.age }}</span>
             </div>
@@ -135,8 +140,16 @@ const cancelEdit = () => {
           <div class="info-item">
             <label class="info-label">性别</label>
             <div class="info-value">
-              <select v-if="isEditing" v-model="profileData.gender" class="info-select">
-                <option v-for="option in genderOptions" :key="option" :value="option">
+              <select
+                v-if="isEditing"
+                v-model="profileData.gender"
+                class="info-select"
+              >
+                <option
+                  v-for="option in genderOptions"
+                  :key="option"
+                  :value="option"
+                >
                   {{ option }}
                 </option>
               </select>
@@ -147,7 +160,12 @@ const cancelEdit = () => {
           <div class="info-item">
             <label class="info-label">邮箱</label>
             <div class="info-value">
-              <input v-if="isEditing" v-model="profileData.email" class="info-input" type="email" />
+              <input
+                v-if="isEditing"
+                v-model="profileData.email"
+                class="info-input"
+                type="email"
+              />
               <span v-else>{{ profileData.email }}</span>
             </div>
           </div>
@@ -155,7 +173,12 @@ const cancelEdit = () => {
           <div class="info-item">
             <label class="info-label">手机号码</label>
             <div class="info-value">
-              <input v-if="isEditing" v-model="profileData.phone" class="info-input" type="tel" />
+              <input
+                v-if="isEditing"
+                v-model="profileData.phone"
+                class="info-input"
+                type="tel"
+              />
               <span v-else>{{ profileData.phone }}</span>
             </div>
           </div>
@@ -163,7 +186,12 @@ const cancelEdit = () => {
           <div class="info-item">
             <label class="info-label">地区</label>
             <div class="info-value">
-              <input v-if="isEditing" v-model="profileData.region" class="info-input" type="text" />
+              <input
+                v-if="isEditing"
+                v-model="profileData.region"
+                class="info-input"
+                type="text"
+              />
               <span v-else>{{ profileData.region }}</span>
             </div>
           </div>
@@ -172,10 +200,10 @@ const cancelEdit = () => {
             <label class="info-label">职业</label>
             <div class="info-value">
               <input
-                  v-if="isEditing"
-                  v-model="profileData.occupation"
-                  class="info-input"
-                  type="text"
+                v-if="isEditing"
+                v-model="profileData.occupation"
+                class="info-input"
+                type="text"
               />
               <span v-else>{{ profileData.occupation }}</span>
             </div>
@@ -185,10 +213,10 @@ const cancelEdit = () => {
             <label class="info-label">兴趣爱好</label>
             <div class="info-value">
               <input
-                  v-if="isEditing"
-                  v-model="profileData.hobbies"
-                  class="info-input"
-                  type="text"
+                v-if="isEditing"
+                v-model="profileData.hobbies"
+                class="info-input"
+                type="text"
               />
               <span v-else>{{ profileData.hobbies }}</span>
             </div>
@@ -198,10 +226,10 @@ const cancelEdit = () => {
             <label class="info-label">个性签名</label>
             <div class="info-value">
               <textarea
-                  v-if="isEditing"
-                  v-model="profileData.signature"
-                  class="info-textarea"
-                  rows="2"
+                v-if="isEditing"
+                v-model="profileData.signature"
+                class="info-textarea"
+                rows="2"
               />
               <span v-else>{{ profileData.signature }}</span>
             </div>
@@ -210,7 +238,9 @@ const cancelEdit = () => {
           <div class="info-item">
             <label class="info-label">注册日期</label>
             <div class="info-value">
-              <span class="registration-date">{{ profileData.registrationDate }}</span>
+              <span class="registration-date">{{
+                profileData.registrationDate
+              }}</span>
             </div>
           </div>
         </div>
@@ -503,7 +533,7 @@ const cancelEdit = () => {
 }
 
 // 暗黑模式适配
-[data-theme='dark'] {
+[data-theme="dark"] {
   .profile-container {
     .profile-content {
       .profile-info-card {

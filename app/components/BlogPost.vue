@@ -1,6 +1,5 @@
-
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
 /**
  * 博客文章卡片组件
@@ -8,35 +7,37 @@ import { useRouter } from 'vue-router'
  */
 
 // 路由实例
-const router = useRouter()
+const router = useRouter();
 
 /**
  * 博客文章属性接口
  */
 interface BlogPostProps {
-  title: string
-  author: string
-  publishTime: string
-  location: string
-  views: number
-  description: string
-  previewUrl: string
+  title: string;
+  author: string;
+  publishTime: string;
+  location: string;
+  views: number;
+  description: string;
+  previewUrl: string;
 }
 
 // 组件属性
-const props = defineProps<BlogPostProps>()
+const props = defineProps<BlogPostProps>();
 
 /**
  * 处理标题点击事件
  * 滚动到顶部并跳转到文章详情页
  */
 const handleTitleClick = () => {
-  const mainContent = document.querySelector('.main-content') as HTMLElement | null
+  const mainContent = document.querySelector(
+    ".main-content",
+  ) as HTMLElement | null;
   if (mainContent) {
-    mainContent.scrollTop = 0
+    mainContent.scrollTop = 0;
   }
-  router.push({ path: `/post/11111` })
-}
+  router.push({ path: `/post/11111` });
+};
 </script>
 
 <template>
@@ -44,16 +45,41 @@ const handleTitleClick = () => {
     <div class="post-header">
       <div class="author-info">
         <div class="author-avatar">片</div>
-        <div class="author-details"><span class="author-name">{{ props.author }}</span><span class="publish-time">{{ props.publishTime }}</span></div>
+        <div class="author-details">
+          <span class="author-name">{{ props.author }}</span
+          ><span class="publish-time">{{ props.publishTime }}</span>
+        </div>
       </div>
     </div>
-    <h1 class="post-title" @click="handleTitleClick"><span class="title-text">{{ props.title }}</span></h1>
+    <h1 class="post-title" @click="handleTitleClick">
+      <span class="title-text">{{ props.title }}</span>
+    </h1>
     <p class="post-description">{{ props.description }}</p>
     <div class="website-preview">
-      <div class="preview-header"><div class="preview-controls"><div class="control-dot red" /><div class="control-dot yellow" /><div class="control-dot green" /></div><div class="preview-url">{{ props.previewUrl }}</div></div>
-      <div class="preview-content"><div class="preview-placeholder"><div class="preview-item" /><div class="preview-item" /><div class="preview-item" /><div class="preview-item" /></div></div>
+      <div class="preview-header">
+        <div class="preview-controls">
+          <div class="control-dot red" />
+          <div class="control-dot yellow" />
+          <div class="control-dot green" />
+        </div>
+        <div class="preview-url">{{ props.previewUrl }}</div>
+      </div>
+      <div class="preview-content">
+        <div class="preview-placeholder">
+          <div class="preview-item" />
+          <div class="preview-item" />
+          <div class="preview-item" />
+          <div class="preview-item" />
+        </div>
+      </div>
     </div>
-    <div class="post-footer"><div class="post-meta"><span class="location">◎ {{ props.location }}</span><span class="views">◎主题 {{ props.views }}浏览评论</span></div><button class="read-button">Read</button></div>
+    <div class="post-footer">
+      <div class="post-meta">
+        <span class="location">◎ {{ props.location }}</span
+        ><span class="views">◎主题 {{ props.views }}浏览评论</span>
+      </div>
+      <button class="read-button">Read</button>
+    </div>
   </article>
 </template>
 
@@ -122,7 +148,7 @@ const handleTitleClick = () => {
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -8px;
     left: -12px;
@@ -136,7 +162,7 @@ const handleTitleClick = () => {
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -6px;
     left: -10px;
@@ -196,9 +222,15 @@ const handleTitleClick = () => {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  &.red { background: #ff5f57; }
-  &.yellow { background: #ffbd2e; }
-  &.green { background: #28ca42; }
+  &.red {
+    background: #ff5f57;
+  }
+  &.yellow {
+    background: #ffbd2e;
+  }
+  &.green {
+    background: #28ca42;
+  }
 }
 
 .preview-url {
@@ -227,7 +259,7 @@ const handleTitleClick = () => {
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 12px;
     left: 12px;
@@ -238,7 +270,7 @@ const handleTitleClick = () => {
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 28px;
     left: 12px;
@@ -282,14 +314,30 @@ const handleTitleClick = () => {
 }
 
 @media (max-width: 768px) {
-  .blog-post { padding: 20px; }
-  .post-title { font-size: 24px; }
-  .website-preview { margin-bottom: 20px; }
-  .preview-content { padding: 15px; }
-  .preview-placeholder { grid-template-columns: 1fr; gap: 12px; }
-  .post-footer { flex-direction: column; gap: 15px; align-items: flex-start; }
-  .post-meta { flex-direction: column; gap: 8px; }
+  .blog-post {
+    padding: 20px;
+  }
+  .post-title {
+    font-size: 24px;
+  }
+  .website-preview {
+    margin-bottom: 20px;
+  }
+  .preview-content {
+    padding: 15px;
+  }
+  .preview-placeholder {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .post-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  .post-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 </style>
-
-

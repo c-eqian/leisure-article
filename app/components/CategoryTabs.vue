@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-const activeCategory = ref('全部')
-const categories = ['全部','日常','折腾','摄影','代码']
-const setActiveCategory = (category: string) => { activeCategory.value = category }
-defineExpose({ activeCategory, setActiveCategory })
+import { ref } from "vue";
+const activeCategory = ref("全部");
+const categories = ["全部", "日常", "折腾", "摄影", "代码"];
+const setActiveCategory = (category: string) => {
+  activeCategory.value = category;
+};
+defineExpose({ activeCategory, setActiveCategory });
 </script>
 
 <template>
   <div class="category-section">
     <div class="category-tabs">
-      <button v-for="category in categories" :key="category" :class="{ active: activeCategory === category }" class="category-tab" @click="setActiveCategory(category)">{{ category }}</button>
+      <button
+        v-for="category in categories"
+        :key="category"
+        :class="{ active: activeCategory === category }"
+        class="category-tab"
+        @click="setActiveCategory(category)"
+      >
+        {{ category }}
+      </button>
     </div>
     <div class="quote-text">时光扑面,斯人如风。</div>
   </div>
@@ -23,10 +33,15 @@ defineExpose({ activeCategory, setActiveCategory })
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+  transition:
+    background-color var(--transition-normal),
+    border-color var(--transition-normal);
 }
 
-.category-tabs { display: flex; gap: 8px; }
+.category-tabs {
+  display: flex;
+  gap: 8px;
+}
 
 .category-tab {
   padding: 8px 16px;
@@ -39,16 +54,38 @@ defineExpose({ activeCategory, setActiveCategory })
   color: var(--text-muted);
 }
 
-.category-tab:hover { border-color: var(--primary-color); color: var(--primary-color); }
-.category-tab.active { background: var(--primary-color); color: var(--text-white-on-primary, var(--text-white)); border-color: var(--primary-color); }
+.category-tab:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+.category-tab.active {
+  background: var(--primary-color);
+  color: var(--text-white-on-primary, var(--text-white));
+  border-color: var(--primary-color);
+}
 
-.quote-text { font-size: 14px; color: var(--text-muted); font-style: italic; transition: color var(--transition-normal); }
+.quote-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+  transition: color var(--transition-normal);
+}
 
 @media (max-width: 768px) {
-  .category-section { padding: 15px 20px; flex-direction: column; gap: 15px; align-items: flex-start; }
-  .category-tabs { width: 100%; justify-content: space-between; }
-  .category-tab { flex: 1; text-align: center; padding: 10px 8px; }
+  .category-section {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  .category-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .category-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+  }
 }
 </style>
-
-

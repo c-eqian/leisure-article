@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import LeftSidebar from '@/components/LeftSidebar.vue'
-import RightSidebar from '@/components/RightSidebar.vue'
-import MainContent from '@/components/MainContent.vue'
-import { useTheme } from '@/composables/useTheme'
-import { onMounted } from 'vue'
-import { useStore } from '@/composables/useStore'
+import { onMounted } from "vue";
+import LeftSidebar from "@/components/LeftSidebar.vue";
+import MainContent from "@/components/MainContent.vue";
+import RightSidebar from "@/components/RightSidebar.vue";
+import { useStore } from "@/composables/useStore";
+import { useTheme } from "@/composables/useTheme";
 
 /**
  * 默认布局组件
@@ -12,27 +12,26 @@ import { useStore } from '@/composables/useStore'
  */
 
 // 主题和状态管理
-const theme = useTheme()
-const store = useStore()
+const theme = useTheme();
+const store = useStore();
 
 // 组件挂载时应用样式主题
 onMounted(() => {
-  store.applyStyleTheme(store.currentStyleTheme)
-})
+  store.applyStyleTheme(store.currentStyleTheme);
+});
 </script>
 
 <template>
   <div class="website-container" :class="theme.themeClass">
     <div class="content-wrapper">
       <LeftSidebar />
-        <MainContent>
-          <NuxtPage keepalive :keepalive-props="{ include: ['index'] }" />
-        </MainContent>
+      <MainContent>
+        <NuxtPage :keepalive="{ include: ['index'] }" />
+      </MainContent>
       <RightSidebar />
     </div>
     <NuxtLoadingIndicator />
   </div>
-
 </template>
 
 <style scoped lang="scss">
@@ -119,11 +118,11 @@ onMounted(() => {
         transform: translateX(-100%);
         transition: transform var(--transition-normal);
         height: 100vh;
-        &.mobile-visible { transform: translateX(0); }
+        &.mobile-visible {
+          transform: translateX(0);
+        }
       }
     }
   }
 }
 </style>
-
-

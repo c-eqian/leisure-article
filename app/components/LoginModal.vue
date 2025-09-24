@@ -1,52 +1,84 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useTheme } from '@/composables/useTheme'
+import { computed, ref } from "vue";
+import { useTheme } from "@/composables/useTheme";
 
-const props = defineProps<{ visible?: boolean }>()
-const emit = defineEmits<{ (e: 'update:visible', v: boolean): void; (e: 'confirm'): void; (e: 'close'): void }>()
-const { isDark } = useTheme()
+const props = defineProps<{ visible?: boolean }>();
+const emit = defineEmits<{
+  (e: "update:visible", v: boolean): void;
+  (e: "confirm" | "close"): void;
+}>();
+const { isDark } = useTheme();
 
-const username = ref('')
-const password = ref('')
-const isLoading = ref(false)
-const errorMessage = ref('')
+const username = ref("");
+const password = ref("");
+const isLoading = ref(false);
+const errorMessage = ref("");
 
-const isFormValid = computed(() => username.value.trim() !== '' && password.value.trim() !== '')
+const isFormValid = computed(
+  () => username.value.trim() !== "" && password.value.trim() !== "",
+);
 
 const handleLogin = async () => {
-  if (!isFormValid.value) return
-  isLoading.value = true
-  errorMessage.value = ''
+  if (!isFormValid.value) return;
+  isLoading.value = true;
+  errorMessage.value = "";
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    if (username.value === 'admin' && password.value === '123456') {
-      emit('confirm')
-      resetForm()
-      emit('update:visible', false)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (username.value === "admin" && password.value === "123456") {
+      emit("confirm");
+      resetForm();
+      emit("update:visible", false);
     } else {
-      errorMessage.value = '用户名或密码错误'
+      errorMessage.value = "用户名或密码错误";
     }
   } catch {
-    errorMessage.value = '登录失败，请重试'
+    errorMessage.value = "登录失败，请重试";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
-const resetForm = () => { username.value = ''; password.value = ''; errorMessage.value = '' }
-const handleClose = () => { emit('close'); resetForm(); emit('update:visible', false) }
-const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') handleClose() }
+const resetForm = () => {
+  username.value = "";
+  password.value = "";
+  errorMessage.value = "";
+};
+const handleClose = () => {
+  emit("close");
+  resetForm();
+  emit("update:visible", false);
+};
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === "Escape") handleClose();
+};
 </script>
 
 <template>
   <teleport to="body">
     <transition name="modal-fade">
-      <div v-if="props.visible" class="modal-overlay" tabindex="-1" @keydown="handleKeydown">
+      <div
+        v-if="props.visible"
+        class="modal-overlay"
+        tabindex="-1"
+        @keydown="handleKeydown"
+      >
         <transition name="modal-scale">
-          <div v-if="props.visible" class="modal-container" :class="{ dark: isDark }" @click.stop>
+          <div
+            v-if="props.visible"
+            class="modal-container"
+            :class="{ dark: isDark }"
+            @click.stop
+          >
             <button class="close-btn" title="关闭" @click="handleClose">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path
+                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
               </svg>
             </button>
             <div class="login-form">
@@ -57,18 +89,45 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
               <form class="form-content" @submit.prevent="handleLogin">
                 <div class="form-group">
                   <label for="username">用户名</label>
-                  <input id="username" v-model="username" type="text" placeholder="请输入用户名" :disabled="isLoading" required />
+                  <input
+                    id="username"
+                    v-model="username"
+                    type="text"
+                    placeholder="请输入用户名"
+                    :disabled="isLoading"
+                    required
+                  />
                 </div>
                 <div class="form-group">
                   <label for="password">密码</label>
-                  <input id="password" v-model="password" type="password" placeholder="请输入密码" :disabled="isLoading" required />
+                  <input
+                    id="password"
+                    v-model="password"
+                    type="password"
+                    placeholder="请输入密码"
+                    :disabled="isLoading"
+                    required
+                  />
                 </div>
-                <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+                <div v-if="errorMessage" class="error-message">
+                  {{ errorMessage }}
+                </div>
                 <div class="form-actions">
-                  <button type="button" class="btn btn-secondary" :disabled="isLoading" @click="handleClose">取消</button>
-                  <button type="submit" class="btn btn-primary" :disabled="!isFormValid || isLoading">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    :disabled="isLoading"
+                    @click="handleClose"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    :disabled="!isFormValid || isLoading"
+                  >
                     <span v-if="isLoading" class="loading-spinner" />
-                    {{ isLoading ? '登录中...' : '登录' }}
+                    {{ isLoading ? "登录中..." : "登录" }}
                   </button>
                 </div>
               </form>
@@ -78,7 +137,7 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
       </div>
     </transition>
   </teleport>
-  </template>
+</template>
 
 <style lang="scss" scoped>
 /* styles copied from original, expanded for readability */
@@ -139,7 +198,9 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
   }
 }
 
-.login-form { padding: 32px; }
+.login-form {
+  padding: 32px;
+}
 
 .form-header {
   text-align: center;
@@ -193,7 +254,9 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
         cursor: not-allowed;
       }
 
-      &::placeholder { color: var(--text-tertiary); }
+      &::placeholder {
+        color: var(--text-tertiary);
+      }
     }
   }
 }
@@ -227,7 +290,10 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
     justify-content: center;
     gap: 8px;
 
-    &:disabled { opacity: 0.6; cursor: not-allowed; }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
     &.btn-secondary {
       background: var(--bg-secondary);
@@ -250,7 +316,9 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
         box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
       }
 
-      &:active:not(:disabled) { transform: translateY(0); }
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
     }
   }
 }
@@ -265,27 +333,52 @@ const handleKeydown = (event: KeyboardEvent) => { if (event.key === 'Escape') ha
 }
 
 @keyframes spin {
-  0% { transform: rotate(0); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .modal-fade-enter-active,
-.modal-fade-leave-active { transition: opacity 0.3s ease; }
+.modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
 .modal-fade-enter-from,
-.modal-fade-leave-to { opacity: 0; }
+.modal-fade-leave-to {
+  opacity: 0;
+}
 
 .modal-scale-enter-active,
-.modal-scale-leave-active { transition: all 0.3s ease; }
-.modal-scale-enter-from { opacity: 0; transform: scale(0.8) translateY(-20px); }
-.modal-scale-leave-to { opacity: 0; transform: scale(0.8) translateY(20px); }
+.modal-scale-leave-active {
+  transition: all 0.3s ease;
+}
+.modal-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.8) translateY(-20px);
+}
+.modal-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+}
 
 @media (max-width: 480px) {
-  .modal-container { width: 95%; margin: 20px; }
-  .login-form { padding: 24px; }
-  .form-header h2 { font-size: 20px; }
-  .form-actions { flex-direction: column; }
-  .form-actions .btn { width: 100%; }
+  .modal-container {
+    width: 95%;
+    margin: 20px;
+  }
+  .login-form {
+    padding: 24px;
+  }
+  .form-header h2 {
+    font-size: 20px;
+  }
+  .form-actions {
+    flex-direction: column;
+  }
+  .form-actions .btn {
+    width: 100%;
+  }
 }
 </style>
-
-

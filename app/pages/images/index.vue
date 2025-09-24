@@ -1,15 +1,56 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-const imageData = ref([{ id:1, title:'海洋的隐秘心跳', image:'https://cn.bing.com/th?id=OHR.Atoll_ZH-CN31489244_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp', views:31489, likes:244, date:'2025年06月13日' },{ id:2, title:'伦敦时间到!', image:'https://cn.bing.com/th?id=OHR.LondonParliament_ZH-CN31445204_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp', views:31445, likes:204, date:'2025年05月15日' },{ id:3, title:'山间奔驰', image:'https://cn.bing.com/th?id=OHR.MountainTrain_ZH-CN24584129_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp', views:24584, likes:129, date:'2025年05月26日' }])
+import { ref } from "vue";
+const imageData = ref([
+  {
+    id: 1,
+    title: "海洋的隐秘心跳",
+    image:
+      "https://cn.bing.com/th?id=OHR.Atoll_ZH-CN31489244_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+    views: 31489,
+    likes: 244,
+    date: "2025年06月13日",
+  },
+  {
+    id: 2,
+    title: "伦敦时间到!",
+    image:
+      "https://cn.bing.com/th?id=OHR.LondonParliament_ZH-CN31445204_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+    views: 31445,
+    likes: 204,
+    date: "2025年05月15日",
+  },
+  {
+    id: 3,
+    title: "山间奔驰",
+    image:
+      "https://cn.bing.com/th?id=OHR.MountainTrain_ZH-CN24584129_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+    views: 24584,
+    likes: 129,
+    date: "2025年05月26日",
+  },
+]);
 </script>
 
 <template>
   <div class="image-gallery">
-    <div class="gallery-header"><h1 class="gallery-title">精选图片</h1><p class="gallery-subtitle">探索世界的美好瞬间</p></div>
+    <div class="gallery-header">
+      <h1 class="gallery-title">精选图片</h1>
+      <p class="gallery-subtitle">探索世界的美好瞬间</p>
+    </div>
     <div class="image-grid">
       <div v-for="item in imageData" :key="item.id" class="image-card">
-        <div class="image-container"><img :src="item.image" :alt="item.title" class="image" loading="lazy" /></div>
-        <div class="card-content"><h3 class="image-title">{{ item.title }}</h3><div class="image-date">{{ item.date }}</div></div>
+        <div class="image-container">
+          <img
+            :src="item.image"
+            :alt="item.title"
+            class="image"
+            loading="lazy"
+          />
+        </div>
+        <div class="card-content">
+          <h3 class="image-title">{{ item.title }}</h3>
+          <div class="image-date">{{ item.date }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -24,7 +65,10 @@ const imageData = ref([{ id:1, title:'海洋的隐秘心跳', image:'https://cn.
   min-height: 100vh;
 }
 
-.gallery-header { text-align: center; margin-bottom: 50px; }
+.gallery-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
 
 .gallery-title {
   font-size: 2.5rem;
@@ -37,9 +81,19 @@ const imageData = ref([{ id:1, title:'海洋的隐秘心跳', image:'https://cn.
   background-clip: text;
 }
 
-.gallery-subtitle { font-size: 1.1rem; color: var(--text-secondary); margin: 0; opacity: 0.8; }
+.gallery-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0;
+  opacity: 0.8;
+}
 
-.image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 0 10px; }
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  padding: 0 10px;
+}
 
 .image-card {
   background: var(--bg-card);
@@ -50,7 +104,10 @@ const imageData = ref([{ id:1, title:'海洋的隐秘心跳', image:'https://cn.
   cursor: pointer;
   position: relative;
 
-  &:hover { box-shadow: var(--shadow-heavy); transform: translateY(-5px); }
+  &:hover {
+    box-shadow: var(--shadow-heavy);
+    transform: translateY(-5px);
+  }
 }
 
 .image-container {
@@ -68,31 +125,73 @@ const imageData = ref([{ id:1, title:'海洋的隐秘心跳', image:'https://cn.
   transition: transform var(--transition-slow);
   transform: scale(1);
 }
-.image-card:hover .image { transform: scale(1.05); }
+.image-card:hover .image {
+  transform: scale(1.05);
+}
 
-.card-content { padding: 20px; background: var(--bg-card); border-radius: 0 0 var(--border-radius-large) var(--border-radius-large); }
-.image-title { font-size: 1.3rem; font-weight: 600; margin: 0 0 10px 0; line-height: 1.3; color: var(--text-primary); }
-.image-date { font-size: 0.85rem; color: var(--text-muted); }
+.card-content {
+  padding: 20px;
+  background: var(--bg-card);
+  border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+}
+.image-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+.image-date {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
 
 @media (max-width: 768px) {
-  .image-gallery { padding: 20px 15px; }
-  .gallery-title { font-size: 2rem; }
-  .image-grid { grid-template-columns: 1fr; gap: 20px; padding: 0; }
-  .image-container { height: 200px; }
-  .card-content { padding: 15px; }
-  .image-title { font-size: 1.1rem; }
+  .image-gallery {
+    padding: 20px 15px;
+  }
+  .gallery-title {
+    font-size: 2rem;
+  }
+  .image-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0;
+  }
+  .image-container {
+    height: 200px;
+  }
+  .card-content {
+    padding: 15px;
+  }
+  .image-title {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .image-gallery { padding: 15px 10px; }
-  .gallery-title { font-size: 1.8rem; }
-  .gallery-subtitle { font-size: 1rem; }
-  .image-container { height: 180px; }
-  .card-content { padding: 12px; }
+  .image-gallery {
+    padding: 15px 10px;
+  }
+  .gallery-title {
+    font-size: 1.8rem;
+  }
+  .gallery-subtitle {
+    font-size: 1rem;
+  }
+  .image-container {
+    height: 180px;
+  }
+  .card-content {
+    padding: 12px;
+  }
 }
 
-[data-theme='dark'] .image-card { background: var(--bg-card); border: 1px solid var(--border-color); }
-[data-theme='dark'] .image-card:hover { border-color: var(--primary-color); }
+[data-theme="dark"] .image-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+[data-theme="dark"] .image-card:hover {
+  border-color: var(--primary-color);
+}
 </style>
-
-
