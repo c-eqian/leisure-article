@@ -1,5 +1,10 @@
+import { useAsyncFetch } from "~~/api/server";
+import { useCookie } from "nuxt/app";
 import { defineStore } from "pinia";
-
+import type { ICategoryTags } from "~~/api/category/type";
+import type { IUserInfo } from "~~/api/oss/type";
+import type { IWebsite } from "~~/api/system/type";
+import type { User } from "~~/api/user/type";
 /**
  * 网站主题类型
  */
@@ -23,31 +28,21 @@ type StyleTheme =
 export const useStore = defineStore("WEBSITE-STORE", {
   state: () => ({
     // 网站主题（亮色/暗色）
-    websiteTheme:
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : ("light" as WebsiteTheme),
+    websiteTheme: "light",
 
     // 是否为移动设备
     isMobile: false as boolean,
 
     // 侧边栏是否打开
     isOpenSide: false as boolean,
-
+    // 用户信息
+    userInfo: {} as unknown as IUserInfo,
+    theme: "light",
+    website: {} as unknown as IWebsite.Data,
+    categoryTags: [] as ICategoryTags[],
+    articleSearchHistory: [] as string[],
     // 用户是否已登录（优先从本地持久化中恢复）
-    isLogin:
-      typeof window !== "undefined"
-        ? (() => {
-            try {
-              const raw = localStorage.getItem("WEBSITE-STORE");
-              return raw ? (JSON.parse(raw).isLogin ?? false) : false;
-            } catch {
-              return false;
-            }
-          })()
-        : (false as boolean),
+    isLogin: false,
 
     // 当前样式主题
     currentStyleTheme: "default" as StyleTheme,
@@ -91,15 +86,61 @@ export const useStore = defineStore("WEBSITE-STORE", {
     /**
      * 用户登录
      */
-    login() {
-      this.isLogin = true;
+    login(params: User.ILoginRequest) {
+      return new Promise((resolve, reject) => {
+        useAsyncFetch("user/login", {
+          method: "POST",
+          body: params,
+        })
+          .then(async ({ data }) => {
+            // useSetTokenCookie(res.token)
+            const token = useCookie("__TOKEN_KEY__", {
+              maxAge: 60 * 60 * 24,
+            });
+            token.value = data.token;
+            await this.getUserInfo(data.token);
+            resolve(data);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
     },
-
+    getUserInfo(token: string) {
+      return new Promise((resolve, reject) => {
+        useAsyncFetch("user/info", {
+          token,
+        })
+          .then((res) => {
+            this.userInfo = {} as any;
+            this.userInfo = Object.assign(this.userInfo, res.data);
+            this.isLogin = true;
+            resolve(res.data);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
     /**
      * 用户登出
      */
     logout() {
-      this.isLogin = false;
+      return new Promise((resolve, reject) => {
+        useAsyncFetch("user/logout")
+          .then(() => {
+            // useRemoveTokenCookie()
+            const c = useCookie("__TOKEN_KEY__");
+            c.value = "";
+            this.userInfo = {} as unknown as IUserInfo;
+            this.isLogin = false;
+            // this.$reset();
+            resolve("退出成功");
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
     },
 
     /**
@@ -149,12 +190,14 @@ export const useStore = defineStore("WEBSITE-STORE", {
 
   // 持久化配置
   persist: {
-    pick: [
-      "websiteTheme",
-      "isMobile",
-      "isOpenSide",
-      "currentStyleTheme",
-      "isLogin",
-    ],
+    // pick: [
+    //   "websiteTheme",
+    //   "isMobile",
+    //   "isOpenSide",
+    //   "currentStyleTheme",
+    //   "isLogin",
+    //   "userInfo",
+    // ],
+    omit: [],
   },
 });

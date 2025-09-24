@@ -12,15 +12,14 @@ const emit = defineEmits<{
 }>();
 const isVisible = ref(false);
 const formValues = reactive({
-  username: "",
-  password: "",
+  account: "admin",
+  password: "cyq990127",
 });
-const {  } = useLogin()
 const isLoading = ref(false);
 const errorMessage = ref("");
 
 const isFormValid = computed(
-  () => formValues.username.trim() !== "" && formValues.password.trim() !== "",
+  () => formValues.account.trim() !== "" && formValues.password.trim() !== "",
 );
 const handleClose = () => {
   isVisible.value = false;
@@ -34,18 +33,24 @@ const submitLogin = async () => {
   if (!isFormValid.value) return;
   const loginFn = props.loginFn;
   if (isFunction(loginFn)) {
-    isLoading.value = true;
-    const res = await loginFn(close);
-    console.log(res)
-    errorMessage.value = "";
-    isVisible.value = false;
-    resetForm();
-    isLoading.value = false;
+    try {
+      isLoading.value = true;
+      const res = await loginFn(formValues, close);
+      console.log(res);
+      errorMessage.value = "";
+      isVisible.value = false;
+      resetForm();
+      isLoading.value = false;
+    } catch (e: any) {
+      isLoading.value = false;
+      console.log(e)
+      errorMessage.value = e.msg || "登录失败";
+    }
   }
 };
 
 const resetForm = () => {
-  formValues.username = "";
+  formValues.account = "";
   formValues.password = "";
   errorMessage.value = "";
 };
@@ -69,7 +74,7 @@ defineExpose({
           <label for="username">用户名</label>
           <input
             id="username"
-            v-model="formValues.username"
+            v-model="formValues.account"
             type="text"
             placeholder="请输入用户名"
             :disabled="isLoading"

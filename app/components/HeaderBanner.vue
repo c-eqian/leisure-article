@@ -8,17 +8,14 @@ import { useLogin } from "../composables/useLogin";
  */
 
 // 登录状态管理
-const { isLogin, createLoginModal, login, logout } = useLogin();
+const { isLogin, createLoginModal, webStore, logout, userInfo } = useLogin();
+// 默认头像占位
+const defaultAvatar = "https://avatars.githubusercontent.com/u/9919?s=200&v=4";
 
 // 退出确认弹窗
 const showLogoutConfirm = ref(false);
-const goToLogin = async () => {
-  await new Promise((resolve) =>
-    setTimeout(() => {
-      login();
-      resolve(true);
-    }, 5000),
-  );
+const goToLogin = async (form: any, _close: () => void) => {
+  await webStore.login(form);
 };
 /**
  * 处理登录按钮点击事件
@@ -32,9 +29,12 @@ const handleLoginClick = async () => {
   }
 };
 
-const confirmLogout = () => {
-  logout();
+const confirmLogout = async () => {
+  await logout();
   showLogoutConfirm.value = false;
+};
+const onAvatarError = (e: Event) => {
+  (e.target as HTMLImageElement).src = defaultAvatar;
 };
 </script>
 
@@ -48,8 +48,14 @@ const confirmLogout = () => {
             class="banner-avatar logged-in"
             @click="handleLoginClick"
           >
-            <div class="avatar-circle">片</div>
-            <span class="avatar-text">片刻</span>
+            <div class="avatar-circle">
+              <img
+                :src="userInfo?.avatar || defaultAvatar"
+                :alt="userInfo?.username || 'avatar'"
+                @error="onAvatarError"
+              />
+            </div>
+            <span class="avatar-text">{{ userInfo?.username || "用户" }}</span>
             <div class="logout-icon">×</div>
           </div>
           <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
@@ -173,6 +179,14 @@ const confirmLogout = () => {
   font-weight: bold;
   color: #667eea;
   font-size: 14px;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 
 .login-btn {

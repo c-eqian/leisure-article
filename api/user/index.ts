@@ -19,6 +19,7 @@ export const userLogin = (data: User.ILoginRequest) => {
   return http.request<User.ILoginResponse>({
     url: "user/login",
     method: "POST",
+    server: false,
     params: data,
   });
 };
@@ -46,6 +47,7 @@ export const userInfo = (params?: any) => {
     url: "user/info",
     method: "GET",
     isLoading: false,
+    server: false,
     params,
   });
 };
@@ -72,6 +74,7 @@ export const updateUserInfo = (data: User.IUserInfoRequest) => {
 export const userLogout = () => {
   return http.request({
     url: "user/logout",
+    server: false,
     method: "GET",
   });
 };

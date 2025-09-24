@@ -1,5 +1,7 @@
+import { isEmpty } from "@eqian/utils-vue";
 import { computed } from "vue";
 import { useStore } from "@/composables/useStore";
+import { useCookie } from "#app";
 import { createBaseLoginModal } from "~/composables/createLoginModal";
 /**
  * 用户登录状态管理 Composable
@@ -7,16 +9,11 @@ import { createBaseLoginModal } from "~/composables/createLoginModal";
  */
 export const useLogin = () => {
   const webStore = useStore();
-
+  const cookieStore = useCookie("__TOKEN_KEY__");
   // 计算属性：当前登录状态
-  const isLogin = computed(() => webStore.isLogin);
-
-  /**
-   * 用户登录
-   * 设置登录状态为已登录
-   */
-  const login = () => webStore.login();
-
+  const isLogin = computed(
+    () => webStore.isLogin && !isEmpty(webStore.userInfo && cookieStore.value),
+  );
   /**
    * 用户登出
    * 设置登录状态为未登录
@@ -28,7 +25,7 @@ export const useLogin = () => {
    * 在登录和未登录之间切换
    */
   const toggleLogin = () => webStore.toggleLogin();
-
+  const userInfo = computed(() => webStore.userInfo || {});
   /**
    * 创建登录
    */
@@ -39,9 +36,10 @@ export const useLogin = () => {
   };
   return {
     isLogin,
-    login,
     logout,
+    webStore,
     toggleLogin,
+    userInfo,
     createLoginModal,
   };
 };

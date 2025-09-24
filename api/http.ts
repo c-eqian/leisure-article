@@ -111,7 +111,7 @@ class Http {
    */
   public request<T = any>(config: IRequestParamsConfig): Promise<T> {
     const { $config } = useNuxtApp();
-    this.BASEURL = $config.public.BASE_UR as string;
+    this.BASEURL = $config.public.BASE_URL as string;
 
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {

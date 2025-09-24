@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 
-export type LoginFn = (close: () => void) => Promise<void> | void;
+export type LoginFn = (data: any, close: () => void) => Promise<void> | void;
 
 export interface CreateLoginModalOptions {
   loginFn?: LoginFn;

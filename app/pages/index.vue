@@ -48,7 +48,10 @@ onMounted(() => {
 
 <template>
   <div>
-    <HeaderBanner />
+    <client-only>
+      <HeaderBanner />
+    </client-only>
+
     <CategoryTabs />
     <div v-if="isLoading" class="loading-container">
       <div class="loading-message">{{ loadingMessage }}</div>
