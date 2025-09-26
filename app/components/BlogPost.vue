@@ -1,55 +1,57 @@
-
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
+import { useBeforeDate } from "@eqian/utils-vue";
+import { computed, type PropType } from "vue";
+import { useRouter } from "vue-router";
+import type { IArticleItem } from "~~/api/article/type";
 /**
  * 博客文章卡片组件
  * 显示文章的基本信息，包括标题、作者、发布时间等
  */
 
 // 路由实例
-const router = useRouter()
-
-/**
- * 博客文章属性接口
- */
-interface BlogPostProps {
-  title: string
-  author: string
-  authorAvatar?: string
-  publishTime: string
-  location: string
-  views: number
-  description: string
-  previewUrl: string
-}
+const router = useRouter();
 
 // 组件属性
-const props = defineProps<BlogPostProps>()
-
+const props = defineProps({
+  item: {
+    type: Object as PropType<IArticleItem>,
+    default: () => ({}) as unknown as IArticleItem,
+  },
+});
+const article = computed(() => props.item);
 // 默认头像占位
-const defaultAvatar = "https://avatars.githubusercontent.com/u/9919?s=200&v=4"
+const defaultAvatar = "https://avatars.githubusercontent.com/u/9919?s=200&v=4";
 
 const onAuthorAvatarError = (e: Event) => {
-  (e.target as HTMLImageElement).src = defaultAvatar
-}
+  (e.target as HTMLImageElement).src = defaultAvatar;
+};
+
+const onCoverError = (e: Event) => {
+  // 封面图加载失败时隐藏封面图容器
+  const coverContainer = (e.target as HTMLImageElement).parentElement;
+  if (coverContainer) {
+    coverContainer.style.display = "none";
+  }
+};
 
 const getAuthorInitial = (name: string) => {
-  if (!name) return "?"
-  return name.trim().charAt(0)
-}
+  if (!name) return "?";
+  return name.trim().charAt(0);
+};
 
 /**
  * 处理标题点击事件
  * 滚动到顶部并跳转到文章详情页
  */
 const handleTitleClick = () => {
-  const mainContent = document.querySelector('.main-content') as HTMLElement | null
+  const mainContent = document.querySelector(
+    ".main-content",
+  ) as HTMLElement | null;
   if (mainContent) {
-    mainContent.scrollTop = 0
+    mainContent.scrollTop = 0;
   }
-  router.push({ path: `/post/11111` })
-}
+  router.push({ path: `/post/11111` });
+};
 </script>
 
 <template>
@@ -58,22 +60,42 @@ const handleTitleClick = () => {
       <div class="author-info">
         <div class="author-avatar">
           <img
-            v-if="props.authorAvatar"
-            :src="props.authorAvatar || defaultAvatar"
-            :alt="props.author"
-            @error="onAuthorAvatarError">
-          <span v-else>{{ getAuthorInitial(props.author) }}</span>
+            v-if="article.user_info?.avatar"
+            :src="article.user_info?.avatar || defaultAvatar"
+            :alt="article.user_info?.username"
+            @error="onAuthorAvatarError"
+          >
+          <span v-else>{{
+            getAuthorInitial(article.user_info?.username || "")
+          }}</span>
         </div>
-        <div class="author-details"><span class="author-name">{{ props.author }}</span><span class="publish-time">{{ props.publishTime }}</span></div>
+        <div class="author-details">
+          <span class="author-name">{{ article.user_info?.username }}</span
+          ><span class="publish-time">{{
+            useBeforeDate(article.create_date)
+          }}</span>
+        </div>
       </div>
     </div>
-    <h1 class="post-title" @click="handleTitleClick"><span class="title-text">{{ props.title }}</span></h1>
-    <p class="post-description">{{ props.description }}</p>
-    <div class="website-preview">
-      <div class="preview-header"><div class="preview-controls"><div class="control-dot red" /><div class="control-dot yellow" /><div class="control-dot green" /></div><div class="preview-url">{{ props.previewUrl }}</div></div>
-      <div class="preview-content"><div class="preview-placeholder"><div class="preview-item" /><div class="preview-item" /><div class="preview-item" /><div class="preview-item" /></div></div>
+    <h1 class="post-title" @click="handleTitleClick">
+      <span class="title-text">{{ article.title }}</span>
+    </h1>
+    <p class="post-description">{{ article.describe }}</p>
+    <div v-if="article.cover" class="post-cover">
+      <img
+        :src="article.cover"
+        :alt="article.title"
+        class="cover-image"
+        @error="onCoverError"
+      >
     </div>
-    <div class="post-footer"><div class="post-meta"><span class="location">◎ {{ props.location }}</span><span class="views">◎主题 {{ props.views }}浏览评论</span></div><button class="read-button">Read</button></div>
+    <div class="post-footer">
+      <div class="post-meta">
+        <span class="location">◎ {{ article.province }}</span>
+        <span class="category">🏷 {{ article.category?.category_name }}</span>
+        <span class="views">{{ article.view_number }}浏览</span>
+      </div>
+    </div>
   </article>
 </template>
 
@@ -149,7 +171,7 @@ const handleTitleClick = () => {
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -8px;
     left: -12px;
@@ -163,7 +185,7 @@ const handleTitleClick = () => {
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -6px;
     left: -10px;
@@ -194,85 +216,36 @@ const handleTitleClick = () => {
   color: var(--text-secondary);
   margin-bottom: 30px;
   transition: color var(--transition-normal);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.website-preview {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+.post-cover {
+  margin-bottom: 30px;
   border-radius: var(--border-radius);
   overflow: hidden;
-  margin-bottom: 30px;
-  box-shadow: var(--shadow-light);
-}
+  //box-shadow: var(--shadow-light);
+  transition: transform var(--transition-normal);
 
-.preview-header {
-  background: var(--bg-card-hover);
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.preview-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.control-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  &.red { background: #ff5f57; }
-  &.yellow { background: #ffbd2e; }
-  &.green { background: #28ca42; }
-}
-
-.preview-url {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-family: monospace;
-}
-
-.preview-content {
-  padding: 20px;
-  min-height: 200px;
-}
-
-.preview-placeholder {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.preview-item {
-  height: 80px;
-  background: var(--bg-content);
-  border-radius: var(--border-radius-small);
-  border: 1px solid var(--border-color);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    height: 8px;
-    background: var(--bg-card-hover);
-    border-radius: 4px;
+  &:hover {
+    transform: translateY(-2px);
   }
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    top: 28px;
-    left: 12px;
-    right: 12px;
-    height: 6px;
-    background: var(--bg-card-hover);
-    border-radius: 3px;
+.cover-image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-normal);
+
+  &:hover {
+    transform: scale(1.02);
   }
 }
 
@@ -309,14 +282,26 @@ const handleTitleClick = () => {
 }
 
 @media (max-width: 768px) {
-  .blog-post { padding: 20px; }
-  .post-title { font-size: 24px; }
-  .website-preview { margin-bottom: 20px; }
-  .preview-content { padding: 15px; }
-  .preview-placeholder { grid-template-columns: 1fr; gap: 12px; }
-  .post-footer { flex-direction: column; gap: 15px; align-items: flex-start; }
-  .post-meta { flex-direction: column; gap: 8px; }
+  .blog-post {
+    padding: 20px;
+  }
+  .post-title {
+    font-size: 24px;
+  }
+  .post-cover {
+    margin-bottom: 20px;
+  }
+  .cover-image {
+    max-height: 200px;
+  }
+  .post-footer {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  .post-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 </style>
-
-

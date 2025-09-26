@@ -1,3 +1,4 @@
+import { isEmpty } from "@eqian/utils-vue";
 import { useAsyncFetch } from "~~/api/server";
 import { useCookie } from "nuxt/app";
 import { defineStore } from "pinia";
@@ -200,4 +201,23 @@ export const useStore = defineStore("WEBSITE-STORE", {
     // ],
     omit: [],
   },
+});
+
+export const useWebsiteStore = defineStore("WEBSITES-INFO", {
+  state() {
+    return {
+      website: {} as unknown as IWebsite.Data,
+    };
+  },
+  actions: {
+    async getWebsiteInfo(): Promise<IWebsite.Data> {
+      if (!isEmpty(this.website)) {
+        return this.website;
+      }
+      const res = await useAsyncFetch("system/website");
+      this.website = (res.data || {}) as unknown as IWebsite.Data;
+      return this.website;
+    },
+  },
+  persist: false,
 });

@@ -10,7 +10,7 @@ export interface ICategory {
   /**
    * 创建时间，创建时间
    */
-  create_date?: Date;
+  create_date?: Date | string;
   /**
    * 描述，描述
    */
@@ -27,7 +27,7 @@ export interface ICategory {
   /**
    * 修改时间，修改时间
    */
-  update_date?: Date;
+  update_date?: Date | string;
 }
 
 /**
@@ -66,7 +66,7 @@ export interface IArticleItem {
   /**
    * 创建时间，创建时间
    */
-  create_date: Date;
+  create_date: Date | string;
   /**
    * 描述，描述
    */
@@ -114,7 +114,7 @@ export interface IArticleItem {
   /**
    * 更新时间，更新时间
    */
-  update_date: Date;
+  update_date: Date | string;
   /**
    * 评论数
    */

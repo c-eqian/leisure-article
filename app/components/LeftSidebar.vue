@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import StyleConfigModal from "@/components/StyleConfigModal.vue";
 import { useSideBar } from "@/composables/useSideBar";
 import { useTheme } from "@/composables/useTheme";
+import { useWebsite } from "~/composables/useWebsite";
 
 /**
  * 左侧边栏组件
@@ -23,7 +24,7 @@ const { isOpenSide, isMobile } = useSideBar();
 
 // 样式配置模态框显示状态
 const showStyleConfig = ref(false);
-
+const { websiteDataRef, getWebsite } = useWebsite();
 // 导航菜单项配置
 const menuItems = [
   { id: "", name: "主页", icon: "🏠" },
@@ -35,14 +36,6 @@ const menuItems = [
   { id: "tools", name: "工具箱", icon: "🔧" },
   { id: "settings", name: "设置", icon: "⚙️" },
 ];
-
-// 站点统计数据
-const siteStats = {
-  articles: 18,
-  categories: 7,
-  comments: 32,
-  operationDays: 529,
-};
 
 // 标签数据
 const tags = ["朋友圈", "主题", "边栏"];
@@ -71,6 +64,7 @@ const setActiveMenu = (menuId: string) => {
 watchEffect(() => {
   activeMenu.value = route.path;
 });
+getWebsite();
 </script>
 
 <template>
@@ -110,27 +104,32 @@ watchEffect(() => {
           </li>
         </ul>
       </nav>
-      <div class="stats-section">
-        <h3>站点统计</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="number">{{ siteStats.articles }}</span
-            ><span class="label">文章</span>
-          </div>
-          <div class="stat-item">
-            <span class="number">{{ siteStats.categories }}</span
-            ><span class="label">分类</span>
-          </div>
-          <div class="stat-item">
-            <span class="number">{{ siteStats.comments }}</span
-            ><span class="label">留言</span>
-          </div>
-          <div class="stat-item">
-            <span class="number">{{ siteStats.operationDays }}天</span
-            ><span class="label">运营</span>
+      <client-only>
+        <div class="stats-section">
+          <h3>站点统计</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="number">{{ websiteDataRef.article_count || 0 }}</span
+              ><span class="label">文章</span>
+            </div>
+            <div class="stat-item">
+              <span class="number">{{
+                websiteDataRef.website_request_count || 0
+              }}</span
+              ><span class="label">访问</span>
+            </div>
+            <div class="stat-item">
+              <span class="number">-</span><span class="label">分类</span>
+            </div>
+            <div class="stat-item">
+              <span class="number">{{
+                websiteDataRef.website_run_days || 0
+              }}</span
+              ><span class="label">运行（天）</span>
+            </div>
           </div>
         </div>
-      </div>
+      </client-only>
       <div class="follow-section">
         <h3>Follow Me</h3>
         <div class="social-icons">

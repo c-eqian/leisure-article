@@ -1,8 +1,20 @@
 <script setup lang="ts">
+import { getCatalogueList } from "~~/api/catalogue";
 import { ref } from "vue";
-const activeCategory = ref("全部");
-const categories = ["全部", "日常", "折腾", "摄影", "代码"];
-const setActiveCategory = (category: string) => {
+import type { ICatalogueData } from "~~/api/catalogue/type";
+const activeCategory = ref(0);
+const categories = ref<ICatalogueData["list"]>([]);
+getCatalogueList().then((res) => {
+  categories.value = [
+    {
+      category_id: 0,
+      category_name: "全部",
+      article_count: 0,
+    },
+    ...res.list,
+  ];
+});
+const setActiveCategory = (category: number) => {
   activeCategory.value = category;
 };
 defineExpose({ activeCategory, setActiveCategory });
@@ -14,14 +26,14 @@ defineExpose({ activeCategory, setActiveCategory });
       <button
         v-for="category in categories"
         :key="category"
-        :class="{ active: activeCategory === category }"
+        :class="{ active: activeCategory === category.category_id }"
         class="category-tab"
-        @click="setActiveCategory(category)"
+        @click="setActiveCategory(category.category_id)"
       >
-        {{ category }}
+        {{ category.category_name }}
       </button>
     </div>
-    <div class="quote-text">时光扑面,斯人如风。</div>
+<!--    <div class="quote-text">时光扑面,斯人如风。</div>-->
   </div>
 </template>
 

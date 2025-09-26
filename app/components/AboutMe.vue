@@ -3,13 +3,15 @@
  * 关于我组件
  * 显示个人基本信息，包括位置、职业和备案信息
  */
+import { useWebsite } from "~/composables/useWebsite";
 
 // 个人信息数据
 const aboutMe = {
-  location: "HangZhou",
-  occupation: "自由职业者",
-  icp: "浙ICP备20230111号-1",
+  location: "深圳",
+  occupation: "前端",
 };
+const { websiteDataRef, getWebsite } = useWebsite();
+getWebsite();
 </script>
 
 <template>
@@ -25,7 +27,12 @@ const aboutMe = {
         ><span class="text">{{ aboutMe.occupation }}</span>
       </div>
       <div class="about-item">
-        <span class="icon">🏷️</span><span class="text">{{ aboutMe.icp }}</span>
+        <span class="icon">🏷️</span
+        ><span class="text">
+          <a class="text" href="https://beian.miit.gov.cn" target="_blank">{{
+            websiteDataRef.website_icp?.split("//")[0]
+          }}</a>
+        </span>
       </div>
     </div>
   </div>

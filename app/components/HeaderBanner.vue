@@ -1,6 +1,18 @@
 <script setup lang="ts">
+import { useAsyncFetch } from "~~/api/server";
 import { ref } from "vue";
 import { useLogin } from "../composables/useLogin";
+import DailyImageCard from "./DailyImageCard.vue";
+
+const dailyImage = ref({
+  url: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="300" fill="url(%23grad1)"/><circle cx="200" cy="100" r="60" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="200" r="80" fill="rgba(255,255,255,0.05)"/><rect x="100" y="150" width="200" height="100" fill="rgba(255,255,255,0.1)" rx="10"/><rect x="600" y="80" width="150" height="80" fill="rgba(255,255,255,0.08)" rx="8"/></svg>',
+  alt: "每日一图 - 湖光山色",
+});
+useAsyncFetch("system/wallpaper-today").then((res) => {
+  if (res.data?.url) {
+    dailyImage.value.url = res.data?.url;
+  }
+});
 
 /**
  * 头部横幅组件
@@ -41,27 +53,29 @@ const onAvatarError = (e: Event) => {
 <template>
   <client-only>
     <div class="header-banner">
-      <div class="banner-image">
-        <div class="banner-overlay">
-          <div
-            v-if="isLogin"
-            class="banner-avatar logged-in"
-            @click="handleLoginClick"
-          >
-            <div class="avatar-circle">
-              <img
-                :src="userInfo?.avatar || defaultAvatar"
-                :alt="userInfo?.username || 'avatar'"
-                @error="onAvatarError"
-              />
-            </div>
-            <span class="avatar-text">{{ userInfo?.username || "用户" }}</span>
-            <div class="logout-icon">×</div>
+      <!-- 位置天气卡片 -->
+      <DailyImageCard />
+      
+      <!-- 用户登录状态 -->
+      <div class="banner-overlay">
+        <div
+          v-if="isLogin"
+          class="banner-avatar logged-in"
+          @click="handleLoginClick"
+        >
+          <div class="avatar-circle">
+            <img
+              :src="userInfo?.avatar || defaultAvatar"
+              :alt="userInfo?.username || 'avatar'"
+              @error="onAvatarError"
+            >
           </div>
-          <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
-            <div class="login-icon">👤</div>
-            <span class="avatar-text">登录</span>
-          </div>
+          <span class="avatar-text">{{ userInfo?.username || "用户" }}</span>
+          <div class="logout-icon">×</div>
+        </div>
+        <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
+          <div class="login-icon">👤</div>
+          <span class="avatar-text">登录</span>
         </div>
       </div>
     </div>
@@ -103,22 +117,14 @@ const onAvatarError = (e: Event) => {
 .header-banner {
   position: relative;
   height: 300px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   overflow: hidden;
-}
-
-.banner-image {
-  width: 100%;
-  height: 100%;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="300" fill="url(%23grad1)"/><circle cx="200" cy="100" r="60" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="200" r="80" fill="rgba(255,255,255,0.05)"/><rect x="100" y="150" width="200" height="100" fill="rgba(255,255,255,0.1)" rx="10"/><rect x="600" y="80" width="150" height="80" fill="rgba(255,255,255,0.08)" rx="8"/></svg>')
-    center/cover;
-  position: relative;
 }
 
 .banner-overlay {
   position: absolute;
   bottom: 20px;
   right: 20px;
+  z-index: 10;
 }
 
 .banner-avatar {

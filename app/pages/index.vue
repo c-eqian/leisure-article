@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { getArticleList } from "~~/api/article";
+import { ref } from "vue";
 import BlogPost from "@/components/BlogPost.vue";
 import BlogPostSkeleton from "@/components/BlogPostSkeleton.vue";
 import CategoryTabs from "@/components/CategoryTabs.vue";
 import HeaderBanner from "@/components/HeaderBanner.vue";
+import type { IArticleRes } from "~~/api/article/type";
 definePageMeta({
   keepalive: true,
   // layout: 'header'
@@ -17,17 +19,8 @@ definePageMeta({
 const isLoading = ref(false);
 const loadingMessage = ref("加载中...");
 
-// 示例博客文章数据
-const blogPost = {
-  title: "Typecho边栏主题Hank",
-  author: "片刻",
-  publishTime: "2个月前",
-  location: "浙江省·杭州市",
-  views: 399,
-  description:
-    "今天给大家带来的一款Typecho主题Hank,是一款典型的边栏主题。左侧固定的边栏简单的提供了一些个人avavtar(或者logo)、站点统计、菜单等信息,右侧是内容主体部分。这种风格的网站布局简洁明了，用户体验良好。",
-  previewUrl: "https://www.luxtheme.com",
-};
+// 博客文章数据
+const articleList = ref<IArticleRes["list"]>([]);
 
 /**
  * 模拟网络请求
@@ -36,14 +29,13 @@ const blogPost = {
 const simulateNetworkRequest = async () => {
   isLoading.value = true;
   loadingMessage.value = "正在加载文章...";
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const res = await getArticleList();
+  articleList.value = res.list;
   isLoading.value = false;
 };
 
 // 组件挂载时添加滚动监听和模拟请求
-onMounted(() => {
-  simulateNetworkRequest();
-});
+simulateNetworkRequest();
 </script>
 
 <template>
@@ -58,12 +50,7 @@ onMounted(() => {
       <BlogPostSkeleton :count="6" />
     </div>
     <div v-else class="content-container">
-      <BlogPost v-bind="blogPost" />
-      <BlogPost v-bind="blogPost" />
-      <BlogPost v-bind="blogPost" />
-      <BlogPost v-bind="blogPost" />
-      <BlogPost v-bind="blogPost" />
-      <BlogPost v-bind="blogPost" />
+      <BlogPost v-for="item in articleList" :key="item.uid" :item="item" />
     </div>
   </div>
 </template>
