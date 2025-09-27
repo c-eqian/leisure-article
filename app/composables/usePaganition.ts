@@ -16,7 +16,6 @@ export const usePagination = <T extends Function, D = any>(api: T) => {
         ...res,
         list: data.value.list.concat(res?.list),
       };
-        console.log(data.value)
       isHasMore.value = res?.is_more === 1;
     } catch (error) {
       data.value = {} as unknown as D;

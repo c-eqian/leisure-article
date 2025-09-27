@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { isEmpty, useFormatDate } from "@eqian/utils-vue";
+import { getNotesList } from "~~/api/notes";
+import { ref } from "vue";
 import { useTheme } from "@/composables/useTheme";
 import { useCategoryTags } from "~/composables/useCategoryTags";
+import { usePagination } from "~/composables/usePaganition";
+import type { INoteItem, INoteRes } from "~~/api/notes/type";
 
 /**
  * 笔记页面组件
@@ -10,131 +14,30 @@ import { useCategoryTags } from "~/composables/useCategoryTags";
 
 // 主题状态
 const { isDark } = useTheme();
-
-/**
- * 文章接口
- */
-interface Article {
-  id: number;
-  date: string;
-  month: string;
-  title: string;
-  description: string;
-  readCount: number;
-  category: string;
-  location: string;
-  tags: string[];
-}
+const params = ref({
+  page_size: 20,
+  page_num: 1,
+});
 
 // 标签数据
 const { tagList } = useCategoryTags();
 // 文章数据
-const articles = ref<Article[]>([
-  {
-    id: 1,
-    date: "10",
-    month: "2025/01",
-    title: "类型体操-升级版",
-    description: "类型体操",
-    readCount: 16,
-    category: "Typescript",
-    location: "深圳市",
-    tags: ["typescript"],
-  },
-  {
-    id: 2,
-    date: "08",
-    month: "2025/01",
-    title: "typescript类型体操-基础版",
-    description:
-      "本上下文专注于TypeScript类型体操，探索使用高级类型技术如条件类型、映射类型和递归类型来实现复杂的类型构造和转换。通过具体案例研究，分析类型推断过程，提升开发者对TypeScript类型系统的深度理解和实践能力。",
-    readCount: 15,
-    category: "Typescript",
-    location: "深圳市",
-    tags: ["typescript"],
-  },
-  {
-    id: 3,
-    date: "05",
-    month: "2025/01",
-    title: "Vue 3 Composition API 深度解析",
-    description:
-      "深入探讨Vue 3的Composition API，包括setup函数、响应式API、生命周期钩子等核心概念。通过实际案例展示如何更好地组织组件逻辑，提高代码的可维护性和复用性。",
-    readCount: 23,
-    category: "Vue",
-    location: "深圳市",
-    tags: ["vue", "javascript"],
-  },
-  {
-    id: 4,
-    date: "03",
-    month: "2025/01",
-    title: "React Hooks 最佳实践指南",
-    description:
-      "全面介绍React Hooks的使用方法和最佳实践，包括useState、useEffect、useContext等常用Hooks，以及如何自定义Hooks来解决复杂的状态管理问题。",
-    readCount: 18,
-    category: "React",
-    location: "深圳市",
-    tags: ["react", "javascript"],
-  },
-  {
-    id: 5,
-    date: "01",
-    month: "2025/01",
-    title: "CSS Grid 布局完全指南",
-    description:
-      "详细介绍CSS Grid布局系统的各种属性和用法，包括网格容器、网格项、网格线等概念。通过实例演示如何创建复杂的响应式布局。",
-    readCount: 21,
-    category: "CSS",
-    location: "深圳市",
-    tags: ["css", "html"],
-  },
-  {
-    id: 6,
-    date: "28",
-    month: "2024/12",
-    title: "JavaScript 异步编程进阶",
-    description:
-      "深入理解JavaScript异步编程模型，包括Promise、async/await、Generator等概念。通过实际案例展示如何处理复杂的异步操作和错误处理。",
-    readCount: 19,
-    category: "JavaScript",
-    location: "深圳市",
-    tags: ["javascript", "es6"],
-  },
-  {
-    id: 7,
-    date: "25",
-    month: "2024/12",
-    title: "Webpack 5 配置优化实战",
-    description:
-      "全面介绍Webpack 5的新特性和配置优化技巧，包括模块联邦、持久化缓存、Tree Shaking等。通过实际项目案例展示如何提升构建性能。",
-    readCount: 14,
-    category: "Webpack",
-    location: "深圳市",
-    tags: ["webpack", "javascript"],
-  },
-  {
-    id: 8,
-    date: "22",
-    month: "2024/12",
-    title: "HTTP/2 协议详解",
-    description:
-      "深入解析HTTP/2协议的核心特性和优势，包括多路复用、服务器推送、头部压缩等。通过对比HTTP/1.1展示性能提升效果。",
-    readCount: 12,
-    category: "HTTP",
-    location: "深圳市",
-    tags: ["http", "network"],
-  },
-]);
-
+const {
+  data: articles,
+  isLoading,
+  isFirstLoaded,
+  isHasMore,
+  request,
+} = usePagination<typeof getNotesList, INoteRes>(getNotesList);
+request(params.value);
 // 当前选中的标签
 const activeTag = ref(0);
-
-// 筛选后的文章
-const filteredArticles = computed(() => {
-  return articles.value;
-});
-
+const useTags = (data: INoteItem) => {
+  if (isEmpty(data.category_tags)) {
+    return "-";
+  }
+  return data.category_tags?.map((item) => item.tag_name)?.join("、");
+};
 /**
  * 切换标签
  * @param tagId - 标签ID
@@ -173,15 +76,19 @@ const readArticle = (articleId: number) => {
     <div class="articles-section">
       <div class="articles-list">
         <article
-          v-for="article in filteredArticles"
-          :key="article.id"
+          v-for="article in articles.list"
+          :key="article.uid"
           class="article-card"
-          @click="readArticle(article.id)"
+          @click="readArticle(article.uid)"
         >
           <!-- 日期区域 -->
           <div class="article-date">
-            <div class="date-number">{{ article.date }}</div>
-            <div class="date-month">{{ article.month }}</div>
+            <div class="date-number">
+              {{ useFormatDate(article.create_date || "", "dd") }}
+            </div>
+            <div class="date-month">
+              {{ useFormatDate(article.create_date || "", "yyyy/MM") }}
+            </div>
           </div>
 
           <!-- 文章内容区域 -->
@@ -190,9 +97,11 @@ const readArticle = (articleId: number) => {
 
             <!-- 文章元数据 -->
             <div class="article-meta">
-              <span class="read-count">阅读次数: {{ article.readCount }}</span>
-              <span class="category">{{ article.category }}</span>
-              <span class="location">{{ article.location }}</span>
+              <span class="read-count"
+                >阅读次数: {{ article.view_number }}</span
+              >
+              <span class="category">{{ useTags(article) }}</span>
+              <span class="location">{{ article.province }}</span>
             </div>
 
             <!-- 文章描述 -->
@@ -378,6 +287,7 @@ const readArticle = (articleId: number) => {
             line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            text-overflow: ellipsis;
           }
 
           .read-more {
