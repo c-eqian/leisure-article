@@ -5,7 +5,9 @@ import BlogPost from "@/components/BlogPost.vue";
 import BlogPostSkeleton from "@/components/BlogPostSkeleton.vue";
 import CategoryTabs from "@/components/CategoryTabs.vue";
 import HeaderBanner from "@/components/HeaderBanner.vue";
-import type { IArticleRes } from "~~/api/article/type";
+import LoadMoreButton from "@/components/LoadMoreButton.vue";
+import BackToTop from "~/components/BackToTop.vue";
+import { usePagination } from "~/composables/usePaganition";
 definePageMeta({
   keepalive: true,
   // layout: 'header'
@@ -14,43 +16,46 @@ definePageMeta({
  * 首页组件
  * 显示网站首页内容，包括横幅、分类标签和文章列表
  */
+const loadingMessage = ref("正在加载文章...");
 
-// 注入的加载状态和方法
-const isLoading = ref(false);
-const loadingMessage = ref("加载中...");
-
-// 博客文章数据
-const articleList = ref<IArticleRes["list"]>([]);
-
-/**
- * 模拟网络请求
- * 展示加载状态和骨架屏效果
- */
-const simulateNetworkRequest = async () => {
-  isLoading.value = true;
-  loadingMessage.value = "正在加载文章...";
-  const res = await getArticleList();
-  articleList.value = res.list;
-  isLoading.value = false;
+const params = ref({
+  page_size: 20,
+  page_num: 1,
+});
+const {
+  data: articleList,
+  isLoading,
+  isFirstLoaded,
+  isHasMore,
+  request,
+} = usePagination(getArticleList);
+request(params.value);
+const loadMore = () => {
+  params.value.page_num += 1;
+  request(params.value);
 };
-
-// 组件挂载时添加滚动监听和模拟请求
-simulateNetworkRequest();
 </script>
 
 <template>
   <div>
     <client-only>
       <HeaderBanner />
+      <BackToTop />
     </client-only>
 
     <CategoryTabs />
-    <div v-if="isLoading" class="loading-container">
+    <div v-if="isLoading && isFirstLoaded" class="loading-container">
       <div class="loading-message">{{ loadingMessage }}</div>
       <BlogPostSkeleton :count="6" />
     </div>
     <div v-else class="content-container">
-      <BlogPost v-for="item in articleList" :key="item.uid" :item="item" />
+      <BlogPost v-for="item in articleList.list" :key="item.uid" :item="item" />
+      <LoadMoreButton
+        v-if="!isFirstLoaded && isHasMore"
+        :loading="isLoading"
+        :disabled="isLoading"
+        @click="loadMore"
+      />
     </div>
   </div>
 </template>
@@ -80,6 +85,7 @@ simulateNetworkRequest();
   gap: 30px;
 }
 
+/* 移动端适配 */
 @media (max-width: 768px) {
   .loading-message {
     margin: 0 10px 10px 10px;

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useFormatDate } from "@eqian/utils-vue";
+import { getArticleItemDetailById } from "~~/api/article";
 import { computed } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
-import { text } from "./test";
-
+const { id } = useRoute().params;
+const articleDetail = await getArticleItemDetailById(id as string);
 /**
  * 文章详情页面组件
  * 显示文章的详细内容，包括元数据和标签
@@ -11,28 +13,6 @@ import { text } from "./test";
 
 // 设备类型检测
 const { isMobile } = useWebSize();
-
-/**
- * 文章元数据接口
- */
-interface ArticleMeta {
-  author: string;
-  publishDate: string;
-  viewCount: string;
-  readTime: string;
-}
-
-// 文章元数据
-const articleMeta: ArticleMeta = {
-  author: "程序员凌览",
-  publishDate: "2025-06-12",
-  viewCount: "12,376",
-  readTime: "阅读3分钟",
-};
-
-// 文章标签
-const articleTags = ["前端", "后端", "JavaScript"];
-
 // 响应式样式
 const styles = computed(() => {
   if (isMobile.value) {
@@ -46,8 +26,8 @@ const styles = computed(() => {
   <div :style="styles">
     <div class="article-header">
       <div class="article-meta">
-        <span class="author">{{ articleMeta.author }}</span>
-        <span class="date">{{ articleMeta.publishDate }}</span>
+        <span class="author">{{ articleDetail.user_info?.username }}</span>
+        <span class="date">{{ useFormatDate(articleDetail.create_date) }}</span>
         <div class="stats">
           <span class="view-count"
             ><svg class="icon" viewBox="0 0 24 24" width="16" height="16">
@@ -55,7 +35,7 @@ const styles = computed(() => {
                 fill="currentColor"
                 d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
               /></svg
-            >{{ articleMeta.viewCount }}</span
+            >{{ articleDetail.view_number }}</span
           >
           <span class="read-time"
             ><svg class="icon" viewBox="0 0 24 24" width="16" height="16">
@@ -63,16 +43,18 @@ const styles = computed(() => {
                 fill="currentColor"
                 d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
               /></svg
-            >{{ articleMeta.readTime }}</span
+            >{{ articleDetail.expect_reading_time }}分钟</span
           >
         </div>
       </div>
     </div>
-    <MarkdownRender :content="text" />
+    <MarkdownRender :content="articleDetail.content" />
     <div class="article-tags">
       <span class="tags-label">标签:</span>
       <div class="tags-container">
-        <span v-for="tag in articleTags" :key="tag" class="tag">{{ tag }}</span>
+        <span v-for="tag in articleDetail.tags" :key="tag" class="tag">{{
+          tag
+        }}</span>
       </div>
     </div>
   </div>

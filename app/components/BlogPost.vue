@@ -38,20 +38,6 @@ const getAuthorInitial = (name: string) => {
   if (!name) return "?";
   return name.trim().charAt(0);
 };
-
-/**
- * 处理标题点击事件
- * 滚动到顶部并跳转到文章详情页
- */
-const handleTitleClick = () => {
-  const mainContent = document.querySelector(
-    ".main-content",
-  ) as HTMLElement | null;
-  if (mainContent) {
-    mainContent.scrollTop = 0;
-  }
-  router.push({ path: `/post/11111` });
-};
 </script>
 
 <template>
@@ -64,7 +50,7 @@ const handleTitleClick = () => {
             :src="article.user_info?.avatar || defaultAvatar"
             :alt="article.user_info?.username"
             @error="onAuthorAvatarError"
-          >
+          />
           <span v-else>{{
             getAuthorInitial(article.user_info?.username || "")
           }}</span>
@@ -77,8 +63,10 @@ const handleTitleClick = () => {
         </div>
       </div>
     </div>
-    <h1 class="post-title" @click="handleTitleClick">
-      <span class="title-text">{{ article.title }}</span>
+    <h1 class="post-title">
+      <nuxt-link :to="`/post/${article.uid}`" class="title-text">{{
+        article.title
+      }}</nuxt-link>
     </h1>
     <p class="post-description">{{ article.describe }}</p>
     <div v-if="article.cover" class="post-cover">
@@ -87,7 +75,7 @@ const handleTitleClick = () => {
         :alt="article.title"
         class="cover-image"
         @error="onCoverError"
-      >
+      />
     </div>
     <div class="post-footer">
       <div class="post-meta">

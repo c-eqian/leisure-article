@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AboutMe from "@/components/AboutMe.vue";
+import BackToTop from "@/components/BackToTop.vue";
 import { useTheme } from "@/composables/useTheme";
 import { useWebSize } from "@/composables/useWebSize";
 
@@ -37,6 +38,7 @@ const { webStore } = useTheme();
   padding: 0;
   background: var(--bg-content);
   height: 100vh;
+  position: relative; // 为BackToTop按钮提供定位上下文
   transition:
     background var(--transition-normal),
     color var(--transition-normal);

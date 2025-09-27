@@ -1,34 +1,41 @@
 <script setup lang="ts">
+import { useFormatDate } from "@eqian/utils-vue";
 import { ref } from "vue";
-const imageData = ref([
-  {
-    id: 1,
-    title: "海洋的隐秘心跳",
-    image:
-      "https://cn.bing.com/th?id=OHR.Atoll_ZH-CN31489244_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-    views: 31489,
-    likes: 244,
-    date: "2025年06月13日",
-  },
-  {
-    id: 2,
-    title: "伦敦时间到!",
-    image:
-      "https://cn.bing.com/th?id=OHR.LondonParliament_ZH-CN31445204_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-    views: 31445,
-    likes: 204,
-    date: "2025年05月15日",
-  },
-  {
-    id: 3,
-    title: "山间奔驰",
-    image:
-      "https://cn.bing.com/th?id=OHR.MountainTrain_ZH-CN24584129_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-    views: 24584,
-    likes: 129,
-    date: "2025年05月26日",
-  },
-]);
+import LoadMoreButton from "@/components/LoadMoreButton.vue";
+import { useAsyncFetch } from "~~/api/server";
+import type { IWallpaperRes } from "~~/api/wallpaper/type";
+const imageData = ref<IWallpaperRes>({} as IWallpaperRes);
+const isLoading = ref(false);
+const isFirstLoaded = ref(true);
+const params = ref({
+  page_size: 20,
+  page_num: 1,
+});
+const getWallpaper = () => {
+  const isLoading = ref(false);
+
+  useAsyncFetch("system/wallpaper", {
+    params: params.value,
+  })
+    .then((res) => {
+      if (!imageData.value.list) {
+        imageData.value.list = [];
+      }
+      imageData.value = {
+        ...res.data,
+        list: imageData.value.list.concat(res.data.list),
+      };
+    })
+    .finally(() => {
+      isFirstLoaded.value = false;
+      isLoading.value = false;
+    });
+};
+getWallpaper();
+const loadMore = () => {
+  params.value.page_num += 1;
+  getWallpaper();
+};
 </script>
 
 <template>
@@ -38,21 +45,31 @@ const imageData = ref([
       <p class="gallery-subtitle">探索世界的美好瞬间</p>
     </div>
     <div class="image-grid">
-      <div v-for="item in imageData" :key="item.id" class="image-card">
+      <div v-for="item in imageData.list" :key="item.id" class="image-card">
         <div class="image-container">
-          <img
-            :src="item.image"
-            :alt="item.title"
-            class="image"
-            loading="lazy"
-          />
+            <nuxt-link :to="item.url || '#'" target="_blank">
+            <img
+              :src="item.url || ''"
+              :alt="item.title || ''"
+              class="image"
+              loading="lazy"
+            >
+          </nuxt-link>
         </div>
         <div class="card-content">
           <h3 class="image-title">{{ item.title }}</h3>
-          <div class="image-date">{{ item.date }}</div>
+          <div class="image-date">
+            {{ useFormatDate(item.date_time || "-") }}
+          </div>
         </div>
       </div>
     </div>
+    <LoadMoreButton
+      v-if="!isFirstLoaded && imageData.is_more === 1"
+      :loading="isLoading"
+      :disabled="isLoading"
+      @click="loadMore"
+    />
   </div>
 </template>
 

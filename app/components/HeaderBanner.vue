@@ -52,10 +52,13 @@ const onAvatarError = (e: Event) => {
 
 <template>
   <client-only>
-    <div class="header-banner">
+    <div
+      class="header-banner"
+      :style="{ '--banner-url': `url(${dailyImage.url})` }"
+    >
       <!-- 位置天气卡片 -->
       <DailyImageCard />
-      
+
       <!-- 用户登录状态 -->
       <div class="banner-overlay">
         <div
@@ -117,6 +120,8 @@ const onAvatarError = (e: Event) => {
 .header-banner {
   position: relative;
   height: 300px;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23667eea;stop-opacity:1" /><stop offset="100%" style="stop-color:%23764ba2;stop-opacity:1" /></linearGradient></defs><rect width="1200" height="300" fill="url(%23grad1)"/><circle cx="200" cy="100" r="60" fill="rgba(255,255,255,0.1)"/><circle cx="800" cy="200" r="80" fill="rgba(255,255,255,0.05)"/><rect x="100" y="150" width="200" height="100" fill="rgba(255,255,255,0.1)" rx="10"/><rect x="600" y="80" width="150" height="80" fill="rgba(255,255,255,0.08)" rx="8"/></svg>');
+  background: var(--banner-url) center/cover;
   overflow: hidden;
 }
 
