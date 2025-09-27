@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useTheme } from "@/composables/useTheme";
+import { useCategoryTags } from "~/composables/useCategoryTags";
 
 /**
  * 笔记页面组件
@@ -9,15 +10,6 @@ import { useTheme } from "@/composables/useTheme";
 
 // 主题状态
 const { isDark } = useTheme();
-
-/**
- * 标签接口
- */
-interface Tag {
-  id: string;
-  name: string;
-  active: boolean;
-}
 
 /**
  * 文章接口
@@ -35,39 +27,7 @@ interface Article {
 }
 
 // 标签数据
-const tags = ref<Tag[]>([
-  { id: "all", name: "全部", active: true },
-  { id: "interview", name: "面经", active: false },
-  { id: "eslint", name: "ESLint", active: false },
-  { id: "bubble-sort", name: "冒泡排序", active: false },
-  { id: "element-plus", name: "element-plus", active: false },
-  { id: "nuxt", name: "nuxt", active: false },
-  { id: "css", name: "CSS", active: false },
-  { id: "http", name: "HTTP", active: false },
-  { id: "eslint-plugin", name: "ESLint插件", active: false },
-  { id: "leetcode", name: "leecode", active: false },
-  { id: "django", name: "Django", active: false },
-  { id: "eight-legged", name: "八股文", active: false },
-  { id: "insertion-sort", name: "插入排序", active: false },
-  { id: "quick-sort", name: "快速排序", active: false },
-  { id: "python", name: "Python", active: false },
-  { id: "java", name: "Java", active: false },
-  { id: "javascript", name: "JavaScript", active: false },
-  { id: "axios", name: "axios", active: false },
-  { id: "websocket", name: "websocket", active: false },
-  { id: "webpack", name: "Webpack", active: false },
-  { id: "html", name: "HTML", active: false },
-  { id: "mysql", name: "MySQL", active: false },
-  { id: "git", name: "git命令", active: false },
-  { id: "typescript", name: "Typescript", active: false },
-  { id: "react", name: "React", active: false },
-  { id: "data-structure", name: "数据结构", active: false },
-  { id: "vite", name: "Vite", active: false },
-  { id: "component-lib", name: "组件库", active: false },
-  { id: "selection-sort", name: "选择排序", active: false },
-  { id: "vue", name: "Vue", active: false },
-]);
-
+const { tagList } = useCategoryTags();
 // 文章数据
 const articles = ref<Article[]>([
   {
@@ -168,27 +128,19 @@ const articles = ref<Article[]>([
 ]);
 
 // 当前选中的标签
-const activeTag = ref("all");
+const activeTag = ref(0);
 
 // 筛选后的文章
 const filteredArticles = computed(() => {
-  if (activeTag.value === "all") {
-    return articles.value;
-  }
-  return articles.value.filter((article) =>
-    article.tags.includes(activeTag.value),
-  );
+  return articles.value;
 });
 
 /**
  * 切换标签
  * @param tagId - 标签ID
  */
-const selectTag = (tagId: string) => {
+const selectTag = (tagId: number) => {
   activeTag.value = tagId;
-  tags.value.forEach((tag) => {
-    tag.active = tag.id === tagId;
-  });
 };
 
 /**
@@ -207,12 +159,12 @@ const readArticle = (articleId: number) => {
     <div class="tags-section">
       <div class="tags-cloud">
         <button
-          v-for="tag in tags"
+          v-for="tag in tagList"
           :key="tag.id"
-          :class="['tag-item', { active: tag.active }]"
+          :class="['tag-item', { active: tag.id === activeTag }]"
           @click="selectTag(tag.id)"
         >
-          {{ tag.name }}
+          {{ tag.tag_name }}
         </button>
       </div>
     </div>
