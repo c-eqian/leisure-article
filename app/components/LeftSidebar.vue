@@ -27,14 +27,14 @@ const showStyleConfig = ref(false);
 const { websiteDataRef, getWebsite } = useWebsite();
 // 导航菜单项配置
 const menuItems = [
-  { id: "", name: "主页", icon: "🏠" },
-  { id: "daily", name: "日常", icon: "📝" },
-  { id: "images", name: "图片", icon: "🖼️" },
-  { id: "notes", name: "笔记", icon: "📔" },
-  { id: "messages", name: "留言", icon: "💬" },
-  { id: "about", name: "关于", icon: "ℹ️" },
-  { id: "tools", name: "工具箱", icon: "🔧" },
-  { id: "settings", name: "设置", icon: "⚙️" },
+  { id: "", name: "主页", icon: "🏠", active: true },
+  { id: "daily", name: "日常", icon: "📝", active: false },
+  { id: "images", name: "图片", icon: "🖼️", active: true },
+  { id: "notes", name: "笔记", icon: "📔", active: true },
+  { id: "messages", name: "留言", icon: "💬", active: false },
+  { id: "about", name: "关于", icon: "ℹ️", active: true },
+  { id: "tools", name: "工具箱", icon: "🔧", active: true },
+  { id: "settings", name: "设置", icon: "⚙️", active: true },
 ];
 
 // 标签数据
@@ -49,7 +49,7 @@ const setActiveMenu = (menuId: string) => {
     showStyleConfig.value = true;
     return;
   }
-
+  if (["messages", "daily"].includes(menuId)) return;
   activeMenu.value = menuId;
 
   // 移动端点击菜单后关闭侧边栏
