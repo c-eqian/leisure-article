@@ -104,32 +104,7 @@ getWebsite();
           </li>
         </ul>
       </nav>
-      <client-only>
-        <div class="stats-section">
-          <h3>站点统计</h3>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <span class="number">{{ websiteDataRef.article_count || 0 }}</span
-              ><span class="label">文章</span>
-            </div>
-            <div class="stat-item">
-              <span class="number">{{
-                websiteDataRef.website_request_count || 0
-              }}</span
-              ><span class="label">访问</span>
-            </div>
-            <div class="stat-item">
-              <span class="number">-</span><span class="label">分类</span>
-            </div>
-            <div class="stat-item">
-              <span class="number">{{
-                websiteDataRef.website_run_days || 0
-              }}</span
-              ><span class="label">运行（天）</span>
-            </div>
-          </div>
-        </div>
-      </client-only>
+      
       <div class="follow-section">
         <h3>Follow Me</h3>
         <div class="social-icons">

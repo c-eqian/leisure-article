@@ -53,7 +53,10 @@ export const getArticleFilterList = (text: string) => {
  */
 export const getArticleItemDetailById = (uid: string) => {
   return http.request<IArticleItem>({
-    url: `/article/detail/${uid}`,
+    url: `/article/detail`,
+    params: {
+      article_id: uid,
+    },
     server: true,
     method: "GET",
   });

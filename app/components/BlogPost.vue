@@ -288,8 +288,8 @@ const getAuthorInitial = (name: string) => {
     align-items: flex-start;
   }
   .post-meta {
-    flex-direction: column;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 }
 </style>

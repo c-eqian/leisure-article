@@ -21,18 +21,27 @@ export namespace ISystemCaptcha {
 export namespace IWebsite {
   export type Data = {
     article_count: number;
+    create_date: null;
+    creator: null;
+    description: null;
+    dynamics_cover: number;
+    id: number;
     is_code: number;
     is_registry: number;
+    is_registry_code: number;
+    modifier: null;
+    status: number;
+    uid: string;
+    update_date: null;
+    website_color: null;
+    website_cover: string;
+    website_icp: string;
+    website_logo: null;
     website_request_count: number;
     website_run_days: number;
+    website_title: string;
     website_view_count: number;
-    id: number;
-    is_registry_code?: number;
-    website_title?: string;
-    website_logo?: string;
-    website_icp?: string;
-    website_cover?: string;
-    website_color?: string;
+    [property: string]: any;
   };
 
   export interface IRes {

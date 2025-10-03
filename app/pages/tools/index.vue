@@ -1,128 +1,28 @@
 <script setup lang="ts">
+import * as favoritesApi from "~~/api/favorites";
 import { ref } from "vue";
+import type { IFavoriteGroupedByCategory } from "~~/api/favorites/type";
 
-// 热门网站数据
-const popularWebsites = ref([
-  {
-    id: 1,
-    name: "DeepSeek大模型",
-    description: "深度求索DeepSeek大语言模型,由深度求索公司开发",
-    icon: "🐋",
-    clicks: 9840,
-    url: "https://www.deepseek.com",
-  },
-  {
-    id: 2,
-    name: "DeepSeek对话",
-    description: "深度求索DeepSeek大语言模型,由深度求索公司开发",
-    icon: "🐋",
-    clicks: 3710,
-    url: "https://chat.deepseek.com",
-  },
-  {
-    id: 3,
-    name: "豆包AI助手",
-    description: "豆包是字节跳动公司基于云雀模型开发的AI工具",
-    icon: "👩",
-    clicks: 2760,
-    url: "https://www.doubao.com",
-  },
-  {
-    id: 4,
-    name: "Kimi智能助手",
-    description: "Kimi 是由月之暗面科技有限公司开发的智能聊天助手",
-    icon: "K",
-    clicks: 2160,
-    url: "https://kimi.moonshot.cn",
-  },
-  {
-    id: 5,
-    name: "火山方舟-火山引擎",
-    description: "火山引擎是字节跳动旗下的云服务平台,火山方舟提供AI服务",
-    icon: "⛰️",
-    clicks: 1810,
-    url: "https://www.volcengine.com",
-  },
-  {
-    id: 6,
-    name: "16Personalities",
-    description: "免费MBTI性格测试、类型描述、人际关系和职业指导",
-    icon: "🎯",
-    clicks: 1750,
-    url: "https://www.16personalities.com",
-  },
-  {
-    id: 7,
-    name: "CueMe智能助手",
-    description: "CueMe 是由夸克自主研发的一款智能对话助手",
-    icon: "💜",
-    clicks: 1540,
-    url: "https://cume.quark.cn",
-  },
-  {
-    id: 8,
-    name: "SC.Net 超算互联网",
-    description: "[无需注册] 国家超算互联网,上线 DeepSeek,提供AI对话服务",
-    icon: "SC",
-    clicks: 1500,
-    url: "https://sc.net",
-  },
-  {
-    id: 9,
-    name: "司南大模型竞技场",
-    description: "CompassArena:免费体验国内外的一些主流开源大模型",
-    icon: "🧭",
-    clicks: 1490,
-    url: "https://compassarena.ai",
-  },
-  {
-    id: 10,
-    name: "vectorCraftr",
-    description: "开源插画网站",
-    icon: "🔺",
-    clicks: 1410,
-    url: "https://vectorcraftr.com",
-  },
-  {
-    id: 11,
-    name: "Yi大模型",
-    description: "零一万物推出的千亿参数大模型,提供问答及文本生成服务",
-    icon: "Y",
-    clicks: 1220,
-    url: "https://yi.01.ai",
-  },
-  {
-    id: 12,
-    name: "文心大模型",
-    description: "百度文心一言大语言模型,可以与人对话互动,回答问题",
-    icon: "文",
-    clicks: 1200,
-    url: "https://yiyan.baidu.com",
-  },
-]);
-
-// 在线游戏数据
-const onlineGames = ref([
-  {
-    id: 1,
-    name: "召唤神龙",
-    description:
-      "体验激动人心的召唤神龙在线游戏。从蝌蚪,青蛙,蛇一步步进化成神龙",
-    icon: "🐉",
-    url: "https://games.shenlong.com",
-  },
-  {
-    id: 2,
-    name: "斗兽棋",
-    description: "低难度版的斗兽棋游戏,益智类小游戏,画面精美,操作简单",
-    icon: "🐅",
-    url: "https://games.doushouqi.com",
-  },
-]);
+// 响应式数据
+const groupedFavorites = ref<IFavoriteGroupedByCategory[]>([]);
+const loading = ref(false);
 
 // 点击处理函数
-const handleClick = (item: any) => {
-  item.clicks = (item.clicks || 0) + 1;
+const handleClick = async (item: any) => {
+  try {
+    // 调用点击API
+    await favoritesApi.clickFavorite({ uid: item.uid });
+    // 更新本地数据
+    groupedFavorites.value.forEach((category) => {
+      const favorite = category.children.find((f) => f.uid === item.uid);
+      if (favorite) {
+        favorite.clicks += 1;
+      }
+    });
+  } catch (error) {
+    console.error("点击统计失败:", error);
+  }
+
   // 在新窗口打开链接
   window.open(item.url, "_blank");
 };
@@ -134,48 +34,87 @@ const formatClicks = (clicks: number) => {
   }
   return `${clicks}+次点击`;
 };
+
+// 获取收藏夹数据
+const fetchFavorites = async () => {
+  try {
+    loading.value = true;
+    const response = await favoritesApi.getFavoritesGroupedList();
+    groupedFavorites.value = response || [];
+  } catch (error) {
+    console.error("获取收藏夹失败:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 处理图片加载错误
+const handleImageError = (event: Event) => {
+  const target = event.target as HTMLImageElement;
+  if (target) {
+    target.style.display = "none";
+  }
+};
+
+// 组件挂载时获取数据
+fetchFavorites();
 </script>
 
 <template>
   <div class="tools-container">
-    <!-- 热门网站部分 -->
-    <section class="section">
-      <h2 class="section-title">热门网站</h2>
-      <div class="cards-grid">
-        <div
-          v-for="item in popularWebsites"
-          :key="item.id"
-          class="card"
-          @click="handleClick(item)"
-        >
-          <div class="card-icon">{{ item.icon }}</div>
-          <div class="card-content">
-            <h3 class="card-title">{{ item.name }}</h3>
-            <p class="card-description">{{ item.description }}</p>
-            <div class="card-clicks">{{ formatClicks(item.clicks) }}</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading">
+      <div class="loading-spinner" />
+      <p>加载中...</p>
+    </div>
 
-    <!-- 在线游戏部分 -->
-    <section class="section">
-      <h2 class="section-title">在线游戏</h2>
-      <div class="games-grid">
-        <div
-          v-for="item in onlineGames"
-          :key="item.id"
-          class="card game-card"
-          @click="handleClick(item)"
-        >
-          <div class="card-icon">{{ item.icon }}</div>
-          <div class="card-content">
-            <h3 class="card-title">{{ item.name }}</h3>
-            <p class="card-description">{{ item.description }}</p>
+    <!-- 收藏夹内容 -->
+    <div v-else-if="groupedFavorites.length > 0">
+      <!-- 按分类显示收藏夹 -->
+      <section
+        v-for="category in groupedFavorites.filter(
+          (cat) => cat.children && cat.children.length > 0,
+        )"
+        :key="category.uid"
+        class="section"
+      >
+        <h2 class="section-title">
+          {{ category.title }}
+        </h2>
+        <div class="cards-grid">
+          <div
+            v-for="item in category.children"
+            :key="item.uid"
+            class="card"
+            @click="handleClick(item)"
+          >
+            <div class="card-icon">
+              <img
+                v-if="item.icon"
+                :src="item.icon"
+                :alt="item.title"
+                class="icon-image"
+                @error="handleImageError"
+              >
+              <span v-else class="icon-fallback">{{
+                item.title.charAt(0)
+              }}</span>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">{{ item.title }}</h3>
+              <div class="card-clicks">{{ formatClicks(item.clicks) }}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-else class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>暂无收藏的网站</h3>
+      <p>还没有收藏任何网站，快去添加一些有用的网站吧！</p>
+    </div>
   </div>
 </template>
 
@@ -186,6 +125,64 @@ const formatClicks = (clicks: number) => {
   margin: 0 auto;
   background: var(--bg-content);
   min-height: 100vh;
+}
+
+// 加载状态
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// 空状态
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .section {
@@ -204,6 +201,9 @@ const formatClicks = (clicks: number) => {
   padding-bottom: 12px;
   border-bottom: 2px solid var(--primary-color);
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
   &::after {
     content: "";
@@ -218,15 +218,10 @@ const formatClicks = (clicks: number) => {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 400px));
   gap: 20px;
   margin-bottom: 24px;
-}
-
-.games-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  justify-content: start;
 }
 
 .card {
@@ -238,6 +233,9 @@ const formatClicks = (clicks: number) => {
   transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 
   &::before {
     content: "";
@@ -271,22 +269,6 @@ const formatClicks = (clicks: number) => {
   }
 }
 
-.game-card {
-  background: linear-gradient(
-    135deg,
-    var(--bg-card) 0%,
-    rgba(102, 126, 234, 0.05) 100%
-  );
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      var(--bg-card-hover) 0%,
-      rgba(102, 126, 234, 0.1) 100%
-    );
-  }
-}
-
 .card-icon {
   width: 48px;
   height: 48px;
@@ -297,20 +279,35 @@ const formatClicks = (clicks: number) => {
   justify-content: center;
   font-size: 24px;
   color: white;
-  margin-bottom: 16px;
   transition: transform var(--transition-normal);
   box-shadow: var(--shadow-light);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.icon-fallback {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
 }
 
 .card-content {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .card-title {
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
   line-height: 1.4;
 }
 
@@ -321,6 +318,7 @@ const formatClicks = (clicks: number) => {
   margin-bottom: 12px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -344,11 +342,7 @@ const formatClicks = (clicks: number) => {
   .cards-grid {
     grid-template-columns: 1fr;
     gap: 16px;
-  }
-
-  .games-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    justify-content: stretch;
   }
 
   .card {
@@ -379,6 +373,10 @@ const formatClicks = (clicks: number) => {
   .card-description {
     font-size: 13px;
   }
+
+  .section-title {
+    font-size: 18px;
+  }
 }
 
 // 暗黑模式适配
@@ -389,22 +387,6 @@ const formatClicks = (clicks: number) => {
 
     &:hover {
       background: var(--bg-card-hover);
-    }
-  }
-
-  .game-card {
-    background: linear-gradient(
-      135deg,
-      var(--bg-card) 0%,
-      rgba(102, 126, 234, 0.1) 100%
-    );
-
-    &:hover {
-      background: linear-gradient(
-        135deg,
-        var(--bg-card-hover) 0%,
-        rgba(102, 126, 234, 0.15) 100%
-      );
     }
   }
 }

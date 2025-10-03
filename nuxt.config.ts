@@ -1,3 +1,11 @@
+/*
+ * @Author: eqian 2429120006@qq.com
+ * @Date: 2025-09-23 21:43:57
+ * @LastEditors: eqian 2429120006@qq.com
+ * @LastEditTime: 2025-10-01 14:04:01
+ * @FilePath: \websiteg:\self\leisure-article\nuxt.config.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 // https://nuxt.com/docs/api/configuration/nuxt-config
 /**
  * Nuxt 3 配置文件
@@ -18,7 +26,7 @@ export default defineNuxtConfig({
       BASE_URL:
         process.env.NODE_ENV === "production"
           ? "https://www.eqian.site/api/v2/"
-          : "http://43.138.222.187:8000/",
+          : "http://localhost:9999/",
     },
   },
   // 项目模块配置

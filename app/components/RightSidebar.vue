@@ -2,6 +2,7 @@
 import { useAsyncFetch } from "~~/api/server";
 import { ref } from "vue";
 import AboutMe from "@/components/AboutMe.vue";
+import { useWebsite } from "~/composables/useWebsite";
 
 const recommendedPosts = [
   "Typecho主题Pinghsu二改版",
@@ -20,6 +21,9 @@ useAsyncFetch("system/wallpaper-today").then((res) => {
     dailyImage.value.url = res.data?.url;
   }
 });
+
+const { websiteDataRef, getWebsite } = useWebsite();
+getWebsite();
 </script>
 
 <template>
@@ -33,18 +37,25 @@ useAsyncFetch("system/wallpaper-today").then((res) => {
 
     <AboutMe />
 
-    <div class="recommended-section">
-      <h3>猜你喜欢</h3>
-      <ul class="recommended-list">
-        <li
-          v-for="(post, index) in recommendedPosts"
-          :key="index"
-          class="recommended-item"
-        >
-          {{ post }}
-        </li>
-      </ul>
-    </div>
+    <client-only>
+      <div class="stats-section">
+        <h3>站点统计</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="number">{{ websiteDataRef.article_count || 0 }}</span><span class="label">文章</span>
+          </div>
+          <div class="stat-item">
+            <span class="number">{{ websiteDataRef.website_request_count || 0 }}</span><span class="label">访问</span>
+          </div>
+          <div class="stat-item">
+            <span class="number">{{ websiteDataRef.category_count || 0 }}</span><span class="label">分类</span>
+          </div>
+          <div class="stat-item">
+            <span class="number">{{ websiteDataRef.website_run_days || 0 }}</span><span class="label">运行（天）</span>
+          </div>
+        </div>
+      </div>
+    </client-only>
   </div>
 </template>
 
@@ -138,6 +149,53 @@ useAsyncFetch("system/wallpaper-today").then((res) => {
         background: rgba(255, 255, 255, 0.3);
         transform: translateX(4px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  .stats-section {
+    background: var(--sidebar-section-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--sidebar-section-border, rgba(255, 255, 255, 0.2));
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-normal);
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all var(--transition-normal);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .number {
+        display: block;
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 4px;
+        color: var(--text-white);
+        transition: all var(--transition-normal);
+      }
+
+      .label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-white-muted);
+        transition: all var(--transition-normal);
       }
     }
   }
