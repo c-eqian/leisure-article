@@ -49,8 +49,8 @@ defineOptions({
         <!-- 天气信息 -->
         <div class="weather-info">
           <div class="weather-main">
-            <div class="temperature">{{ location?.temperature || "-" }} ℃</div>
-            <div class="condition">{{ location?.humidity }}</div>
+            <div class="temperature">{{ location?.weather }}</div>
+            <div class="condition">{{ location?.temperature }} ℃</div>
           </div>
           <div class="weather-details">
             <div class="weather-item">
