@@ -1,3 +1,4 @@
+import { useAsyncFetch } from "~~/api/server";
 import { http } from "../http";
 import type { IArticleItem, IArticleRes } from "./type";
 
@@ -32,7 +33,11 @@ export const getArticleList = (params?: ArticleListParams) => {
     isLoading: false,
   });
 };
-
+export const getArticleListFetch = (params?: ArticleListParams) => {
+  return useAsyncFetch("article/list", {
+    params,
+  });
+};
 /**
  * 搜索文章列表
  * @param text - 搜索关键词

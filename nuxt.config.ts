@@ -26,7 +26,7 @@ export default defineNuxtConfig({
       BASE_URL:
         process.env.NODE_ENV === "production"
           ? "https://www.eqian.site/api/v2/"
-          : "http://localhost:9999/",
+          : "http://localhost:8000/",
     },
   },
   // 项目模块配置

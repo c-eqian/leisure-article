@@ -28,17 +28,17 @@ interface ProfileData {
 const profileData = ref<ProfileData>({
   avatar:
     "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face",
-  accountName: "jack",
-  nickname: "jack",
-  age: 43,
+  accountName: "-",
+  nickname: "Eqian",
+  age: 26,
   gender: "男",
-  email: "4506289653@qq.com",
-  phone: "14242424247",
-  region: "江西",
-  occupation: "务农",
-  hobbies: "打乒乓球",
-  signature: "相见恨晚",
-  registrationDate: "2022-01-26 16:29:44",
+  email: "2429120006@qq.com",
+  phone: "***********",
+  region: "广东",
+  occupation: "前端仔",
+  hobbies: "打乒乓球、爬山、运动、桌子",
+  signature: "爱自己、是终身的浪漫",
+  registrationDate: "2023-03-26",
 });
 
 // 性别选项
@@ -74,7 +74,7 @@ const cancelEdit = () => {
       <div class="avatar-section">
         <div class="avatar-container">
           <img
-            :src="profileData.avatar"
+            src="/avatar"
             :alt="profileData.nickname"
             class="avatar-image"
           />
@@ -92,7 +92,7 @@ const cancelEdit = () => {
       <div class="profile-info-card">
         <div class="card-header">
           <h3>个人信息</h3>
-          <button class="edit-btn" @click="isEditing = !isEditing">
+          <button v-if="false" class="edit-btn" @click="isEditing = !isEditing">
             {{ isEditing ? "取消" : "编辑" }}
           </button>
         </div>

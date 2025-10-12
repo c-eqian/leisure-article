@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { isEmpty, useFormatDate } from "@eqian/utils-vue";
-import { getNotesList } from "~~/api/notes";
+import { getNoteListFetch } from "~~/api/notes";
 import { ref } from "vue";
+import LoadMoreButton from "@/components/LoadMoreButton.vue";
+import NotesSkeleton from "@/components/NotesSkeleton.vue";
 import { useTheme } from "@/composables/useTheme";
 import { useCategoryTags } from "~/composables/useCategoryTags";
 import { usePagination } from "~/composables/usePaganition";
@@ -14,9 +16,11 @@ import type { INoteItem, INoteRes } from "~~/api/notes/type";
 
 // 主题状态
 const { isDark } = useTheme();
+const loadingMessage = ref("正在加载笔记...");
 const params = ref({
   page_size: 20,
   page_num: 1,
+  category_tags: [] as any[],
 });
 
 // 标签数据
@@ -28,7 +32,7 @@ const {
   isFirstLoaded,
   isHasMore,
   request,
-} = usePagination<typeof getNotesList, INoteRes>(getNotesList);
+} = usePagination<typeof getNoteListFetch, INoteRes>(getNoteListFetch);
 request(params.value);
 // 当前选中的标签
 const activeTag = ref(0);
@@ -43,16 +47,29 @@ const useTags = (data: INoteItem) => {
  * @param tagId - 标签ID
  */
 const selectTag = (tagId: number) => {
+  if (params.value.category_tags.includes(tagId)) {
+    return;
+  }
   activeTag.value = tagId;
+  // 重置分页参数
+  params.value.page_num = 1;
+  if (!tagId) {
+    params.value.category_tags = [];
+  } else {
+    params.value.category_tags = [tagId];
+  }
+  // 清空现有数据
+  articles.value = { list: [], total: 0, is_more: 0 };
+  // 重新请求数据
+  request(params.value);
 };
 
 /**
- * 阅读文章
- * @param articleId - 文章ID
+ * 加载更多笔记
  */
-const readArticle = (articleId: number) => {
-  // TODO: 这里可以添加路由跳转或其他逻辑
-  console.info("阅读文章:", articleId);
+const loadMore = () => {
+  params.value.page_num += 1;
+  request(params.value);
 };
 </script>
 
@@ -74,46 +91,64 @@ const readArticle = (articleId: number) => {
 
     <!-- 文章列表区域 -->
     <div class="articles-section">
-      <div class="articles-list">
-        <article
-          v-for="article in articles.list"
-          :key="article.uid"
-          class="article-card"
-          @click="readArticle(article.uid)"
-        >
-          <!-- 日期区域 -->
-          <div class="article-date">
-            <div class="date-number">
-              {{ useFormatDate(article.create_date || "", "dd") }}
-            </div>
-            <div class="date-month">
-              {{ useFormatDate(article.create_date || "", "yyyy/MM") }}
-            </div>
-          </div>
-
-          <!-- 文章内容区域 -->
-          <div class="article-content">
-            <h2 class="article-title">{{ article.title }}</h2>
-
-            <!-- 文章元数据 -->
-            <div class="article-meta">
-              <span class="read-count"
-                >阅读次数: {{ article.view_number }}</span
-              >
-              <span class="category">{{ useTags(article) }}</span>
-              <span class="location">{{ article.province }}</span>
+      <!-- 加载状态显示 -->
+      <div v-if="isLoading && isFirstLoaded" class="loading-container">
+        <div class="loading-message">{{ loadingMessage }}</div>
+        <div class="skeleton-wrapper">
+          <NotesSkeleton :count="6" />
+        </div>
+      </div>
+      <!-- 正常内容显示 -->
+      <div v-else>
+        <div class="articles-list">
+          <NuxtLink
+            v-for="article in articles.list"
+            :key="article.uid"
+            :to="`/notes/${article.uid}`"
+            class="article-card"
+          >
+            <!-- 日期区域 -->
+            <div class="article-date">
+              <div class="date-number">
+                {{ useFormatDate(article.create_date || "", "dd") }}
+              </div>
+              <div class="date-month">
+                {{ useFormatDate(article.create_date || "", "yyyy/MM") }}
+              </div>
             </div>
 
-            <!-- 文章描述 -->
-            <p class="article-description">{{ article.description }}</p>
+            <!-- 文章内容区域 -->
+            <div class="article-content">
+              <h2 class="article-title">{{ article.title }}</h2>
 
-            <!-- 阅读链接 -->
-            <div class="read-more">
-              <span>阅读全文</span>
-              <span class="arrow">→</span>
+              <!-- 文章元数据 -->
+              <div class="article-meta">
+                <span class="read-count"
+                  >阅读次数: {{ article.view_number }}</span
+                >
+                <span class="category">{{ useTags(article) }}</span>
+                <span class="location">{{ article.province }}</span>
+              </div>
+
+              <!-- 文章描述 -->
+              <p class="article-description">{{ article.description }}</p>
+
+              <!-- 阅读链接 -->
+              <div class="read-more">
+                <span>阅读全文</span>
+                <span class="arrow">→</span>
+              </div>
             </div>
-          </div>
-        </article>
+          </NuxtLink>
+        </div>
+
+        <!-- 加载更多按钮 -->
+        <LoadMoreButton
+          v-if="!isFirstLoaded && isHasMore"
+          :loading="isLoading"
+          :disabled="isLoading"
+          @click="loadMore"
+        />
       </div>
     </div>
   </div>
@@ -170,6 +205,35 @@ const readArticle = (articleId: number) => {
     }
   }
 
+  // 加载容器样式
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .loading-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-light);
+    margin-bottom: 10px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .skeleton-wrapper {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 40px; // 为突出的日期区域留出空间
+  }
+
   // 文章列表区域
   .articles-section {
     .articles-list {
@@ -191,6 +255,8 @@ const readArticle = (articleId: number) => {
         transition: all var(--transition-normal);
         border: 1px solid var(--border-color);
         position: relative;
+        text-decoration: none;
+        color: inherit;
 
         &:hover {
           transform: translateY(-4px);
@@ -387,6 +453,17 @@ const readArticle = (articleId: number) => {
   .notes-container {
     padding: 15px;
 
+    .loading-message {
+      margin: 0 10px 10px 10px;
+      padding: 16px;
+      font-size: 14px;
+    }
+
+    .skeleton-wrapper {
+      margin: 0 10px;
+      padding-left: 0; // 移动端不需要额外的左边距
+    }
+
     .tags-section {
       .tags-cloud {
         gap: 8px;
@@ -501,6 +578,24 @@ const readArticle = (articleId: number) => {
         }
       }
     }
+  }
+}
+
+// 加载更多按钮样式
+:deep(.load-more-button) {
+  margin-top: 30px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (max-width: 768px) {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  @media (max-width: 480px) {
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 </style>

@@ -104,7 +104,7 @@ getWebsite();
           </li>
         </ul>
       </nav>
-      
+
       <div class="follow-section">
         <h3>Follow Me</h3>
         <div class="social-icons">

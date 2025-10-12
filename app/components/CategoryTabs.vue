@@ -4,6 +4,7 @@ import { ref } from "vue";
 import type { ICatalogueData } from "~~/api/catalogue/type";
 const activeCategory = ref(0);
 const categories = ref<ICatalogueData["list"]>([]);
+const emits = defineEmits(["select-category"]);
 getCatalogueList().then((res) => {
   categories.value = [
     {
@@ -16,6 +17,7 @@ getCatalogueList().then((res) => {
 });
 const setActiveCategory = (category: number) => {
   activeCategory.value = category;
+  emits("select-category", category);
 };
 defineExpose({ activeCategory, setActiveCategory });
 </script>
@@ -33,7 +35,7 @@ defineExpose({ activeCategory, setActiveCategory });
         {{ category.category_name }}
       </button>
     </div>
-<!--    <div class="quote-text">时光扑面,斯人如风。</div>-->
+    <!--    <div class="quote-text">时光扑面,斯人如风。</div>-->
   </div>
 </template>
 

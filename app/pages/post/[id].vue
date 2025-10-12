@@ -4,6 +4,7 @@ import { getArticleItemDetailById } from "~~/api/article";
 import { computed } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
+import { countWords } from "~/utils/wordCount";
 const { id } = useRoute().params;
 const articleDetail = await getArticleItemDetailById(id as string);
 /**
@@ -19,6 +20,9 @@ const styles = computed(() => {
     return {};
   }
   return { padding: "20px" };
+});
+const readTime = computed(() => {
+  return countWords(articleDetail.content || "").readingTime;
 });
 </script>
 
@@ -42,9 +46,10 @@ const styles = computed(() => {
               <path
                 fill="currentColor"
                 d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
-              /></svg
-            >{{ articleDetail.expect_reading_time }}分钟</span
-          >
+              />
+            </svg>
+            {{ readTime }}
+          </span>
         </div>
       </div>
     </div>

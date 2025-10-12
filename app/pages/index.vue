@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getArticleList } from "~~/api/article";
+import { getArticleListFetch } from "~~/api/article";
 import { ref } from "vue";
 import BlogPost from "@/components/BlogPost.vue";
 import BlogPostSkeleton from "@/components/BlogPostSkeleton.vue";
@@ -21,6 +21,7 @@ const loadingMessage = ref("正在加载文章...");
 const params = ref({
   page_size: 20,
   page_num: 1,
+  category_id: "",
 });
 const {
   data: articleList,
@@ -28,10 +29,18 @@ const {
   isFirstLoaded,
   isHasMore,
   request,
-} = usePagination(getArticleList);
+} = usePagination(getArticleListFetch);
 request(params.value);
 const loadMore = () => {
   params.value.page_num += 1;
+  request(params.value);
+};
+const handleSelect = (category_id: string) => {
+  if (category_id === params.value.category_id) {
+    return;
+  }
+  params.value.category_id = !category_id ? "" : category_id;
+  params.value.page_num = 1;
   request(params.value);
 };
 </script>
@@ -43,7 +52,7 @@ const loadMore = () => {
       <BackToTop />
     </client-only>
 
-    <CategoryTabs />
+    <CategoryTabs @select-category="handleSelect" />
     <div v-if="isLoading && isFirstLoaded" class="loading-container">
       <div class="loading-message">{{ loadingMessage }}</div>
       <BlogPostSkeleton :count="6" />

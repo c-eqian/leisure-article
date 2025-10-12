@@ -50,7 +50,7 @@ const getAuthorInitial = (name: string) => {
             :src="article.user_info?.avatar || defaultAvatar"
             :alt="article.user_info?.username"
             @error="onAuthorAvatarError"
-          />
+          >
           <span v-else>{{
             getAuthorInitial(article.user_info?.username || "")
           }}</span>
@@ -75,11 +75,13 @@ const getAuthorInitial = (name: string) => {
         :alt="article.title"
         class="cover-image"
         @error="onCoverError"
-      />
+      >
     </div>
     <div class="post-footer">
       <div class="post-meta">
-        <span class="location">◎ {{ article.province }}</span>
+        <span class="location"
+          >◎ {{ article.province?.replace("省", "") }}</span
+        >
         <span class="category">🏷 {{ article.category?.category_name }}</span>
         <span class="views">{{ article.view_number }}浏览</span>
       </div>
