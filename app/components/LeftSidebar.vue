@@ -38,7 +38,7 @@ const menuItems = [
 ];
 
 // 标签数据
-const tags = ["朋友圈", "主题", "边栏"];
+const tags = ["typescript", "Nuxt", "Vue"];
 
 /**
  * 设置激活菜单项并导航
@@ -135,7 +135,7 @@ getWebsite();
         </div>
       </div>
       <div class="tags-section">
-        <h3>标签</h3>
+        <h3>技术栈</h3>
         <div class="tags">
           <span v-for="tag in tags" :key="tag" class="tag">{{ tag }}</span>
         </div>

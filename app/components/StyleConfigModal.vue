@@ -177,7 +177,7 @@ const handleKeydown = (event: KeyboardEvent) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: 1000000;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   cursor: default;

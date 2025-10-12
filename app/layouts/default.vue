@@ -5,6 +5,7 @@ import MainContent from "@/components/MainContent.vue";
 import RightSidebar from "@/components/RightSidebar.vue";
 import { useStore } from "@/composables/useStore";
 import { useTheme } from "@/composables/useTheme";
+import BackToTop from "~/components/BackToTop.vue";
 
 /**
  * 默认布局组件
@@ -26,6 +27,9 @@ onMounted(() => {
     <div class="content-wrapper">
       <LeftSidebar />
       <MainContent>
+        <client-only>
+          <BackToTop />
+        </client-only>
         <NuxtPage />
       </MainContent>
       <RightSidebar />

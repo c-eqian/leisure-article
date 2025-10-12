@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFormatDate } from "@eqian/utils-vue";
+import { isEmpty, useFormatDate } from "@eqian/utils-vue";
 import { useAsyncRequest } from "~~/api/server";
 import { computed } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
@@ -35,6 +35,13 @@ const styles = computed(() => {
 const readTime = computed(() => {
   return countWords(articleDetail.content || "").readingTime;
 });
+// 格式化标签显示
+const formatTags = (tags: any[]) => {
+  if (isEmpty(tags)) {
+    return [];
+  }
+  return tags.map((item) => item.tag_name || item);
+};
 </script>
 
 <template>
@@ -68,9 +75,15 @@ const readTime = computed(() => {
     <div class="article-tags">
       <span class="tags-label">标签:</span>
       <div class="tags-container">
-        <span v-for="tag in articleDetail.tags" :key="tag" class="tag">{{
-          tag
-        }}</span>
+        <span
+          v-for="tag in formatTags(
+            articleDetail?.category_tags || articleDetail?.tags || [],
+          )"
+          :key="tag"
+          class="tag"
+        >
+          {{ tag }}
+        </span>
       </div>
     </div>
   </div>
