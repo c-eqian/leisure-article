@@ -119,7 +119,7 @@ class Http {
         await useFetch(this.BASEURL + config.url.replace(/^\//, ""), {
           method: config.method || "GET",
           lazy: true,
-          // key: this.generateKey(),
+          key: this.generateKey(),
           timeout: 10000,
           server: !!config.server,
           query:
@@ -167,6 +167,7 @@ class Http {
             } else {
               resolve((response._data as any).data || {});
             }
+            return response;
           },
 
           // 响应错误处理

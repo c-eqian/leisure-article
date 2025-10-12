@@ -25,7 +25,7 @@ export const getNote = (uid: string) => {
   return http.request<INoteItem>({
     url: `/note/detail`,
     method: "GET",
-    server: true,
+    server: false,
     params: {
       note_id: uid,
     },

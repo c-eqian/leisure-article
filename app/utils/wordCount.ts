@@ -110,7 +110,6 @@ function formatReadingTime(minutes: number): string {
  * @returns 统计结果
  */
 export function countWords(markdown: string): WordCountResult {
-    console.log(markdown)
   if (!markdown || markdown.trim() === "") {
     return {
       totalChars: 0,

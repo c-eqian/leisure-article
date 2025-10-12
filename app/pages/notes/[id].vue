@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { isEmpty, useFormatDate } from "@eqian/utils-vue";
-import { getNote } from "~~/api/notes";
+import { useAsyncRequest } from "~~/api/server";
 import { computed } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
 import { countWords } from "~/utils/wordCount";
+import type { INoteItem } from "~~/api/notes/type";
+import type { IWebsite } from "~~/api/system/type";
 
 const route = useRoute();
 const { id } = route.params;
-const noteDetail = await getNote(id as string);
+const { data: noteDetail = {} as INoteItem } =
+  await useAsyncRequest<IWebsite.Data>(`note/detail/${id}`, `note/detail`, {
+    params: {
+      note_id: id,
+    },
+  });
 
 /**
  * 笔记详情页面组件

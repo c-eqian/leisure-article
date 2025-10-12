@@ -50,7 +50,7 @@ const getAuthorInitial = (name: string) => {
             :src="article.user_info?.avatar || defaultAvatar"
             :alt="article.user_info?.username"
             @error="onAuthorAvatarError"
-          >
+          />
           <span v-else>{{
             getAuthorInitial(article.user_info?.username || "")
           }}</span>
@@ -64,9 +64,11 @@ const getAuthorInitial = (name: string) => {
       </div>
     </div>
     <h1 class="post-title">
-      <nuxt-link :to="`/post/${article.uid}`" class="title-text">{{
-        article.title
-      }}</nuxt-link>
+      <nuxt-link
+        :to="`/post/${article.uid}`"
+        class="title-text"
+        >{{ article.title }}</nuxt-link
+      >
     </h1>
     <p class="post-description">{{ article.describe }}</p>
     <div v-if="article.cover" class="post-cover">
@@ -75,7 +77,7 @@ const getAuthorInitial = (name: string) => {
         :alt="article.title"
         class="cover-image"
         @error="onCoverError"
-      >
+      />
     </div>
     <div class="post-footer">
       <div class="post-meta">

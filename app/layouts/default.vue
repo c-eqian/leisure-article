@@ -26,7 +26,7 @@ onMounted(() => {
     <div class="content-wrapper">
       <LeftSidebar />
       <MainContent>
-        <NuxtPage :keepalive="{ include: ['index'] }" />
+        <NuxtPage />
       </MainContent>
       <RightSidebar />
     </div>

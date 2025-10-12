@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { useFormatDate } from "@eqian/utils-vue";
-import { getArticleItemDetailById } from "~~/api/article";
+import { useAsyncRequest } from "~~/api/server";
 import { computed } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
 import { countWords } from "~/utils/wordCount";
+import type { IArticleItem } from "~~/api/article/type";
+import type { IWebsite } from "~~/api/system/type";
 const { id } = useRoute().params;
-const articleDetail = await getArticleItemDetailById(id as string);
+const { data: articleDetail = {} as IArticleItem } =
+  await useAsyncRequest<IWebsite.Data>(
+    `article/detail/${id}`,
+    `article/detail`,
+    {
+      params: {
+        article_id: id,
+      },
+    },
+  );
 /**
  * 文章详情页面组件
  * 显示文章的详细内容，包括元数据和标签
