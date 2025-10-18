@@ -12,8 +12,8 @@ const emit = defineEmits<{
 }>();
 const isVisible = ref(false);
 const formValues = reactive({
-  account: "admin",
-  password: "cyq990127",
+  account: import.meta.dev ? "admin" : "",
+  password: import.meta.dev ? "cyq990127" : "",
 });
 const isLoading = ref(false);
 const errorMessage = ref("");
@@ -43,7 +43,7 @@ const submitLogin = async () => {
       isLoading.value = false;
     } catch (e: any) {
       isLoading.value = false;
-      console.log(e)
+      console.log(e);
       errorMessage.value = e.msg || "登录失败";
     }
   }
@@ -80,7 +80,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          />
+          >
         </div>
         <div class="form-group">
           <label for="password">密码</label>
@@ -92,7 +92,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          />
+          >
         </div>
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}

@@ -42,16 +42,27 @@ getWebsite();
         <h3>站点统计</h3>
         <div class="stats-grid">
           <div class="stat-item">
-            <span class="number">{{ websiteDataRef.article_count || 0 }}</span><span class="label">文章</span>
+            <span class="number">{{
+              (websiteDataRef.article_count || 0) +
+              (websiteDataRef.note_count || 0)
+            }}</span
+            ><span class="label">文章</span>
           </div>
           <div class="stat-item">
-            <span class="number">{{ websiteDataRef.website_request_count || 0 }}</span><span class="label">访问</span>
+            <span class="number">{{
+              websiteDataRef.website_request_count || 0
+            }}</span
+            ><span class="label">访问</span>
           </div>
           <div class="stat-item">
-            <span class="number">{{ websiteDataRef.category_count || 0 }}</span><span class="label">分类</span>
+            <span class="number">{{ websiteDataRef.category_count || 0 }}</span
+            ><span class="label">分类</span>
           </div>
           <div class="stat-item">
-            <span class="number">{{ websiteDataRef.website_run_days || 0 }}</span><span class="label">运行（天）</span>
+            <span class="number">{{
+              websiteDataRef.website_run_days || 0
+            }}</span
+            ><span class="label">运行（天）</span>
           </div>
         </div>
       </div>

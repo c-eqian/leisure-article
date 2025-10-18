@@ -47,7 +47,7 @@ const loadMore = () => {
     <div class="image-grid">
       <div v-for="item in imageData.list" :key="item.id" class="image-card">
         <div class="image-container">
-            <nuxt-link :to="item.url || '#'" target="_blank">
+          <nuxt-link :to="item.url || '#'" target="_blank">
             <img
               :src="item.url || ''"
               :alt="item.title || ''"
@@ -55,6 +55,12 @@ const loadMore = () => {
               loading="lazy"
             >
           </nuxt-link>
+          <!-- 版权信息覆盖层 -->
+          <div v-if="item.copyright" class="copyright-overlay">
+            <div class="copyright-content">
+              <div class="copyright-text">{{ item.copyright }}</div>
+            </div>
+          </div>
         </div>
         <div class="card-content">
           <h3 class="image-title">{{ item.title }}</h3>
@@ -135,6 +141,52 @@ const loadMore = () => {
   border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
 }
 
+/* 版权信息覆盖层 */
+.copyright-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+}
+
+.image-card:hover .copyright-overlay {
+  opacity: 1;
+}
+
+.copyright-content {
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.copyright-text {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-card:hover .copyright-text {
+  transform: translateY(0);
+}
+
 .image {
   width: 100%;
   height: 100%;
@@ -184,6 +236,12 @@ const loadMore = () => {
   .image-title {
     font-size: 1.1rem;
   }
+  .copyright-content {
+    padding: 15px;
+  }
+  .copyright-text {
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -201,6 +259,12 @@ const loadMore = () => {
   }
   .card-content {
     padding: 12px;
+  }
+  .copyright-content {
+    padding: 12px;
+  }
+  .copyright-text {
+    font-size: 0.8rem;
   }
 }
 
