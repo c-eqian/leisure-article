@@ -223,7 +223,7 @@ onUnmounted(() => {
 <style scoped lang="scss">
 .back-to-top {
   position: fixed;
-  z-index: 1000;
+  z-index: 99999;
   cursor: pointer;
   user-select: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

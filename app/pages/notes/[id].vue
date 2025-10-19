@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { isEmpty, useFormatDate } from "@eqian/utils-vue";
 import { useAsyncRequest } from "~~/api/server";
-import { computed } from "vue";
+import { computed, unref } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
+import { useHead } from "#imports";
 import { countWords } from "~/utils/wordCount";
 import type { INoteItem } from "~~/api/notes/type";
 import type { IWebsite } from "~~/api/system/type";
@@ -47,6 +48,37 @@ const calculateReadingTime = (wordCount?: number) => {
   // 假设每分钟阅读200字
   return Math.ceil(wordCount / 200);
 };
+/**
+ * SEO
+ */
+const metaDescription = computed(
+  () =>
+    `${unref(noteDetail)
+      ?.content?.substring(0, 500)
+      .replace(/\r?\n/g, "")
+      .replace(/#/g, "")}...`,
+);
+const metaKeywords = computed(() =>
+  unref(noteDetail)?.title?.length > 0 ? unref(noteDetail).title : "",
+);
+const useHeadOption = computed(() => {
+  return {
+    title: `${unref(noteDetail)?.title || "笔记详情"}`,
+    meta: [
+      {
+        hid: "description",
+        name: "description",
+        content: `${unref(noteDetail)?.title || ""} - ${metaDescription.value}`,
+      },
+      {
+        hid: "keywords",
+        name: "keywords",
+        content: metaKeywords.value,
+      },
+    ],
+  };
+});
+useHead(useHeadOption);
 </script>
 
 <template>

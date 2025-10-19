@@ -24,7 +24,7 @@ const handleClick = async (item: any) => {
   }
 
   // 在新窗口打开链接
-  window.open(item.url, "_blank");
+  window.open(item.url.replace("https://www.eqian.site/", "/"), "_blank");
 };
 
 // 格式化点击次数
@@ -95,7 +95,7 @@ fetchFavorites();
                 :alt="item.title"
                 class="icon-image"
                 @error="handleImageError"
-              >
+              />
               <span v-else class="icon-fallback">{{
                 item.title.charAt(0)
               }}</span>

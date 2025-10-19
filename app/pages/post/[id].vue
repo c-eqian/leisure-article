@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { isEmpty, useFormatDate } from "@eqian/utils-vue";
 import { useAsyncRequest } from "~~/api/server";
-import { computed } from "vue";
+import { computed, unref } from "vue";
 import MarkdownRender from "@/components/MarkdownRender.vue";
 import { useWebSize } from "@/composables/useWebSize";
+import { useHead } from "#imports";
 import { countWords } from "~/utils/wordCount";
 import type { IArticleItem } from "~~/api/article/type";
 import type { IWebsite } from "~~/api/system/type";
@@ -42,6 +43,38 @@ const formatTags = (tags: any[]) => {
   }
   return tags.map((item) => item.tag_name || item);
 };
+/**
+ * SEO
+ */
+const metaDescription = computed(
+  () =>
+    `${articleDetail?.content
+      ?.substring(0, 500)
+      .replace(/\r?\n/g, "")
+      .replace(/#/g, "")}...`,
+);
+const metaKeywords = computed(() =>
+  unref(articleDetail)?.title?.length > 0 ? unref(articleDetail)?.title : "",
+);
+const useHeadOption = computed(() => {
+  console.log(articleDetail);
+  return {
+    title: `${unref(articleDetail)?.title || "文章详情"}`,
+    meta: [
+      {
+        hid: "description",
+        name: "description",
+        content: `${unref(articleDetail)?.title || ""} - ${metaDescription.value}`,
+      },
+      {
+        hid: "keywords",
+        name: "keywords",
+        content: metaKeywords.value,
+      },
+    ],
+  };
+});
+useHead(useHeadOption);
 </script>
 
 <template>
