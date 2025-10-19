@@ -28,8 +28,8 @@ const conversionTypes = [
 // 当前选择的转换类型
 const selectedType = ref("camelCase");
 
-// 转换函数
-const convertText = (text: string, targetType: string): string => {
+// 单个文本转换函数
+const convertSingleText = (text: string, targetType: string): string => {
   if (!text.trim()) return "";
 
   // 先标准化输入文本为单词数组
@@ -63,6 +63,22 @@ const convertText = (text: string, targetType: string): string => {
 
     default:
       return text;
+  }
+};
+
+// 批量转换函数
+const convertText = (text: string, targetType: string): string => {
+  if (!text.trim()) return "";
+
+  // 按换行符分割文本，过滤空行
+  const lines = text.split('\n').filter(line => line.trim());
+  
+  if (lines.length === 1) {
+    // 单行文本，直接转换
+    return convertSingleText(text, targetType);
+  } else {
+    // 多行文本，批量转换
+    return lines.map(line => convertSingleText(line.trim(), targetType)).join('\n');
   }
 };
 
@@ -130,12 +146,24 @@ const examples = [
   "user.name",
 ];
 
+// 批量示例文本
+const batchExamples = [
+  "userName\nuserAge\nuserEmail",
+  "first_name\nlast_name\nemail_address",
+  "user-name\nuser-age\nuser-email",
+  "USER_NAME\nUSER_AGE\nUSER_EMAIL",
+];
+
 const loadExample = (example: string) => {
   inputText.value = example;
 };
 
+const loadBatchExample = (example: string) => {
+  inputText.value = example;
+};
+
 useHead({
-  title: `变量命名转换工具-支持多种命名格式的互相转换`,
+  title: `变量命名转换工具-支持单行和批量转换`,
 });
 </script>
 
@@ -157,13 +185,13 @@ useHead({
 
         <textarea
           v-model="inputText"
-          placeholder="请输入要转换的变量名..."
+          placeholder="请输入要转换的变量名...&#10;支持批量转换，每行一个变量名"
           class="input-textarea"
         />
 
         <!-- 示例文本 -->
         <div class="examples">
-          <h4>示例文本：</h4>
+          <h4>单行示例：</h4>
           <div class="example-tags">
             <button
               v-for="example in examples"
@@ -172,6 +200,18 @@ useHead({
               @click="loadExample(example)"
             >
               {{ example }}
+            </button>
+          </div>
+          
+          <h4>批量示例（换行分隔）：</h4>
+          <div class="example-tags">
+            <button
+              v-for="example in batchExamples"
+              :key="example"
+              class="example-tag batch-tag"
+              @click="loadBatchExample(example)"
+            >
+              {{ example.split('\n').join(' | ') }}
             </button>
           </div>
         </div>
@@ -200,6 +240,10 @@ useHead({
           <div class="info-item">
             <span class="info-label">字符数：</span>
             <span class="info-value">{{ outputText.length }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">行数：</span>
+            <span class="info-value">{{ outputText.split('\n').length }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">单词数：</span>
@@ -461,6 +505,17 @@ useHead({
   }
 }
 
+.batch-tag {
+  background: var(--primary-color);
+  color: var(--text-white);
+  border-color: var(--primary-color);
+
+  &:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+}
+
 .conversion-section {
   background: var(--bg-secondary);
   border-radius: var(--border-radius-large);
@@ -544,6 +599,8 @@ useHead({
   font-size: 1rem;
   color: var(--text-primary);
   word-break: break-all;
+  white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .output-placeholder {
