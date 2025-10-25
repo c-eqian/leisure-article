@@ -14,7 +14,6 @@
 export default defineNuxtConfig({
   // Nuxt 兼容性日期，确保使用稳定的 API
   compatibilityDate: "2025-07-15",
-
   // 开发工具配置
   devtools: {
     enabled: true,
@@ -31,6 +30,7 @@ export default defineNuxtConfig({
   },
   // 项目模块配置
   modules: [
+    "nuxt-monaco-editor",
     "@nuxt/eslint", // ESLint 代码检查
     "@nuxt/icon", // 图标组件
     "@nuxt/scripts", // 脚本管理

@@ -1,9 +1,10 @@
+
 <script setup lang="ts">
 import AboutMe from "@/components/AboutMe.vue";
-import BackToTop from "@/components/BackToTop.vue";
 import { useTheme } from "@/composables/useTheme";
 import { useWebSize } from "@/composables/useWebSize";
-
+import { useRoute } from "vue-router";
+import { computed } from "vue";
 /**
  * 主内容区域组件
  * 提供页面内容容器和加载状态管理
@@ -12,6 +13,8 @@ import { useWebSize } from "@/composables/useWebSize";
 // 设备类型和主题状态
 const { isMobile } = useWebSize();
 const { webStore } = useTheme();
+const route = useRoute();
+const isHome = computed(() => route.path === "/");
 </script>
 
 <template>
@@ -26,7 +29,7 @@ const { webStore } = useTheme();
     <div class="content">
       <slot />
     </div>
-    <div v-if="isMobile" class="mobile-about-section">
+    <div v-if="isMobile && isHome" class="mobile-about-section">
       <AboutMe class="mobile-about" />
     </div>
   </div>
@@ -78,15 +81,6 @@ const { webStore } = useTheme();
     height: 100vh;
     min-height: 100vh;
     overflow-y: auto;
-  }
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    height: 100vh;
-    min-height: 100vh;
-    overflow-y: auto;
-    background: var(--bg-content);
   }
   .mobile-menu-toggle {
     display: block !important;

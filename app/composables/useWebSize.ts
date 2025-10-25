@@ -15,8 +15,8 @@ export const useWebSize = () => {
   const onResize = () => {
     if (!import.meta.client) return;
 
-    // 768px 作为移动端和桌面端的分界点
-    webStore.setIsMobile(window.innerWidth < 768);
+    // 1200px 作为移动端和桌面端的分界点
+    webStore.setIsMobile(window.innerWidth < 1200);
   };
 
   // 组件挂载时初始化尺寸检测并添加监听器

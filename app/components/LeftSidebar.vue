@@ -456,7 +456,7 @@ getWebsite();
   opacity: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .sidebar-slide-enter-active,
   .sidebar-slide-leave-active {
     transition: transform var(--transition-normal);

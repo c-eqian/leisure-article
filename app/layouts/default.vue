@@ -95,7 +95,14 @@ onMounted(() => {
         flex: 0 0 auto;
         order: 1;
         height: auto;
-        position: relative;
+        position: fixed !important;
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform var(--transition-normal);
+        height: 100vh;
+        &.mobile-visible {
+          transform: translateX(0);
+        }
       }
 
       .main-content {
@@ -110,21 +117,6 @@ onMounted(() => {
         order: 3;
         height: auto;
         position: relative;
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    .content-wrapper {
-      .left-sidebar {
-        position: fixed !important;
-        z-index: 999;
-        transform: translateX(-100%);
-        transition: transform var(--transition-normal);
-        height: 100vh;
-        &.mobile-visible {
-          transform: translateX(0);
-        }
       }
     }
   }
