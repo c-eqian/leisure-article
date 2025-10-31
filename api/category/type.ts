@@ -2,7 +2,7 @@
  * Request
  */
 
-export interface List {
+export type List = {
   category_code?: string;
   category_id?: string;
   category_name?: string;
@@ -13,7 +13,7 @@ export interface List {
   modifier?: null;
   status?: number;
   update_date?: string;
-}
+};
 
 export interface ICategoryData {
   list: List[];
@@ -26,5 +26,5 @@ export interface ICategoryTags {
   tags: {
     id: number;
     tag_name: string;
-  }[]
+  }[];
 }

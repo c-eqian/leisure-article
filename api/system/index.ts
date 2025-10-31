@@ -1,58 +1,64 @@
+import { http } from "../http";
 /**
  * 获取验证码
  */
 /**
  * 获取验证码
  */
-import type { Github, ISystemCaptcha, ISystemSentence, ISystemVisitor, IWebsite } from './type'
-import { http } from '~/api/http'
+import type {
+  Github,
+  ISystemCaptcha,
+  ISystemSentence,
+  ISystemVisitor,
+  IWebsite,
+} from "./type";
 
 export const getSystemCaptcha = () => {
   return http.request<ISystemCaptcha.Data>({
-    url: 'system/captcha',
-    method: 'GET',
-    isLoading: false
-  })
-}
+    url: "system/captcha",
+    method: "GET",
+    isLoading: false,
+  });
+};
 
 /**
  * 站点配置
  */
 export const getSystemWebsite = () => {
   return http.request<IWebsite.Data>({
-    url: 'system/website',
-    method: 'GET',
+    url: "system/website",
+    method: "GET",
     server: false,
     params: {
-      _t: new Date().getTime()
+      _t: new Date().getTime(),
     },
-    isLoading: false
-  })
-}
+    isLoading: false,
+  });
+};
 /**
  * 每日句子
  */
 export const getSystemSentence = () => {
   return http.request<ISystemSentence.Datum[]>({
-    url: 'system/sentence',
-    method: 'GET'
-  })
-}
+    url: "system/sentence",
+    method: "GET",
+  });
+};
 /**
  * 访客所在地天气
  */
 export const getSystemVisitor = () => {
-  return http.request<ISystemVisitor.IRes['data']>({
-    url: '/system/access',
-    method: 'GET'
-  })
-}
+  return http.request<ISystemVisitor.IRes["data"]>({
+    url: "/system/access",
+    method: "GET",
+  });
+};
 /**
  * 获取github项目
  */
 export const getSystemGithub = () => {
   return http.request<Github[]>({
-    url: '/system/github',
-    method: 'GET'
-  })
-}
+    url: "/system/github",
+    method: "GET",
+  });
+};

@@ -1,5 +1,5 @@
-import type { IMessage, IMessageList } from './type'
-import { http } from '~/api/http'
+import { http } from "../http";
+import type { IMessage, IMessageList } from "./type";
 
 /**
  * 留言
@@ -7,14 +7,14 @@ import { http } from '~/api/http'
  */
 export const postMessage = (data: IMessage.IMessageReq) => {
   return http.request({
-    url: 'message/add',
+    url: "message/add",
     params: data,
-    method: 'POST',
+    method: "POST",
     cache: false,
     isLoading: false,
-    isShowSuccessText: true
-  })
-}
+    isShowSuccessText: true,
+  });
+};
 
 /**
  * 留言列表
@@ -22,27 +22,24 @@ export const postMessage = (data: IMessage.IMessageReq) => {
  */
 export const getMessageList = (params?: IMessageList.IReq) => {
   return http.request<IMessageList.IResponse>({
-    url: 'message/list',
+    url: "message/list",
     params,
-    method: 'GET',
+    method: "GET",
     cache: false,
-    isLoading: false
-  })
-}
+    isLoading: false,
+  });
+};
 /**
  * 删除评论
  * @param params
  */
-export const deleteMessageItem = (params: {
-    id?: number;
-    sub_id?: number;
-}) => {
+export const deleteMessageItem = (params: { id?: number; sub_id?: number }) => {
   return http.request({
-    url: 'message/delete',
+    url: "message/delete",
     params,
     cache: false,
-    method: 'DELETE',
+    method: "DELETE",
     isLoading: false,
-    isShowSuccessText: true
-  })
-}
+    isShowSuccessText: true,
+  });
+};

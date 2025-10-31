@@ -1,8 +1,10 @@
-# 基于nuxt开发博客
+# Nuxt Minimal Starter
+
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
 
-Make sure to install the dependencies:
+Make sure to install dependencies:
 
 ```bash
 # npm
@@ -27,7 +29,7 @@ Start the development server on `http://localhost:3000`:
 npm run dev
 
 # pnpm
-pnpm run dev
+pnpm dev
 
 # yarn
 yarn dev
@@ -45,7 +47,7 @@ Build the application for production:
 npm run build
 
 # pnpm
-pnpm run build
+pnpm build
 
 # yarn
 yarn build
@@ -54,16 +56,20 @@ yarn build
 bun run build
 ```
 
-# 效果
+Locally preview production build:
 
-![image-20240731083553852](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083553852.png)
+```bash
+# npm
+npm run preview
 
-![image-20240731083646340](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083646340.png)
+# pnpm
+pnpm preview
 
-![image-20240731083732365](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083732365.png)
+# yarn
+yarn preview
 
-![image-20240731083707900](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083707900.png)
+# bun
+bun run preview
+```
 
-![image-20240731083754183](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083754183.png)
-
-![image-20240731083811406](https://c-typora.oss-cn-guangzhou.aliyuncs.com/c-typora/image-20240731083811406.png)
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

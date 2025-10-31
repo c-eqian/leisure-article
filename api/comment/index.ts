@@ -1,5 +1,5 @@
-import type { IArticleComment, ICommentList } from './type'
-import { http } from '~/api/http'
+import { http } from "../http";
+import type { IArticleComment, ICommentList } from "./type";
 
 /**
  * 评论
@@ -7,14 +7,14 @@ import { http } from '~/api/http'
  */
 export const postArticleComment = (data: IArticleComment.ICommentReq) => {
   return http.request({
-    url: 'article/comment',
+    url: "article/comment",
     params: data,
-    method: 'POST',
+    method: "POST",
     cache: false,
     isLoading: false,
-    isShowSuccessText: true
-  })
-}
+    isShowSuccessText: true,
+  });
+};
 
 /**
  * 评论列表
@@ -22,27 +22,27 @@ export const postArticleComment = (data: IArticleComment.ICommentReq) => {
  */
 export const getCommentList = (params?: ICommentList.IReq) => {
   return http.request<ICommentList.IResponse>({
-    url: 'article/comment/list',
+    url: "article/comment/list",
     params,
-    method: 'GET',
+    method: "GET",
     cache: false,
-    isLoading: false
-  })
-}
+    isLoading: false,
+  });
+};
 /**
  * 删除评论
  * @param params
  */
 export const deleteCommentItem = (params: {
-    comment_id?: number;
-    sub_comment_id?: number;
+  comment_id?: number;
+  sub_comment_id?: number;
 }) => {
   return http.request({
-    url: 'article/comment/delete',
+    url: "article/comment/delete",
     params,
     cache: false,
-    method: 'DELETE',
+    method: "DELETE",
     isLoading: false,
-    isShowSuccessText: true
-  })
-}
+    isShowSuccessText: true,
+  });
+};

@@ -32,11 +32,11 @@ export interface IWallpaperData {
   /**
    * 创建时间，创建时间
    */
-  create_date?: Date;
+  create_date?: Date | string;
   /**
    * 必应请求时间，必应请求时间
    */
-  date_time?: Date | null;
+  date_time?: Date | string | null;
   /**
    * 描述，描述
    */
