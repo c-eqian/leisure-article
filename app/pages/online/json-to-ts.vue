@@ -58,23 +58,24 @@ const init = () => {
   if (leftEditor) {
     // 手动触发编辑器重新布局
     setTimeout(() => {
-      // leftEditor.layout();
+      leftEditor.layout();
     }, 100);
 
     leftEditor.onDidChangeModelContent(() => {
       const text = editorLeftRef.value?.$editor?.getValue();
-      JsonToTs.DEBUG = true;
+      JsonToTs.DEBUG = import.meta.env.DEV;
       const result = JsonToTs.generateFromString(text || "", "ApiResponse");
       console.log(text);
       editorValue.targetValue = result.allCode;
     });
+
   }
 
   const rightEditor = unref(editorRightRef.value?.$editor);
   if (rightEditor) {
     // 手动触发编辑器重新布局
     setTimeout(() => {
-      // rightEditor.layout();
+      rightEditor.layout();
     }, 100);
   }
 };
@@ -111,6 +112,7 @@ onUnmounted(() => {
   document.removeEventListener("mousemove", handleMouseMove);
   document.removeEventListener("mouseup", handleMouseUp);
 });
+
 </script>
 
 <template>
@@ -118,14 +120,12 @@ onUnmounted(() => {
     <!-- 左侧面板 -->
     <div class="left-panel" :style="{ width: `${leftPanelWidth}%` }">
       <div class="panel-content">
-        <client-only>
-          <MonacoEditor
-            ref="editorLeftRef"
-            :options="mancoOptions"
-            lang="json"
-            class="monaco-editor-box"
-          />
-        </client-only>
+        <MonacoEditor
+          ref="editorLeftRef"
+          :options="mancoOptions"
+          lang="json"
+          class="monaco-editor-box"
+        />
       </div>
     </div>
 
@@ -135,21 +135,20 @@ onUnmounted(() => {
     <!-- 右侧面板 -->
     <div class="right-panel" :style="{ width: `${100 - leftPanelWidth}%` }">
       <div class="panel-content">
-        <client-only>
-          <MonacoEditor
-            ref="editorRightRef"
-            v-model="editorValue.targetValue"
-            :options="mancoOptions"
-            lang="typescript"
-            class="monaco-editor-box"
-          />
-        </client-only>
+        <MonacoEditor
+          ref="editorRightRef"
+          v-model="editorValue.targetValue"
+          :options="mancoOptions"
+          lang="typescript"
+          class="monaco-editor-box"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+
 .split-container {
   display: flex;
   height: 100vh;
