@@ -101,6 +101,12 @@ export const useStore = defineStore("WEBSITE-STORE", {
             token.value = data.token;
             await this.getUserInfo(data.token);
             resolve(data);
+            if (import.meta.browser) {
+              window.location.reload();
+              // 重新加载当前页面
+              // eslint-disable-next-line no-self-assign
+              window.location.href = window.location.href;
+            }
           })
           .catch((error) => {
             reject(error);
@@ -136,6 +142,12 @@ export const useStore = defineStore("WEBSITE-STORE", {
             this.userInfo = {} as unknown as IUserInfo;
             this.isLogin = false;
             // this.$reset();
+            if (import.meta.browser) {
+              window.location.reload();
+              // 重新加载当前页面
+              // eslint-disable-next-line no-self-assign
+              window.location.href = window.location.href;
+            }
             resolve("退出成功");
           })
           .catch((error) => {

@@ -61,20 +61,16 @@ const onAvatarError = (e: Event) => {
 
       <!-- 用户登录状态 -->
       <div class="banner-overlay">
-        <div
-          v-if="isLogin"
-          class="banner-avatar logged-in"
-          @click="handleLoginClick"
-        >
+        <div v-if="isLogin" class="banner-avatar logged-in">
           <div class="avatar-circle">
             <img
               :src="userInfo?.avatar || defaultAvatar"
               :alt="userInfo?.username || 'avatar'"
               @error="onAvatarError"
-            >
+            />
           </div>
           <span class="avatar-text">{{ userInfo?.username || "用户" }}</span>
-          <div class="logout-icon">×</div>
+          <div class="logout-icon" @click="handleLoginClick">×</div>
         </div>
         <div v-else class="banner-avatar login-btn" @click="handleLoginClick">
           <div class="login-icon">👤</div>

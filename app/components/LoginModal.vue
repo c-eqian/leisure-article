@@ -6,6 +6,10 @@ const props = defineProps({
     type: Function,
     default: () => null,
   },
+  title: {
+    type: String,
+    default: "欢迎回来，请输入您的登录信息",
+  },
 });
 const emit = defineEmits<{
   (e: "close"): void;
@@ -67,7 +71,7 @@ defineExpose({
     <div class="login-form">
       <div class="form-header">
         <h2>登录</h2>
-        <p>欢迎回来，请输入您的登录信息</p>
+        <p>{{ props.title }}</p>
       </div>
       <form class="form-content" @submit.prevent="submitLogin">
         <div class="form-group">
@@ -80,7 +84,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          >
+          />
         </div>
         <div class="form-group">
           <label for="password">密码</label>
@@ -92,7 +96,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          >
+          />
         </div>
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}

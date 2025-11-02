@@ -1,5 +1,6 @@
 import { useAsyncData, useNuxtApp } from "nuxt/app";
 import { useCookie } from "#app";
+import { useLogin } from "~/composables/useLogin";
 
 export const getServer = () => {
   const { $config } = useNuxtApp();
@@ -59,13 +60,20 @@ export const useAsyncFetch = async <T = any>(
       }
     },
     // 响应拦截器
-    onResponse({ request: _, response }) {
+    async onResponse({ request: _, response }) {
       const { code } = response._data as any;
 
       if (code !== 200) {
         // 处理认证失败
         if (code === 401 || code === 423) {
-          // useLogin()
+          const { createLoginModal, webStore } = useLogin();
+          const goToLogin = async (form: any, _close: () => void) => {
+            await webStore.login(form);
+          };
+          await createLoginModal({
+            loginFn: goToLogin,
+            title: "欢迎使用：需要登录才能留言哦~",
+          });
         }
         return Promise.reject(response._data);
       } else {
