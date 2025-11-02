@@ -69,6 +69,8 @@ export namespace IMessageList {
     sub_comment: SubMessage;
     update_date: string;
     user_info: IUserInfo;
+    province?: string;
+    is_admin?: number;
   };
 
   /**

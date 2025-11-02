@@ -3,6 +3,7 @@ import { useFormatDate } from "@eqian/utils-vue";
 import { computed } from "vue";
 import defaultAvatar from "@/assets/avatar/default.png";
 import ReplyBox from "@/components/ReplyBox.vue";
+import { useEmojiTransform } from "~/composables/useEmoji";
 import type { MessageItem, SubMessage } from "@/composables/useComment";
 
 interface Props {
@@ -71,14 +72,21 @@ const handleAvatarError = (event: Event) => {
       >
       <div class="content-wrap">
         <div class="meta">
-          <span class="name">{{ item.user_info?.username }}</span>
-          <span v-if="item?.province" class="location">
-            来自·{{ item.province?.replace("省", "") }}
+          <span
+            class="name"
+            :class="{
+              'name-author': item.is_admin === 1,
+            }"
+          >
+            {{ item.user_info?.username }}
           </span>
-          <time class="date">{{
+          <span v-if="item?.province" class="location">
+            来自·{{ item.province.replace("省", "") }}
+          </span>
+          <span class="date">{{
             useFormatDate(item.create_date, "yyyy-MM-dd HH:mm")
-          }}</time>
-          <button class="reply-btn" title="回复" @click="handleReply()">
+          }}</span>
+          <button class="reply-btn" title="回复" @click="handleReply(item)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -98,7 +106,7 @@ const handleAvatarError = (event: Event) => {
             </svg>
           </button>
         </div>
-        <div class="text">{{ item.content }}</div>
+        <div class="text" v-html="useEmojiTransform(item.content)" />
       </div>
     </div>
 
@@ -127,7 +135,7 @@ const handleAvatarError = (event: Event) => {
               <span
                 class="name"
                 :class="{
-                  'name-author': sub.user_info?.id === item.user_info.id,
+                  'name-author': sub.is_admin === 1,
                 }"
               >
                 {{ sub.user_info?.username }}
@@ -164,8 +172,7 @@ const handleAvatarError = (event: Event) => {
                   <span
                     class="at"
                     :class="{
-                      'at-author':
-                        sub.reply_info.user_info.id === item.user_info.id,
+                      'at-author': sub.is_admin === 1,
                     }"
                   >
                     @{{ sub.reply_info.user_info.username }}
@@ -177,7 +184,7 @@ const handleAvatarError = (event: Event) => {
                   </template>
                 </div>
               </template>
-              <div class="content">{{ sub.content }}</div>
+              <div class="content" v-html="useEmojiTransform(sub.content)" />
             </div>
           </div>
         </div>

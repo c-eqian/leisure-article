@@ -13,7 +13,7 @@ export type SubMessage = {
   content: string;
   create_date: string;
   province?: string;
-  ip?: string;
+  is_admin?: number;
   user_info: User;
   // 二级里被 @ 的对象
   reply_info?: { user_info: User; content?: string } | null;
@@ -24,7 +24,7 @@ export type MessageItem = {
   create_date: string;
   user_info: User;
   province?: string;
-  ip?: string;
+  is_admin?: number;
   sub_comment: { list: SubMessage[]; total: number };
 };
 
@@ -59,7 +59,7 @@ export const useComment = () => {
 
   // 分页状态
   const pageNum = ref(1);
-  const pageSize = ref(5);
+  const pageSize = ref(50);
   const isHasMore = ref(false);
 
   // 新评论内容
@@ -108,6 +108,7 @@ export const useComment = () => {
           id: sub.id,
           content: sub.content,
           province: sub.province,
+          is_admin: sub.is_admin,
           create_date: sub.create_date,
           user_info: {
             id: sub.user_info.id,
@@ -124,6 +125,7 @@ export const useComment = () => {
       content: item.content,
       create_date: item.create_date,
       province: item.province,
+      is_admin: item.is_admin,
       user_info: {
         id: item.user_info.id,
         username: item.user_info.username,
