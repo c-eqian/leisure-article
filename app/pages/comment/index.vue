@@ -2,7 +2,8 @@
 import { onMounted } from "vue";
 import CommentEditor from "@/components/CommentEditor.vue";
 import CommentItem from "@/components/CommentItem.vue";
-import ReplyBox from "@/components/ReplyBox.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import LoadMoreButton from "@/components/LoadMoreButton.vue";
 import { useComment } from "@/composables/useComment";
 import { useLogin } from "@/composables/useLogin";
 
@@ -15,16 +16,19 @@ const {
   replyContent,
   replying,
   hasData,
-  seedMock,
+  loading,
+  isFirstLoaded,
+  isHasMore,
+  loadMessages,
+  loadMore,
   submitNew,
   openReply,
   cancelReply,
   submitReply,
 } = useComment();
 
-
 onMounted(() => {
-  seedMock();
+  loadMessages();
 });
 </script>
 
@@ -40,7 +44,16 @@ onMounted(() => {
     />
 
     <div class="list-card">
-      <div v-if="!hasData" class="empty">暂无留言，来做第一个吧～</div>
+      <!-- 首次加载 -->
+      <div v-if="isFirstLoaded && loading" class="loading-container">
+        <LoadingSpinner :size="32" />
+        <span class="loading-text">加载中...</span>
+      </div>
+      <!-- 空状态 -->
+      <div v-else-if="!loading && !hasData" class="empty">
+        暂无留言，来做第一个吧～
+      </div>
+      <!-- 列表内容 -->
       <div v-else>
         <div v-for="item in messages" :key="item.id" class="comment-wrapper">
           <CommentItem
@@ -50,12 +63,18 @@ onMounted(() => {
             :replying="replying"
             :placeholder="replyState.placeholder || '回复'"
             @reply="openReply"
-            @update:reply-content="(val: string) => (replyContent = val)"
+            @update:reply-content="(val) => (replyContent = val)"
             @submit-reply="submitReply"
             @cancel-reply="cancelReply"
           />
         </div>
       </div>
+      <!-- 加载更多按钮 -->
+      <LoadMoreButton
+        v-if="hasData && !loading && isHasMore"
+        :loading="loading"
+        @click="loadMore"
+      />
     </div>
   </div>
 </template>
@@ -91,6 +110,22 @@ onMounted(() => {
 .empty {
   color: var(--text-muted);
   text-align: center;
+  padding: 40px 20px;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+}
+.loading-container .loading-spinner {
+  color: var(--primary-color, #3b82f6);
+}
+.loading-text {
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
 @media (prefers-color-scheme: dark) {

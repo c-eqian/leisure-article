@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useFormatDate } from "@eqian/utils-vue";
 import { computed } from "vue";
+import defaultAvatar from "@/assets/avatar/default.png";
 import ReplyBox from "@/components/ReplyBox.vue";
 import type { MessageItem, SubMessage } from "@/composables/useComment";
 
@@ -48,17 +50,35 @@ const localReplyContent = computed({
   get: () => props.replyContent,
   set: (val) => emit("update:replyContent", val),
 });
+
+// 处理头像加载失败
+const handleAvatarError = (event: Event) => {
+  const img = event.target as HTMLImageElement;
+  if (img.src !== defaultAvatar) {
+    img.src = defaultAvatar;
+  }
+};
 </script>
 
 <template>
   <div class="comment-item">
     <div class="comment-main">
-      <img :src="item.user_info?.avatar" alt="avatar" class="avatar" />
+      <img
+        :src="item.user_info?.avatar || defaultAvatar"
+        alt="avatar"
+        class="avatar"
+        @error="handleAvatarError"
+      >
       <div class="content-wrap">
         <div class="meta">
           <span class="name">{{ item.user_info?.username }}</span>
-          <span class="date">{{ item.create_date }}</span>
-          <button class="reply-btn" @click="handleReply()" title="回复">
+          <span v-if="item?.province" class="location">
+            来自·{{ item.province?.replace("省", "") }}
+          </span>
+          <time class="date">{{
+            useFormatDate(item.create_date, "yyyy-MM-dd HH:mm")
+          }}</time>
+          <button class="reply-btn" title="回复" @click="handleReply()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -70,7 +90,9 @@ const localReplyContent = computed({
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
               <path d="M13 8H3" />
               <path d="M17 12H3" />
             </svg>
@@ -92,27 +114,31 @@ const localReplyContent = computed({
     />
 
     <div v-if="item.sub_comment?.list?.length" class="sub-list">
-      <div
-        v-for="sub in item.sub_comment.list"
-        :key="sub.id"
-        class="sub-item"
-      >
+      <div v-for="sub in item.sub_comment.list" :key="sub.id" class="sub-item">
         <div class="sub-item-content">
           <img
             class="avatar small"
-            :src="sub.user_info?.avatar"
+            :src="sub.user_info?.avatar || defaultAvatar"
             alt="avatar"
-          />
+            @error="handleAvatarError"
+          >
           <div class="content-wrap">
             <div class="meta">
               <span
                 class="name"
-                :class="{ 'name-author': sub.user_info?.id === item.user_info.id }"
+                :class="{
+                  'name-author': sub.user_info?.id === item.user_info.id,
+                }"
               >
                 {{ sub.user_info?.username }}
               </span>
-              <span class="date">{{ sub.create_date }}</span>
-              <button class="reply-btn" @click="handleReply(sub)" title="回复">
+              <span v-if="sub?.province" class="location">
+                来自·{{ sub.province.replace("省", "") }}
+              </span>
+              <span class="date">{{
+                useFormatDate(sub.create_date, "yyyy-MM-dd HH:mm")
+              }}</span>
+              <button class="reply-btn" title="回复" @click="handleReply(sub)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -124,7 +150,9 @@ const localReplyContent = computed({
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  />
                   <path d="M13 8H3" />
                   <path d="M17 12H3" />
                 </svg>
@@ -136,13 +164,16 @@ const localReplyContent = computed({
                   <span
                     class="at"
                     :class="{
-                      'at-author': sub.reply_info.user_info.id === item.user_info.id,
+                      'at-author':
+                        sub.reply_info.user_info.id === item.user_info.id,
                     }"
                   >
                     @{{ sub.reply_info.user_info.username }}
                   </span>
                   <template v-if="sub.reply_info.content">
-                    <span class="quote-content">{{ sub.reply_info.content }}</span>
+                    <span class="quote-content">{{
+                      sub.reply_info.content
+                    }}</span>
                   </template>
                 </div>
               </template>
@@ -188,6 +219,11 @@ const localReplyContent = computed({
 .name {
   color: var(--text-primary);
   font-weight: 700;
+}
+.location {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-left: 4px;
 }
 .name.name-author {
   color: #f59e0b;
@@ -315,4 +351,3 @@ const localReplyContent = computed({
   }
 }
 </style>
-

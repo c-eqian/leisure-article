@@ -26,6 +26,8 @@ export namespace IMessageList {
     avatar: string;
     id: number;
     username: string;
+    province?: string;
+    ip?: string;
   }
 
   /**

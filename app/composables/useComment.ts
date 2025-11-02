@@ -1,12 +1,19 @@
+import { useAsyncFetch } from "~~/api/server";
 import { computed, reactive, ref } from "vue";
-import { useLogin } from "@/composables/useLogin";
+import type { IMessageList } from "~~/api/message/type";
 
 // 类型定义
-export type User = { id: number; username: string; avatar: string };
+export type User = {
+  id: number;
+  username: string;
+  avatar: string;
+};
 export type SubMessage = {
   id: number;
   content: string;
   create_date: string;
+  province?: string;
+  ip?: string;
   user_info: User;
   // 二级里被 @ 的对象
   reply_info?: { user_info: User; content?: string } | null;
@@ -16,6 +23,8 @@ export type MessageItem = {
   content: string;
   create_date: string;
   user_info: User;
+  province?: string;
+  ip?: string;
   sub_comment: { list: SubMessage[]; total: number };
 };
 
@@ -32,18 +41,27 @@ export interface ReplyState {
  * 提供评论相关的状态和方法
  */
 export const useComment = () => {
-  const { userInfo } = useLogin();
+  // const { userInfo } = useLogin();
 
-  // 默认用户信息
-  const mockCurrentUser: User = {
-    id: 1000,
-    username: "游客",
-    avatar: "/avatar/default.png",
-  };
+  // 默认用户信息（保留用于测试）
+  // const mockCurrentUser: User = {
+  //   id: 1000,
+  //   username: "游客",
+  //   avatar: "/avatar/default.png",
+  // };
 
   // 评论列表
   const messages = ref<MessageItem[]>([]);
-  
+
+  // 加载状态
+  const loading = ref(false);
+  const isFirstLoaded = ref(true);
+
+  // 分页状态
+  const pageNum = ref(1);
+  const pageSize = ref(5);
+  const isHasMore = ref(false);
+
   // 新评论内容
   const newContent = ref("");
   const submitting = ref(false);
@@ -65,12 +83,108 @@ export const useComment = () => {
   // 计算属性
   const hasData = computed(() => messages.value.length > 0);
 
-  // 获取当前用户信息
-  const getCurrentUser = (): User => {
-    return ((userInfo as any)?.value || mockCurrentUser) as User;
-  };
+  // 转换 API 数据为组件使用的数据结构
+  function transformMessageItem(item: IMessageList.DataList): MessageItem {
+    const subComments: SubMessage[] = (item.sub_comment?.list || []).map(
+      (sub: IMessageList.SubMessageList) => {
+        // 处理回复信息
+        let replyInfo = null;
+        if (sub.reply_info && sub.reply_id !== null) {
+          // 如果有 reply_info 且 reply_id 不为 null，说明是回复子评论
+          const replyUser = sub.reply_info.user_info;
+          replyInfo = {
+            user_info: {
+              id: replyUser.id,
+              username: replyUser.username,
+              avatar: replyUser.avatar || "",
+              province: replyUser.province,
+              ip: replyUser.ip,
+            },
+            content: sub.reply_info.content || sub.content,
+          };
+        }
 
-  // 初始化模拟数据
+        return {
+          id: sub.id,
+          content: sub.content,
+          province: sub.province,
+          create_date: sub.create_date,
+          user_info: {
+            id: sub.user_info.id,
+            username: sub.user_info.username,
+            avatar: sub.user_info.avatar || "",
+          },
+          reply_info: replyInfo,
+        };
+      },
+    );
+
+    return {
+      id: item.id,
+      content: item.content,
+      create_date: item.create_date,
+      province: item.province,
+      user_info: {
+        id: item.user_info.id,
+        username: item.user_info.username,
+        avatar: item.user_info.avatar || "",
+      },
+      sub_comment: {
+        list: subComments,
+        total: item.sub_comment?.total || subComments.length,
+      },
+    };
+  }
+
+  // 加载留言列表
+  async function loadMessages(currentPage = 1, reset = false) {
+    try {
+      loading.value = true;
+      isFirstLoaded.value = currentPage === 1;
+
+      const res = await useAsyncFetch<{ data: IMessageList.IResponse }>(
+        "message/list",
+        {
+          method: "GET",
+          params: {
+            page_num: currentPage,
+            page_size: pageSize.value,
+          },
+        },
+      );
+
+      const data = res.data || (res as any);
+      const transformedMessages = (data.list || []).map(transformMessageItem);
+
+      if (reset || currentPage === 1) {
+        messages.value = transformedMessages;
+        pageNum.value = 1;
+      } else {
+        messages.value = [...messages.value, ...transformedMessages];
+      }
+
+      // 更新分页状态
+      pageNum.value = currentPage;
+      isHasMore.value = data.is_more === 1;
+    } catch (error) {
+      console.error("加载留言失败:", error);
+      if (currentPage === 1) {
+        messages.value = [];
+      }
+    } finally {
+      loading.value = false;
+      isFirstLoaded.value = false;
+    }
+  }
+
+  // 加载更多
+  function loadMore() {
+    if (!loading.value && isHasMore.value) {
+      loadMessages(pageNum.value + 1);
+    }
+  }
+
+  // 初始化数据（保留用于测试）
   function seedMock() {
     messages.value = [
       {
@@ -119,7 +233,7 @@ export const useComment = () => {
       "Olivia",
     ];
     for (let i = 0; i < 18; i++) {
-      const name = names[i % names.length];
+      const name = names[i % names.length]!;
       const id = autoId++;
       messages.value.push({
         id,
@@ -131,18 +245,23 @@ export const useComment = () => {
           avatar: `/avatar/${(i % 6) + 1}.jpg`,
         },
         sub_comment: {
-          list: i % 3 === 0
-            ? [
-                {
-                  id: autoId++,
-                  content: "收到~",
-                  create_date: new Date().toISOString(),
-                  user_info: { id: 2, username: "站长", avatar: "/avatar/2.jpg" },
-                  // 这个是直接回复主评论的，不需要@信息
-                  reply_info: null,
-                },
-              ]
-            : [],
+          list:
+            i % 3 === 0
+              ? [
+                  {
+                    id: autoId++,
+                    content: "收到~",
+                    create_date: new Date().toISOString(),
+                    user_info: {
+                      id: 2,
+                      username: "站长",
+                      avatar: "/avatar/2.jpg",
+                    },
+                    // 这个是直接回复主评论的，不需要@信息
+                    reply_info: null,
+                  },
+                ]
+              : [],
           total: i % 3 === 0 ? 1 : 0,
         },
       });
@@ -150,21 +269,30 @@ export const useComment = () => {
   }
 
   // 提交新评论
-  function submitNew() {
+  async function submitNew() {
     const content = newContent.value.trim();
     if (!content) return;
+    // 限制字数在100字以内
+    if (content.length > 100) {
+      console.warn("留言内容不能超过100字");
+      return;
+    }
     submitting.value = true;
-    setTimeout(() => {
-      messages.value.unshift({
-        id: autoId++,
-        content,
-        create_date: new Date().toISOString(),
-        user_info: getCurrentUser(),
-        sub_comment: { list: [], total: 0 },
+    try {
+      await useAsyncFetch("message/add", {
+        method: "POST",
+        body: {
+          content,
+        },
       });
+      // 提交成功后重新加载列表
+      await loadMessages(1, true);
       newContent.value = "";
+    } catch (error) {
+      console.error("提交留言失败:", error);
+    } finally {
       submitting.value = false;
-    }, 300);
+    }
   }
 
   // 打开回复框
@@ -173,8 +301,9 @@ export const useComment = () => {
     replyState.parentId = parent.id;
     replyState.replyTarget = target || parent;
     // 如果target是SubMessage，则记录其ID，否则为null（表示回复主评论）
-    replyState.replyTargetId = target && "id" in target && target !== parent ? target.id : null;
-    
+    replyState.replyTargetId =
+      target && "id" in target && target !== parent ? target.id : null;
+
     // 只有当回复的是子评论时，才显示@用户名
     // 如果直接回复主评论，不显示@
     if (replyState.replyTargetId !== null && target) {
@@ -196,41 +325,39 @@ export const useComment = () => {
   }
 
   // 提交回复
-  function submitReply() {
+  async function submitReply() {
     const content = replyContent.value.trim();
     if (!content || !replyState.parentId) return;
+    // 限制字数在100字以内
+    if (content.length > 100) {
+      console.warn("回复内容不能超过100字");
+      return;
+    }
     replying.value = true;
-    setTimeout(() => {
-      const parent = messages.value.find((m) => m.id === replyState.parentId);
-      if (!parent) return;
-      
-      // 只有当回复的是子评论时（replyTargetId不为null），才需要设置@信息
-      // 如果直接回复主评论（replyTargetId为null），不需要@
-      let replyInfo = null;
-      if (replyState.replyTargetId !== null && replyState.replyTarget) {
-        // 回复子评论，需要@被回复的用户，并引用被回复的内容
-        const target = replyState.replyTarget as SubMessage;
-        const atUser = target?.user_info;
-        const originalContent = target?.content; // 被回复的原始内容
-        replyInfo = atUser
-          ? {
-              user_info: atUser,
-              content: originalContent, // 保存被回复的内容用于引用显示
-            }
-          : null;
-      }
-      
-      parent.sub_comment.list.push({
-        id: autoId++,
+    try {
+      const requestData: {
+        content: string;
+        parent_id: number;
+        reply_id?: number;
+      } = {
         content,
-        create_date: new Date().toISOString(),
-        user_info: getCurrentUser(),
-        reply_info: replyInfo,
+        parent_id: replyState.parentId,
+      };
+      if (replyState.replyTargetId !== null) {
+        requestData.reply_id = replyState.replyTargetId;
+      }
+      await useAsyncFetch("message/add", {
+        method: "POST",
+        body: requestData,
       });
-      parent.sub_comment.total = parent.sub_comment.list.length;
+      // 提交成功后重新加载列表
+      await loadMessages(1, true);
       cancelReply();
+    } catch (error) {
+      console.error("提交回复失败:", error);
+    } finally {
       replying.value = false;
-    }, 300);
+    }
   }
 
   return {
@@ -242,12 +369,16 @@ export const useComment = () => {
     replyContent,
     replying,
     hasData,
+    loading,
+    isFirstLoaded,
+    isHasMore,
     // 方法
     seedMock,
+    loadMessages,
+    loadMore,
     submitNew,
     openReply,
     cancelReply,
     submitReply,
   };
 };
-

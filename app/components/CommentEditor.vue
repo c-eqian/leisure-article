@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import defaultAvatar from "@/assets/avatar/default.png";
 
 interface Props {
   modelValue: string;
@@ -24,18 +25,39 @@ const emit = defineEmits<Emits>();
 
 const content = computed({
   get: () => props.modelValue,
-  set: (val) => emit("update:modelValue", val),
+  set: (val) => {
+    // 限制字数在100字以内
+    if (val.length <= 100) {
+      emit("update:modelValue", val);
+    } else {
+      // 如果超过限制，只更新前100个字符
+      emit("update:modelValue", val.slice(0, 100));
+    }
+  },
 });
+
+const charCount = computed(() => props.modelValue.length);
+const maxLength = 100;
+const isNearLimit = computed(() => charCount.value >= maxLength * 0.8);
+const isOverLimit = computed(() => charCount.value >= maxLength);
+
+// 处理头像加载失败
+const handleAvatarError = (event: Event) => {
+  const img = event.target as HTMLImageElement;
+  if (img.src !== defaultAvatar) {
+    img.src = defaultAvatar;
+  }
+};
 </script>
 
 <template>
   <div class="editor-card">
     <div class="editor-header">
       <img
-        v-if="userAvatar"
-        :src="userAvatar"
+        :src="userAvatar || defaultAvatar"
         alt="avatar"
         class="avatar"
+        @error="handleAvatarError"
       />
       <div class="title">{{ title }}</div>
       <div class="header-actions">
@@ -44,12 +66,19 @@ const content = computed({
         </button>
       </div>
     </div>
-    <textarea
-      v-model="content"
-      class="textarea"
-      :placeholder="placeholder"
-      rows="3"
-    />
+    <div class="textarea-wrapper">
+      <textarea
+        v-model="content"
+        class="textarea"
+        :class="{ 'near-limit': isNearLimit && !isOverLimit, 'over-limit': isOverLimit }"
+        :placeholder="placeholder"
+        rows="3"
+        maxlength="100"
+      />
+      <div class="char-count" :class="{ 'over-limit': isOverLimit }">
+        {{ charCount }}/{{ maxLength }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -81,6 +110,9 @@ const content = computed({
   object-fit: cover;
   border: 1px solid var(--border-color);
 }
+.textarea-wrapper {
+  position: relative;
+}
 .textarea {
   width: 100%;
   resize: vertical;
@@ -89,11 +121,31 @@ const content = computed({
   border: 2px solid rgba(59, 130, 246, 0.2);
   border-radius: 10px;
   padding: 12px 14px;
+  padding-bottom: 32px;
   font-size: 14px;
   line-height: 1.6;
   outline: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   caret-color: var(--primary-color, #3b82f6);
+}
+.textarea.near-limit {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.textarea.over-limit {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+.char-count {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+.char-count.over-limit {
+  color: #ef4444;
+  font-weight: 600;
 }
 .textarea::placeholder {
   color: var(--text-muted);
