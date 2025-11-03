@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch, defineAsyncComponent } from "vue";
+const EmojiTextarea = defineAsyncComponent(() => import("./EmojiTextarea.vue"));
 
 interface Props {
   modelValue: string;
@@ -10,8 +11,7 @@ interface Props {
 
 interface Emits {
   (e: "update:modelValue", value: string): void;
-  (e: "cancel"): void;
-  (e: "submit"): void;
+  (e: "cancel" | "submit"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const replyBoxRef = ref<HTMLElement | null>(null);
+// 使用可复用的 EmojiTextarea
 
 const content = computed({
   get: () => props.modelValue,
@@ -36,17 +37,13 @@ const content = computed({
   },
 });
 
-const charCount = computed(() => props.modelValue.length);
-const maxLength = 100;
-const isNearLimit = computed(() => charCount.value >= maxLength * 0.8);
-const isOverLimit = computed(() => charCount.value >= maxLength);
-
 // 点击外部关闭
 const handleClickOutside = (e: MouseEvent) => {
   if (!(e.target instanceof Node)) return;
-  if (replyBoxRef.value && !replyBoxRef.value.contains(e.target)) {
-    emit("cancel");
-  }
+  const clickedInsideReplyBox = !!(replyBoxRef.value && replyBoxRef.value.contains(e.target));
+  // EmojiTextarea 内部自处理面板关闭，这里只负责组件外部点击
+  // 点击组件外部 -> 取消
+  if (!clickedInsideReplyBox) emit("cancel");
 };
 
 onMounted(() => {
@@ -76,17 +73,7 @@ watch(
 <template>
   <div v-if="visible" ref="replyBoxRef" class="reply-box">
     <div class="textarea-wrapper">
-      <textarea
-        v-model="content"
-        class="textarea"
-        :class="{ 'near-limit': isNearLimit && !isOverLimit, 'over-limit': isOverLimit }"
-        :placeholder="placeholder"
-        rows="3"
-        maxlength="100"
-      />
-      <div class="char-count" :class="{ 'over-limit': isOverLimit }">
-        {{ charCount }}/{{ maxLength }}
-      </div>
+      <EmojiTextarea v-model="content" :placeholder="placeholder" :max-length="100" />
     </div>
     <div class="editor-actions">
       <button class="btn" @click="emit('cancel')">取消</button>
@@ -104,6 +91,60 @@ watch(
 }
 .textarea-wrapper {
   position: relative;
+}
+.emoji-toggle {
+  position: absolute;
+  left: 12px;
+  bottom: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+}
+.emoji-toggle:hover {
+  background: var(--bg-card);
+}
+.emoji-panel {
+  position: absolute;
+  left: 8px;
+  bottom: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 20;
+  width: 480px;
+}
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  max-height: 220px;
+  overflow: auto;
+}
+.emoji-item {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+}
+.emoji-item:hover {
+  border-color: var(--border-color);
+  background: var(--bg);
+}
+.emoji-item img {
+  width: 24px;
+  height: 24px;
 }
 .textarea {
   width: 100%;

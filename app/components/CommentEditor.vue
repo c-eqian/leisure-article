@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import defaultAvatar from "@/assets/avatar/default.png";
+import EmojiTextarea from "@/components/EmojiTextarea.vue";
 
 interface Props {
   modelValue: string;
@@ -67,17 +68,7 @@ const handleAvatarError = (event: Event) => {
       </div>
     </div>
     <div class="textarea-wrapper">
-      <textarea
-        v-model="content"
-        class="textarea"
-        :class="{ 'near-limit': isNearLimit && !isOverLimit, 'over-limit': isOverLimit }"
-        :placeholder="placeholder"
-        rows="3"
-        maxlength="100"
-      />
-      <div class="char-count" :class="{ 'over-limit': isOverLimit }">
-        {{ charCount }}/{{ maxLength }}
-      </div>
+      <EmojiTextarea v-model="content" :placeholder="placeholder" :max-length="100" />
     </div>
   </div>
 </template>
