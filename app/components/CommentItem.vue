@@ -243,6 +243,7 @@ const handleAvatarError = (event: Event) => {
 }
 .text {
   margin-top: 6px;
+  margin-right: 50px;
   line-height: 1.8;
 }
 .reply-btn {
