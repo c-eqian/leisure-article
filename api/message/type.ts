@@ -26,6 +26,8 @@ export namespace IMessageList {
     avatar: string;
     id: number;
     username: string;
+    province?: string;
+    ip?: string;
   }
 
   /**
@@ -67,6 +69,8 @@ export namespace IMessageList {
     sub_comment: SubMessage;
     update_date: string;
     user_info: IUserInfo;
+    province?: string;
+    is_admin?: number;
   };
 
   /**

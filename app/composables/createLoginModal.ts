@@ -4,6 +4,7 @@ export type LoginFn = (data: any, close: () => void) => Promise<void> | void;
 
 export interface CreateLoginModalOptions {
   loginFn?: LoginFn;
+  title?: string;
   onClose?: () => void;
 }
 
@@ -25,6 +26,7 @@ export async function createBaseLoginModal(
   const app = createApp(LoginModal as any, {
     loginFn: options.loginFn,
     onClose: options.onClose,
+    title: options.title,
   });
 
   // Register v-loading directive locally for this programmatic app

@@ -1,0 +1,242 @@
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, watch, defineAsyncComponent } from "vue";
+const EmojiTextarea = defineAsyncComponent(() => import("./EmojiTextarea.vue"));
+
+interface Props {
+  modelValue: string;
+  visible: boolean;
+  placeholder?: string;
+  replying?: boolean;
+}
+
+interface Emits {
+  (e: "update:modelValue", value: string): void;
+  (e: "cancel" | "submit"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  replying: false,
+  placeholder: "回复",
+});
+
+const emit = defineEmits<Emits>();
+
+const replyBoxRef = ref<HTMLElement | null>(null);
+// 使用可复用的 EmojiTextarea
+
+const content = computed({
+  get: () => props.modelValue,
+  set: (val) => {
+    // 限制字数在100字以内
+    if (val.length <= 100) {
+      emit("update:modelValue", val);
+    } else {
+      // 如果超过限制，只更新前100个字符
+      emit("update:modelValue", val.slice(0, 100));
+    }
+  },
+});
+
+// 点击外部关闭
+const handleClickOutside = (e: MouseEvent) => {
+  if (!(e.target instanceof Node)) return;
+  const clickedInsideReplyBox = !!(replyBoxRef.value && replyBoxRef.value.contains(e.target));
+  // EmojiTextarea 内部自处理面板关闭，这里只负责组件外部点击
+  // 点击组件外部 -> 取消
+  if (!clickedInsideReplyBox) emit("cancel");
+};
+
+onMounted(() => {
+  if (props.visible) {
+    document.addEventListener("click", handleClickOutside, true);
+  }
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside, true);
+});
+
+watch(
+  () => props.visible,
+  (newVal) => {
+    if (newVal) {
+      setTimeout(() => {
+        document.addEventListener("click", handleClickOutside, true);
+      }, 0);
+    } else {
+      document.removeEventListener("click", handleClickOutside, true);
+    }
+  }
+);
+</script>
+
+<template>
+  <div v-if="visible" ref="replyBoxRef" class="reply-box">
+    <div class="textarea-wrapper">
+      <EmojiTextarea v-model="content" :placeholder="placeholder" :max-length="100" />
+    </div>
+    <div class="editor-actions">
+      <button class="btn" @click="emit('cancel')">取消</button>
+      <button class="btn primary" :disabled="replying" @click="emit('submit')">
+        {{ replying ? "发送中..." : "发送" }}
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.reply-box {
+  margin-left: 52px;
+  margin-top: 10px;
+}
+.textarea-wrapper {
+  position: relative;
+}
+.emoji-toggle {
+  position: absolute;
+  left: 12px;
+  bottom: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+}
+.emoji-toggle:hover {
+  background: var(--bg-card);
+}
+.emoji-panel {
+  position: absolute;
+  left: 8px;
+  bottom: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 20;
+  width: 480px;
+}
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  max-height: 220px;
+  overflow: auto;
+}
+.emoji-item {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+}
+.emoji-item:hover {
+  border-color: var(--border-color);
+  background: var(--bg);
+}
+.emoji-item img {
+  width: 24px;
+  height: 24px;
+}
+.textarea {
+  width: 100%;
+  resize: vertical;
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  padding-bottom: 32px;
+  font-size: 14px;
+  line-height: 1.6;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  caret-color: var(--primary-color, #3b82f6);
+}
+.textarea.near-limit {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.textarea.over-limit {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+.char-count {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+.char-count.over-limit {
+  color: #ef4444;
+  font-weight: 600;
+}
+.textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+.textarea:hover:not(:focus) {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+.textarea:focus {
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 
+    0 0 0 4px rgba(59, 130, 246, 0.1),
+    0 2px 8px rgba(59, 130, 246, 0.15),
+    0 0 20px rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+}
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+.btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: transform 0.12s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.btn.primary {
+  background: var(--primary-color, #3b82f6);
+  color: #fff;
+  border-color: transparent;
+}
+.btn.primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .textarea {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+  .textarea:hover:not(:focus) {
+    border-color: rgba(59, 130, 246, 0.45);
+  }
+  .textarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 
+      0 0 0 4px rgba(96, 165, 250, 0.15),
+      0 2px 12px rgba(96, 165, 250, 0.2),
+      0 0 24px rgba(96, 165, 250, 0.1);
+  }
+}
+</style>
+

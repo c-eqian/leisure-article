@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useNoticeToast } from "@/composables/useNoticeToast";
 import { definePageMeta, useHead } from "#imports";
-
 definePageMeta({
   layout: "common",
 });
-
-// 复制成功提示状态
-const showCopyToast = ref(false);
-const copyToastMessage = ref("");
 
 // 输入文本
 const inputText = ref("");
@@ -71,14 +67,16 @@ const convertText = (text: string, targetType: string): string => {
   if (!text.trim()) return "";
 
   // 按换行符分割文本，过滤空行
-  const lines = text.split('\n').filter(line => line.trim());
-  
+  const lines = text.split("\n").filter((line) => line.trim());
+
   if (lines.length === 1) {
     // 单行文本，直接转换
     return convertSingleText(text, targetType);
   } else {
     // 多行文本，批量转换
-    return lines.map(line => convertSingleText(line.trim(), targetType)).join('\n');
+    return lines
+      .map((line) => convertSingleText(line.trim(), targetType))
+      .join("\n");
   }
 };
 
@@ -118,16 +116,13 @@ const copyToClipboard = async (text: string) => {
     showCopySuccessToast("复制失败，请手动复制");
   }
 };
-
+const { openToast } = useNoticeToast();
 // 显示复制成功提示
 const showCopySuccessToast = (message: string) => {
-  copyToastMessage.value = message;
-  showCopyToast.value = true;
-  setTimeout(() => {
-    showCopyToast.value = false;
-  }, 2000);
+  openToast({
+    message,
+  });
 };
-
 
 // 清空输入
 const clearInput = () => {
@@ -169,7 +164,6 @@ useHead({
 
 <template>
   <div class="naming-converter">
-
     <div v-if="false" class="header">
       <h1 class="title">变量命名转换工具</h1>
       <p class="subtitle">支持多种命名格式的互相转换</p>
@@ -202,7 +196,7 @@ useHead({
               {{ example }}
             </button>
           </div>
-          
+
           <h4>批量示例（换行分隔）：</h4>
           <div class="example-tags">
             <button
@@ -211,7 +205,7 @@ useHead({
               class="example-tag batch-tag"
               @click="loadBatchExample(example)"
             >
-              {{ example.split('\n').join(' | ') }}
+              {{ example.split("\n").join(" | ") }}
             </button>
           </div>
         </div>
@@ -243,7 +237,7 @@ useHead({
           </div>
           <div class="info-item">
             <span class="info-label">行数：</span>
-            <span class="info-value">{{ outputText.split('\n').length }}</span>
+            <span class="info-value">{{ outputText.split("\n").length }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">单词数：</span>
@@ -279,14 +273,6 @@ useHead({
         </label>
       </div>
     </div>
-
-    <!-- 复制成功提示 -->
-    <div v-if="showCopyToast" class="copy-toast" :class="{ show: showCopyToast }">
-      <div class="toast-content">
-        <span class="toast-icon">✅</span>
-        <span class="toast-message">{{ copyToastMessage }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -304,58 +290,6 @@ useHead({
   flex-direction: column;
   box-sizing: border-box;
 }
-
-
-
-// 复制成功提示
-.copy-toast {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2000;
-  opacity: 0;
-  transition: all 0.3s ease;
-
-  &.show {
-    opacity: 1;
-    animation: toastSlideIn 0.3s ease-out;
-  }
-}
-
-.toast-content {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 1.5rem;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-heavy);
-  border: 1px solid var(--border-color);
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.toast-icon {
-  font-size: 1.2rem;
-}
-
-.toast-message {
-  font-size: 0.95rem;
-}
-
-@keyframes toastSlideIn {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
 
 .header {
   text-align: center;

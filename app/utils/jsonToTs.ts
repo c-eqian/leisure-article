@@ -250,23 +250,32 @@ export class JsonToTs {
     }
 
     if (Array.isArray(value)) {
-      if (value.length === 0) {
-        return "any[]";
-      }
-
       if (this.DEBUG) {
         console.log(
           `处理数组: fieldName=${fieldName}, value.length=${value.length}`,
         );
       }
 
+      // 找到第一个非空且非空数组的元素作为类型参考
+      const firstValidElement = value.find(
+        (item) =>
+          item !== null &&
+          item !== undefined &&
+          !(Array.isArray(item) && item.length === 0),
+      );
+
+      // 如果所有元素都为空或空数组，返回 any[]
+      if (firstValidElement === undefined) {
+        return "any[]";
+      }
+
       // 性能优化：如果数组元素是对象且需要抽离，直接分析整个数组
       // 避免先递归调用 firstElementType 导致提前生成不完整的类型
       if (
         extractNested &&
-        typeof value[0] === "object" &&
-        value[0] !== null &&
-        !Array.isArray(value[0])
+        typeof firstValidElement === "object" &&
+        firstValidElement !== null &&
+        !Array.isArray(firstValidElement)
       ) {
         const elementTypeName = this._generateTypeName(
           fieldName,
@@ -279,20 +288,42 @@ export class JsonToTs {
             `调用 _generateSubTypeFromArray: fieldName=${fieldName}, elementTypeName=${elementTypeName}, autoOptional=${autoOptional}`,
           );
         }
-        this._generateSubTypeFromArray(
-          value as JsonObject[],
-          elementTypeName,
-          useTypeAlias,
-          useNamespace,
-          namespace,
-          autoOptional,
-        );
-        return `${elementTypeName}[]`;
+        const validObjects = value.filter(
+          (item) =>
+            typeof item === "object" && item !== null && !Array.isArray(item),
+        ) as JsonObject[];
+        
+        if (validObjects.length > 0) {
+          this._generateSubTypeFromArray(
+            validObjects,
+            elementTypeName,
+            useTypeAlias,
+            useNamespace,
+            namespace,
+            autoOptional,
+          );
+          return `${elementTypeName}[]`;
+        } else {
+          // 如果没有有效对象，返回 any[]
+          return "any[]";
+        }
       }
 
-      // 对于非对象数组，检查元素类型一致性
+      // 对于非对象数组，分析所有非空且非空数组元素的类型
+      const validElements = value.filter(
+        (item) =>
+          item !== null &&
+          item !== undefined &&
+          !(Array.isArray(item) && item.length === 0),
+      );
+
+      if (validElements.length === 0) {
+        return "any[]";
+      }
+
+      // 获取第一个有效元素的类型作为基准
       const firstElementType = this._getTypeScriptType(
-        value[0] as JsonValue,
+        firstValidElement as JsonValue,
         fieldName,
         false,
         useTypeAlias,
@@ -300,11 +331,13 @@ export class JsonToTs {
         namespace,
         autoOptional,
       );
+
       if (this.DEBUG) {
         console.log(`firstElementType=${firstElementType}`);
       }
 
-      const allSameType = (value as JsonValue[]).every(
+      // 检查所有有效元素是否类型一致
+      const allSameType = validElements.every(
         (item) =>
           this._getTypeScriptType(
             item as JsonValue,
@@ -320,7 +353,23 @@ export class JsonToTs {
       if (allSameType) {
         return `${firstElementType}[]`;
       } else {
-        return "any[]";
+        // 如果类型不一致，生成联合类型
+        const uniqueTypes = new Set<string>();
+        validElements.forEach((item) => {
+          const itemType = this._getTypeScriptType(
+            item as JsonValue,
+            fieldName,
+            false,
+            useTypeAlias,
+            useNamespace,
+            namespace,
+            autoOptional,
+          );
+          uniqueTypes.add(itemType);
+        });
+        
+        const unionType = Array.from(uniqueTypes).join(" | ");
+        return `(${unionType})[]`;
       }
     }
 
@@ -483,24 +532,113 @@ export class JsonToTs {
     }
 
     // 确定字段是否必需（出现在所有对象中）
-    for (const fieldName in fieldAnalysis) {
+    Object.keys(fieldAnalysis).forEach((fieldName) => {
       const info = fieldAnalysis[fieldName];
-      info.required = info.count === totalObjects;
+      if (info) {
+        info.required = info.count === totalObjects;
 
-      // 使用第一个非null/undefined的值作为类型参考
-      const firstValidValue = info.values.find(
-        (val) => val !== null && val !== undefined,
-      );
-      if (firstValidValue !== undefined) {
-        info.type = firstValidValue as JsonValue;
-      }
+        // 分析所有有效值（非null/undefined/空数组）来确定类型
+        const validValues = info.values.filter(
+          (val) => val !== null && val !== undefined && !(Array.isArray(val) && val.length === 0),
+        );
+        
+        if (validValues.length > 0) {
+          // 使用第一个有效值作为类型参考
+          info.type = validValues[0] as JsonValue;
+          
+          // 如果有多种类型，需要特殊处理
+          if (info.types.size > 1) {
+            // 检查是否包含数组类型
+            const hasArray = info.types.has("array");
+            const hasNull = info.types.has("null");
+            const hasUndefined = info.types.has("undefined");
+            
+            if (hasArray) {
+              // 分析所有数组值的元素类型
+              const arrayValues = info.values.filter(
+                (val) => Array.isArray(val) && val.length > 0,
+              ) as JsonArray[];
+              
+              if (arrayValues.length > 0) {
+                const elementTypes = new Set<string>();
+                arrayValues.forEach((arr) => {
+                  arr.forEach((item) => {
+                    const itemType = this._getValueType(item);
+                    elementTypes.add(itemType);
+                  });
+                });
+                
+                // 生成具体的数组类型
+                let arrayType = "any[]";
+                if (elementTypes.size === 1) {
+                  const elementType = Array.from(elementTypes)[0];
+                  if (elementType === "string") arrayType = "string[]";
+                  else if (elementType === "number") arrayType = "number[]";
+                  else if (elementType === "boolean") arrayType = "boolean[]";
+                  else if (elementType === "object") {
+                    // 将所有非空数组的对象元素拍平后一起生成子类型
+                    const mergedObjects = ([] as JsonObject[]).concat(
+                      ...arrayValues
+                        .filter((arr) => Array.isArray(arr) && arr.length > 0)
+                        .map((arr) =>
+                          arr.filter(
+                            (item) =>
+                              typeof item === "object" &&
+                              item !== null &&
+                              !Array.isArray(item),
+                          ) as JsonObject[],
+                        ),
+                    );
 
-      // 如果有多种类型，生成联合类型
-      if (info.types.size > 1) {
-        info.isUnionType = true;
-        info.unionTypes = Array.from(info.types);
+                    if (mergedObjects.length > 0) {
+                      const objectTypeName = this._generateTypeName(
+                        fieldName,
+                        false,
+                        false,
+                        "",
+                      );
+
+                      this._generateSubTypeFromArray(
+                        mergedObjects,
+                        objectTypeName,
+                        false,
+                        false,
+                        "",
+                        true,
+                      );
+
+                      arrayType = `${objectTypeName}[]`;
+                    }
+                  }
+                }
+
+                const unionTypes: string[] = [arrayType];
+                if (hasNull) unionTypes.push("null");
+                if (hasUndefined) unionTypes.push("undefined");
+
+                info.isUnionType = true;
+                info.unionTypes = unionTypes;
+              } else {
+                // 只有空数组的情况
+                const unionTypes: string[] = [];
+                if (hasNull) unionTypes.push("null");
+                if (hasUndefined) unionTypes.push("undefined");
+                // 空数组退化为 any[]（无样本），但仍保留与 null/undefined 的联合
+                unionTypes.unshift("any[]");
+                info.isUnionType = true;
+                info.unionTypes = unionTypes;
+              }
+            } else {
+              info.isUnionType = true;
+              info.unionTypes = Array.from(info.types);
+            }
+          }
+        } else {
+          // 如果所有值都无效，使用第一个值作为类型参考
+          info.type = info.values[0] as JsonValue;
+        }
       }
-    }
+    });
 
     return fieldAnalysis;
   }
@@ -512,7 +650,10 @@ export class JsonToTs {
   static _getValueType(value: JsonValue | undefined): string {
     if (value === null) return "null";
     if (value === undefined) return "undefined";
-    if (Array.isArray(value)) return "array";
+    if (Array.isArray(value)) {
+      if (value.length === 0) return "empty_array";
+      return "array";
+    }
     if (typeof value === "object") return "object";
     return typeof value;
   }
@@ -523,9 +664,9 @@ export class JsonToTs {
    */
   static _generateUnionTypeFromTypes(
     types: string[],
-    fieldName: string,
-    useNamespace: boolean = false,
-    namespace: string = "",
+    _fieldName: string,
+    _useNamespace: boolean = false,
+    _namespace: string = "",
   ): string {
     const typeMap: Record<string, string> = {
       string: "string",
@@ -534,10 +675,12 @@ export class JsonToTs {
       null: "null",
       undefined: "undefined",
       array: "any[]",
+      empty_array: "any[]",
       object: "object",
     };
 
-    const mappedTypes = types.map((type) => typeMap[type] || "any");
+    // 保留未知类型字面量（例如 "string[]"、自定义接口名等），不要退化为 any
+    const mappedTypes = types.map((type) => (typeMap[type] ?? type));
 
     // 去重并排序，确保一致性
     const uniqueTypes = [...new Set(mappedTypes)].sort();
@@ -687,8 +830,8 @@ export class JsonToTs {
       return useTypeAlias ? "GeneratedType" : "IGeneratedInterface";
     }
 
-    // 将字段名转换为PascalCase，保持原始字段名的完整性
-    const pascalCase = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    // 将字段名转换为PascalCase（大驼峰），处理下划线和连字符
+    const pascalCase = this._toPascalCase(fieldName);
 
     let typeName: string;
     if (useTypeAlias) {
@@ -703,6 +846,24 @@ export class JsonToTs {
     }
 
     return typeName;
+  }
+
+  /**
+   * 将字符串转换为PascalCase（大驼峰）格式
+   * @private
+   */
+  static _toPascalCase(str: string): string {
+    if (!str) return "";
+
+    // 去掉开头和结尾的下划线、连字符
+    const trimmed = str.replace(/^[_\-\s]+|[_\-\s]+$/g, "");
+
+    // 处理下划线、连字符和空格分隔的字符串
+    return trimmed
+      .split(/[_\-\s]+/) // 按下滑线、连字符、空格分割
+      .filter((word) => word.length > 0) // 过滤空字符串
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // 首字母大写，其余小写
+      .join(""); // 连接成PascalCase
   }
 
   /**

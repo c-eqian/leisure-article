@@ -31,7 +31,7 @@ const menuItems = [
   { id: "daily", name: "日常", icon: "📝", active: false },
   { id: "images", name: "图片", icon: "🖼️", active: true },
   { id: "notes", name: "笔记", icon: "📔", active: true },
-  { id: "messages", name: "留言", icon: "💬", active: false },
+  { id: "comment", name: "留言", icon: "💬", active: true },
   { id: "about", name: "关于", icon: "ℹ️", active: true },
   { id: "tools", name: "工具箱", icon: "🔧", active: true },
   { id: "settings", name: "设置", icon: "⚙️", active: true },
