@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { isFunction } from "@eqian/utils-vue";
+import { useRuntimeConfig } from "nuxt/app";
 import { computed, reactive, ref } from "vue";
 const props = defineProps({
   loginFn: {
@@ -16,8 +17,8 @@ const emit = defineEmits<{
 }>();
 const isVisible = ref(false);
 const formValues = reactive({
-  account: import.meta.dev ? "admin" : "",
-  password: import.meta.dev ? "cyq990127" : "",
+  account: "",
+  password: "",
 });
 const isLoading = ref(false);
 const errorMessage = ref("");
@@ -40,17 +41,32 @@ const submitLogin = async () => {
     try {
       isLoading.value = true;
       const res = await loginFn(formValues, close);
-      console.log(res);
+      console.info(res);
       errorMessage.value = "";
       isVisible.value = false;
       resetForm();
       isLoading.value = false;
     } catch (e: any) {
       isLoading.value = false;
-      console.log(e);
+      console.info(e);
       errorMessage.value = e.msg || "登录失败";
     }
   }
+};
+
+// 第三方登录（GitHub）
+const config = useRuntimeConfig();
+const startGithubOAuth = () => {
+  const route = useRoute();
+  const clientId = (config.public as any).GITHUB_CLIENT_ID as string || 'Ov23lizAcG5Renlc0wxP';
+  const redirectUri = `http://localhost:3000/auth/callback`;
+  const state = encodeURIComponent(route.fullPath || "/");
+  const scope = encodeURIComponent("read:user user:email");
+  const authorizeUrl =
+    `https://github.com/login/oauth/authorize?client_id=${encodeURIComponent(clientId)}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&state=${state}`;
+  window.location.href = authorizeUrl;
 };
 
 const resetForm = () => {
@@ -120,6 +136,17 @@ defineExpose({
           </button>
         </div>
       </form>
+      <div class="oauth-divider">
+        <span class="line" />
+        <span class="text">或使用第三方登录</span>
+        <span class="line" />
+      </div>
+      <div class="oauth-list">
+        <button class="oauth-btn github" type="button" @click="startGithubOAuth">
+          <Icon name="uil:github" size="18" />
+          使用 GitHub 登录
+        </button>
+      </div>
     </div>
   </BaseModal>
 </template>
@@ -250,6 +277,49 @@ defineExpose({
   }
 }
 
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+  .text {
+    color: var(--text-tertiary);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
+.oauth-list {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  .oauth-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+    &.github {
+      border-color: #24292e33;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .login-form {
     padding: 24px;
@@ -262,6 +332,9 @@ defineExpose({
   }
   .form-actions .btn {
     width: 100%;
+  }
+  .oauth-list {
+    flex-direction: column;
   }
 }
 </style>
