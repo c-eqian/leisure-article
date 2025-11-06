@@ -58,10 +58,11 @@ const submitLogin = async () => {
 const config = useRuntimeConfig();
 const startGithubOAuth = () => {
   const route = useRoute();
-  const clientId = (config.public as any).GITHUB_CLIENT_ID as string || 'Ov23lizAcG5Renlc0wxP';
-  const redirectUri = `http://localhost:3000/auth/callback`;
+  const clientId =
+    ((config.public as any).GITHUB_CLIENT_ID as string) ||
+    "Ov23lizAcG5Renlc0wxP";
+  const redirectUri = `${window.location.origin}/auth/callback`;
   const state = encodeURIComponent(route.fullPath || "/");
-  const scope = encodeURIComponent("read:user user:email");
   const authorizeUrl =
     `https://github.com/login/oauth/authorize?client_id=${encodeURIComponent(clientId)}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
@@ -100,7 +101,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          />
+          >
         </div>
         <div class="form-group">
           <label for="password">密码</label>
@@ -112,7 +113,7 @@ defineExpose({
             :disabled="isLoading"
             required
             @keydown.enter.prevent="submitLogin"
-          />
+          >
         </div>
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}
@@ -142,7 +143,11 @@ defineExpose({
         <span class="line" />
       </div>
       <div class="oauth-list">
-        <button class="oauth-btn github" type="button" @click="startGithubOAuth">
+        <button
+          class="oauth-btn github"
+          type="button"
+          @click="startGithubOAuth"
+        >
           <Icon name="uil:github" size="18" />
           使用 GitHub 登录
         </button>

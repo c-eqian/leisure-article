@@ -26,6 +26,10 @@ export default defineNuxtConfig({
         process.env.NODE_ENV === "production"
           ? "https://www.eqian.site/api/v2/"
           : "http://localhost:8000/",
+      GITHUB_CLIENT_ID:
+        process.env.NODE_ENV === "production"
+          ? "Ov23li5nThHZ26MXcYEf"
+          : "Ov23lizAcG5Renlc0wxP",
     },
   },
   // 项目模块配置
