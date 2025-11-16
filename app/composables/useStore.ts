@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import type { ICategoryTags } from "~~/api/category/type";
 import type { IUserInfo } from "~~/api/oss/type";
 import type { IWebsite } from "~~/api/system/type";
+import type { WallpaperConfig } from "~~/api/type";
 import type { User } from "~~/api/user/type";
 /**
  * 网站主题类型
@@ -219,6 +220,17 @@ export const useWebsiteStore = defineStore("WEBSITES-INFO", {
   state() {
     return {
       website: {} as unknown as IWebsite.Data,
+      wallpaper: {
+        type: "gradient",
+        videoUrl:
+          "https://aihlp.com.cn/noCheck/share/66694f8e431f2c7ccf01c508/wallpaper/e527ab11-0b70-434b-9276-4e737a49e285.mp4",
+        autoplay: true,
+        loop: true,
+        muted: true,
+        objectFit: "cover",
+        objectPosition: "center center",
+        showDecorations: true, // 视频背景时通常不需要装饰
+      } as unknown as WallpaperConfig,
     };
   },
   actions: {
@@ -230,6 +242,11 @@ export const useWebsiteStore = defineStore("WEBSITES-INFO", {
       this.website = (res.data || {}) as unknown as IWebsite.Data;
       return this.website;
     },
+    setWallpaper(data: WallpaperConfig) {
+      this.wallpaper = data;
+    },
   },
-  persist: false,
+  persist: {
+    pick: ["website", "wallpaper"],
+  },
 });

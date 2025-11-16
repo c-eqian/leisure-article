@@ -1,12 +1,36 @@
 <script setup lang="ts">
 import { useFormatDate } from "@eqian/utils-vue";
+import { useAsyncFetch } from "~~/api/server";
 import { ref } from "vue";
 import LoadMoreButton from "@/components/LoadMoreButton.vue";
-import { useAsyncFetch } from "~~/api/server";
+import { useNoticeToast } from "~/composables/useNoticeToast";
+import { useWebsite } from "~/composables/useWebsite";
+import type { WallpaperConfig } from "~~/api/type";
 import type { IWallpaperRes } from "~~/api/wallpaper/type";
+
 const imageData = ref<IWallpaperRes>({} as IWallpaperRes);
 const isLoading = ref(false);
 const isFirstLoaded = ref(true);
+const { setWallpaper } = useWebsite();
+
+// 鼠标悬停的图片ID
+const hoveredImageId = ref<number | null>(null);
+const { openToast } = useNoticeToast();
+// 设置为壁纸
+const handleSetWallpaper = (imageUrl: string) => {
+  const wallpaperConfig: WallpaperConfig = {
+    type: "image",
+    imageUrl,
+    objectFit: "cover",
+    objectPosition: "center center",
+    showDecorations: false,
+  };
+  setWallpaper(wallpaperConfig);
+  openToast({
+    message: "设置成功",
+  });
+};
+
 const params = ref({
   page_size: 20,
   page_num: 1,
@@ -45,7 +69,13 @@ const loadMore = () => {
       <p class="gallery-subtitle">探索世界的美好瞬间</p>
     </div>
     <div class="image-grid">
-      <div v-for="item in imageData.list" :key="item.id" class="image-card">
+      <div
+        v-for="item in imageData.list"
+        :key="item.id"
+        class="image-card"
+        @mouseenter="hoveredImageId = item.id"
+        @mouseleave="hoveredImageId = null"
+      >
         <div class="image-container">
           <nuxt-link :to="item.url || '#'" target="_blank">
             <img
@@ -55,6 +85,15 @@ const loadMore = () => {
               loading="lazy"
             >
           </nuxt-link>
+          <!-- 设置为壁纸按钮 -->
+          <button
+            v-show="hoveredImageId === item.id"
+            class="set-wallpaper-button"
+            title="设置为壁纸"
+            @click.stop="handleSetWallpaper(item.url || '')"
+          >
+            设置为壁纸
+          </button>
           <!-- 版权信息覆盖层 -->
           <div v-if="item.copyright" class="copyright-overlay">
             <div class="copyright-content">
@@ -139,6 +178,38 @@ const loadMore = () => {
   height: 250px;
   overflow: hidden;
   border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+}
+
+// 设置为壁纸按钮
+.set-wallpaper-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-family);
+  white-space: nowrap;
+}
+
+.set-wallpaper-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.set-wallpaper-button:active {
+  transform: translate(-50%, -50%) scale(0.95);
 }
 
 /* 版权信息覆盖层 */
@@ -242,6 +313,10 @@ const loadMore = () => {
   .copyright-text {
     font-size: 0.85rem;
   }
+  .set-wallpaper-button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -265,6 +340,10 @@ const loadMore = () => {
   }
   .copyright-text {
     font-size: 0.8rem;
+  }
+  .set-wallpaper-button {
+    padding: 6px 12px;
+    font-size: 11px;
   }
 }
 

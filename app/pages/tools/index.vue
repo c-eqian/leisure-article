@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import * as favoritesApi from "~~/api/favorites";
 import { ref } from "vue";
+import { formatNumber } from "~/utils/formatNumber";
 import type { IFavoriteGroupedByCategory } from "~~/api/favorites/type";
 
 // 响应式数据
@@ -29,10 +30,10 @@ const handleClick = async (item: any) => {
 
 // 格式化点击次数
 const formatClicks = (clicks: number) => {
-  if (clicks >= 1000) {
-    return `${Math.floor(clicks / 1000)}${clicks % 1000 >= 100 ? Math.floor((clicks % 1000) / 100) : ""}${clicks % 1000 >= 10 ? Math.floor((clicks % 1000) / 10) : ""}0+次点击`;
-  }
-  return `${clicks}+次点击`;
+  // if (clicks >= 1000) {
+  //   return `${Math.floor(clicks / 1000)}${clicks % 1000 >= 100 ? Math.floor((clicks % 1000) / 100) : ""}${clicks % 1000 >= 10 ? Math.floor((clicks % 1000) / 10) : ""}0+次点击`;
+  // }
+  return `${formatNumber(clicks)}+次点击`;
 };
 
 // 获取收藏夹数据

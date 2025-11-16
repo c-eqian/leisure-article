@@ -25,7 +25,7 @@ export default defineNuxtConfig({
       BASE_URL:
         process.env.NODE_ENV === "production"
           ? "https://www.eqian.site/api/v2/"
-          : "http://localhost:8000/",
+          : "http://43.138.222.187:8000/",
       GITHUB_CLIENT_ID:
         process.env.NODE_ENV === "production"
           ? "Ov23li5nThHZ26MXcYEf"

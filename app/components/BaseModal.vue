@@ -25,7 +25,7 @@ const handleKeydown = (event: KeyboardEvent) => {
 };
 
 const handleOverlayClick = () => {
-  handleClose();
+  // handleClose();
 };
 const setVisible = (visible: boolean) => {
   visibleRef.value = visible;

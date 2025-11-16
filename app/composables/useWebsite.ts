@@ -1,6 +1,7 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useWebsiteStore } from "~/composables/useStore";
 import type { IWebsite } from "~~/api/system/type";
+import type { WallpaperConfig } from "~~/api/type";
 
 export const useWebsite = () => {
   const store = useWebsiteStore();
@@ -19,9 +20,15 @@ export const useWebsite = () => {
       isLoading.value = false;
     }
   };
+  const wallpaperDataRef = computed(() => store.wallpaper);
+  const setWallpaper = (wallpaper: WallpaperConfig) => {
+    return store.setWallpaper(wallpaper);
+  };
   return {
     isLoading,
     getWebsite,
     websiteDataRef,
+    wallpaperDataRef,
+    setWallpaper,
   };
 };
