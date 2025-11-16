@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getSystemSentence } from "~~/api/system";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useWebsite } from "~/composables/useWebsite";
 
@@ -11,7 +12,7 @@ const currentTime = ref("");
 const currentDate = ref("");
 
 // 名言
-const quote = ref('"盛年不重来,一日难再晨。及时宜自勉,岁月不待人。"');
+const quote = ref('盛年不重来,一日难再晨。及时宜自勉,岁月不待人。');
 const { wallpaperDataRef } = useWebsite();
 // 背景配置
 const bgConfig = wallpaperDataRef.value;
@@ -37,7 +38,9 @@ const updateTime = () => {
 };
 
 let timer: ReturnType<typeof setInterval> | null = null;
-
+getSystemSentence().then((res) => {
+  quote.value = res[0]?.text || "";
+});
 onMounted(() => {
   updateTime();
   // 每秒更新一次时间
@@ -179,7 +182,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
               placeholder="必应搜索"
               class="search-input"
               @keypress="handleKeyPress"
-            >
+            />
             <NuxtLink to="/home" class="home-button" title="进入首页">
               <svg
                 width="20"
@@ -204,7 +207,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
         <!-- 名言 -->
         <div class="quote-container">
-          <p class="quote">{{ quote }}</p>
+          <p class="quote">“{{ quote }}”</p>
         </div>
       </div>
     </div>
@@ -213,6 +216,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
 <style scoped lang="scss">
 .wallpaper-container {
+  user-select: none;
   position: fixed;
   top: 0;
   left: 0;
